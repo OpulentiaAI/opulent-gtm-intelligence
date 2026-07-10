@@ -1,5 +1,16 @@
 # Research, Prospecting, and Competitive Intelligence
 
+## Contents
+
+1. Build the baseline
+2. Discover candidates in waves
+3. Gate before enrichment
+4. Enrich in lanes
+5. Build relationship intelligence
+6. Score fit and timing
+7. Build competitor intelligence
+8. Synthesize the next move
+
 ## Depth modes
 
 | Mode | Use for | Typical evidence budget |
@@ -92,7 +103,20 @@ Keep lane findings separate until synthesis.
 
 For event prospecting, extract speakers or sponsors first, group by company, run the company gate, then enrich only people at passing companies.
 
-## 5. Score fit and timing
+## 5. Build relationship intelligence
+
+Load `relationship-intelligence.md`. Treat it as a required enrichment lane.
+
+For each passing company and person:
+
+1. Resolve canonical identities and current roles.
+2. Search direct history, CRM activity, public engagements, placements, partners, board overlap, employer overlap, associations, events, and education.
+3. Write typed edges with evidence, confidence, date, strength components, activation path, and risk.
+4. Prefer one-hop paths. Use two hops only when both edges are independently verified.
+5. Record `no verified path` instead of stretching weak evidence.
+6. Rank the shortest truthful path alongside fit and timing.
+
+## 6. Score fit and timing
 
 Use a 100-point account score:
 
@@ -119,7 +143,7 @@ Priority bands:
 - `40-59`: nurture or monitor
 - `0-39`: hold or reject
 
-## 6. Build competitor intelligence
+## 7. Build competitor intelligence
 
 Create a shared atomic taxonomy before filling a matrix. Each row must be a yes/no or bounded comparison that means the same thing for every company.
 
@@ -139,7 +163,7 @@ Build battle cards only from the verified research set. Include:
 - switching triggers; and
 - a talk track tied to the prospect's situation.
 
-## 7. Synthesize the next move
+## 8. Synthesize the next move
 
 For each prioritized account or person, answer:
 
@@ -149,6 +173,7 @@ For each prioritized account or person, answer:
 - Who should engage?
 - What should they say or ask?
 - What is the next observable action?
+- What is the shortest truthful relationship path, or why is there none?
 
 For executive-search and talent clients, connect both sides of the market:
 
@@ -156,3 +181,12 @@ For executive-search and talent clients, connect both sides of the market:
 - candidate pools and career-transition signals;
 - shared sector, geography, institution, or transformation context; and
 - the specific introduction, search thesis, or content angle that creates value.
+
+## Completion packet
+
+Produce both:
+
+1. a structured JSON packet that passes `validate_intelligence_packet.py`; and
+2. the polished HTML overview plus dossiers rendered from the bundled templates.
+
+Before reporting completion, inspect the overview and one dossier, verify all relationship labels, and confirm that the rendered HTML contains no unresolved template tokens.

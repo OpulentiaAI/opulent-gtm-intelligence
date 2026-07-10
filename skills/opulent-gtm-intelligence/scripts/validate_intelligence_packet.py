@@ -14,6 +14,25 @@ from typing import Any
 MODES = {"quick", "deep", "deeper"}
 CONFIDENCE = {"Verified", "Estimated", "Unknown"}
 FINAL_RESULTS = {"verified", "drafted", "blocked", "skipped", "needs review"}
+RELATION_TYPES = {
+    "works_at",
+    "worked_at",
+    "reports_to",
+    "reported_to",
+    "board_overlap",
+    "colleague_overlap",
+    "placed_at",
+    "engaged_by",
+    "client_claim",
+    "partnered_with",
+    "invested_in",
+    "advised_by",
+    "event_coattendance",
+    "association_overlap",
+    "education_overlap",
+    "public_interaction",
+    "introduced_by",
+}
 
 
 def is_url(value: Any) -> bool:
@@ -94,6 +113,83 @@ def validate_target(
         warnings.append(f"{location} is Unknown but fit_score exceeds the 40-point evidence cap.")
 
 
+def validate_relationship(
+    item: Any, index: int, issues: list[str], warnings: list[str]
+) -> None:
+    location = f"relationships[{index}]"
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+
+    for key in ("from", "to", "type", "activation_path", "risk"):
+        if not item.get(key):
+            issues.append(f"{location} is missing {key}.")
+
+    relation_type = item.get("type")
+    if relation_type and relation_type not in RELATION_TYPES:
+        issues.append(
+            f"{location}.type must be one of: " + ", ".join(sorted(RELATION_TYPES))
+        )
+
+    strength = item.get("strength")
+    if not isinstance(strength, (int, float)) or isinstance(strength, bool) or not 0 <= strength <= 100:
+        issues.append(f"{location}.strength must be a number from 0 to 100.")
+
+    if item.get("confidence") not in CONFIDENCE:
+        issues.append(f"{location}.confidence must be Verified, Estimated, or Unknown.")
+
+    if not validate_iso_date(item.get("last_verified")):
+        issues.append(f"{location}.last_verified must be an ISO 8601 date or timestamp.")
+
+    validate_evidence(item.get("evidence"), location, issues, warnings)
+
+    if strength and strength >= 80 and item.get("confidence") != "Verified":
+        warnings.append(f"{location} is scored as a direct path without Verified confidence.")
+
+
+def validate_signal(item: Any, index: int, issues: list[str], warnings: list[str]) -> None:
+    location = f"signals[{index}]"
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+    for key in ("title", "date", "impact"):
+        if not item.get(key):
+            issues.append(f"{location} is missing {key}.")
+    if item.get("date") and not validate_iso_date(item.get("date")):
+        issues.append(f"{location}.date must be an ISO 8601 date or timestamp.")
+    validate_evidence(item.get("evidence"), location, issues, warnings)
+
+
+def validate_public_example(
+    item: Any, index: int, issues: list[str], warnings: list[str]
+) -> None:
+    location = f"public_examples[{index}]"
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+    for key in ("organization", "relationship_label", "demonstration_value"):
+        if not item.get(key):
+            issues.append(f"{location} is missing {key}.")
+    validate_evidence(item.get("evidence"), location, issues, warnings)
+
+
+def validate_conversation_kit(
+    item: Any, index: int, issues: list[str], warnings: list[str]
+) -> None:
+    location = f"conversation_kits[{index}]"
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+    for key in ("target", "context", "hypothesis", "proof", "cta"):
+        if not item.get(key):
+            issues.append(f"{location} is missing {key}.")
+    questions = item.get("questions")
+    if not isinstance(questions, list) or len(questions) < 2:
+        issues.append(f"{location}.questions must contain at least two discovery questions.")
+    if "mutual" in str(item.get("context", "")).lower() and not item.get("relationship_edge"):
+        warnings.append(f"{location} uses mutual-connection language without relationship_edge.")
+
+
 def validate(packet: Any) -> tuple[list[str], list[str]]:
     issues: list[str] = []
     warnings: list[str] = []
@@ -130,6 +226,45 @@ def validate(packet: Any) -> tuple[list[str], list[str]]:
         validate_target(item, "accounts", index, issues, warnings)
     for index, item in enumerate(people):
         validate_target(item, "people", index, issues, warnings)
+
+    relationships = packet.get("relationships", [])
+    if not isinstance(relationships, list):
+        issues.append("relationships must be a list.")
+        relationships = []
+    for index, item in enumerate(relationships):
+        validate_relationship(item, index, issues, warnings)
+    if packet.get("mode") in {"deep", "deeper"} and not relationships:
+        warnings.append("Deep intelligence packet has no verified relationship edges.")
+
+    seen_edges: set[tuple[Any, Any, Any, Any]] = set()
+    for index, edge in enumerate(relationships):
+        if not isinstance(edge, dict):
+            continue
+        identity = (edge.get("from"), edge.get("to"), edge.get("type"), edge.get("via"))
+        if identity in seen_edges:
+            warnings.append(f"relationships[{index}] duplicates an earlier edge.")
+        seen_edges.add(identity)
+
+    signals = packet.get("signals", [])
+    if not isinstance(signals, list):
+        issues.append("signals must be a list.")
+        signals = []
+    for index, item in enumerate(signals):
+        validate_signal(item, index, issues, warnings)
+
+    public_examples = packet.get("public_examples", [])
+    if not isinstance(public_examples, list):
+        issues.append("public_examples must be a list.")
+        public_examples = []
+    for index, item in enumerate(public_examples):
+        validate_public_example(item, index, issues, warnings)
+
+    conversation_kits = packet.get("conversation_kits", [])
+    if not isinstance(conversation_kits, list):
+        issues.append("conversation_kits must be a list.")
+        conversation_kits = []
+    for index, item in enumerate(conversation_kits):
+        validate_conversation_kit(item, index, issues, warnings)
 
     updates = packet.get("system_updates", [])
     if not isinstance(updates, list):

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{CLIENT}} — Intelligence Brief</title>
+  <style>
+    :root {
+      --ink: #10263d;
+      --ink-2: #1d3d55;
+      --ivory: #f7f4ec;
+      --paper: #fffdf8;
+      --teal: #0d7c7b;
+      --teal-soft: #dff2ef;
+      --gold: #d2a84b;
+      --gold-soft: #f5ead0;
+      --muted: #657583;
+      --line: #dce2e3;
+      --danger: #a34c46;
+      --shadow: 0 18px 55px rgba(16, 38, 61, .12);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 2%, rgba(210,168,75,.18), transparent 28rem),
+        radial-gradient(circle at 95% 16%, rgba(13,124,123,.14), transparent 34rem),
+        var(--ivory);
+      font: 15px/1.55 Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--teal); text-decoration: none; overflow-wrap: anywhere; }
+    a:hover { text-decoration: underline; }
+    .shell { width: min(1220px, calc(100% - 40px)); margin: 28px auto 72px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 54px;
+      color: #fff;
+      background: linear-gradient(125deg, #0d2238, #153b4c 58%, #0b6a6a);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -120px;
+      top: -170px;
+      width: 430px;
+      height: 430px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 50%;
+      box-shadow: 0 0 0 48px rgba(255,255,255,.04), 0 0 0 96px rgba(255,255,255,.035);
+    }
+    .eyebrow { color: #f4d487; font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { max-width: 850px; margin: 12px 0 8px; font: 700 clamp(36px, 6vw, 68px)/1.02 Georgia, serif; letter-spacing: -.035em; }
+    .hero p { max-width: 790px; margin: 0; color: rgba(255,255,255,.82); font-size: 18px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+    .meta span { padding: 8px 12px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; background: rgba(255,255,255,.08); }
+    .nav { display: flex; gap: 8px; overflow-x: auto; margin: 18px 0 34px; padding: 8px; border-radius: 16px; background: rgba(255,255,255,.72); backdrop-filter: blur(12px); box-shadow: 0 8px 24px rgba(16,38,61,.07); }
+    .nav a { white-space: nowrap; padding: 9px 13px; color: var(--ink); border-radius: 10px; font-weight: 700; }
+    .nav a:hover { background: var(--teal-soft); text-decoration: none; }
+    section { margin-top: 38px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 16px; }
+    h2 { margin: 0; font: 700 30px/1.15 Georgia, serif; letter-spacing: -.02em; }
+    .section-head p { max-width: 580px; margin: 0; color: var(--muted); }
+    .decision {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(260px, .7fr);
+      gap: 18px;
+    }
+    .panel { background: rgba(255,253,248,.92); border: 1px solid rgba(220,226,227,.9); border-radius: 20px; box-shadow: 0 12px 34px rgba(16,38,61,.07); }
+    .brief { padding: 28px 32px; }
+    .brief ul { margin: 0; padding-left: 22px; }
+    .brief li { margin: 10px 0; font-size: 17px; }
+    .kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .kpi { padding: 20px; background: var(--ink); color: #fff; border-radius: 18px; }
+    .kpi strong { display: block; font: 700 34px/1 Georgia, serif; color: #f4d487; }
+    .kpi span { display: block; margin-top: 8px; color: rgba(255,255,255,.72); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .1em; background: #f5f7f6; }
+    tbody tr:hover { background: #fbfaf5; }
+    .name { font-weight: 800; color: var(--ink); }
+    .subtle { color: var(--muted); font-size: 13px; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+    .pill.verified { color: #08615f; background: var(--teal-soft); }
+    .pill.estimated { color: #7b5a17; background: var(--gold-soft); }
+    .pill.unknown { color: #6b7378; background: #ecefef; }
+    .score { min-width: 105px; }
+    .score-top { display: flex; justify-content: space-between; font-weight: 800; }
+    .bar { height: 7px; margin-top: 7px; overflow: hidden; background: #e6ebea; border-radius: 999px; }
+    .bar > span { display: block; height: 100%; background: linear-gradient(90deg, var(--gold), var(--teal)); border-radius: inherit; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .grid > * { min-width: 0; }
+    .card { min-width: 0; padding: 22px; }
+    .card h3 { margin: 0 0 8px; font-size: 17px; }
+    .path { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 14px 0; }
+    .node { padding: 7px 10px; border-radius: 10px; background: var(--teal-soft); font-weight: 750; }
+    .via { padding: 7px 10px; border-radius: 10px; background: var(--gold-soft); color: #70531c; }
+    .arrow { color: var(--gold); font-weight: 900; }
+    .risk { margin-top: 12px; padding: 10px 12px; color: var(--danger); background: #fff0ed; border-left: 3px solid var(--danger); border-radius: 8px; font-size: 13px; }
+    .signal { border-top: 4px solid var(--teal); }
+    .example { border-top: 4px solid var(--gold); }
+    .kit { grid-column: span 1; }
+    .kit blockquote { margin: 12px 0; padding: 12px 14px; color: var(--ink-2); background: #f4f7f5; border-left: 3px solid var(--teal); border-radius: 8px; }
+    .questions { margin: 8px 0; padding-left: 18px; }
+    .sources { columns: 2 320px; column-gap: 34px; }
+    .source { break-inside: avoid; margin: 0 0 12px; padding: 12px 14px; background: rgba(255,255,255,.7); border: 1px solid var(--line); border-radius: 10px; font-size: 13px; }
+    .empty { padding: 22px; color: var(--muted); font-style: italic; }
+    footer { margin-top: 52px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+    @media (max-width: 900px) {
+      .hero { padding: 38px 28px; }
+      .decision { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 20px, 1220px); margin-top: 10px; }
+      .hero { border-radius: 20px; }
+      .grid, .kpis { grid-template-columns: 1fr; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 8px; }
+      th, td { padding: 11px; }
+    }
+    @media print {
+      body { background: #fff; }
+      .shell { width: 100%; margin: 0; }
+      .hero, .panel { box-shadow: none; }
+      .nav { display: none; }
+      a { color: inherit; }
+      section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="eyebrow">Opulent relationship intelligence</div>
+      <h1>{{CLIENT}}</h1>
+      <p>{{OBJECTIVE}}</p>
+      <div class="meta"><span>{{MODE}} depth</span><span>Generated {{GENERATED_AT}}</span><span>Evidence-backed</span></div>
+    </header>
+    <nav class="nav">
+      <a href="#decision">Decision</a><a href="#priorities">Priorities</a><a href="#relationships">Relationships</a><a href="#signals">Signals</a><a href="#examples">Public examples</a><a href="#conversation">Conversation kits</a><a href="#sources">Sources</a>
+    </nav>
+
+    <section id="decision">
+      <div class="section-head"><div><div class="eyebrow">Executive readout</div><h2>The decision in one screen</h2></div><p>What matters, what changed, and the smallest next move.</p></div>
+      <div class="decision"><div class="panel brief">{{EXECUTIVE_BRIEF}}</div><div class="kpis">{{KPI_CARDS}}</div></div>
+    </section>
+
+    <section id="priorities">
+      <div class="section-head"><div><div class="eyebrow">Priority queue</div><h2>Who merits action now</h2></div><p>Ranked by fit, timing, evidence, and relationship leverage.</p></div>
+      <div class="panel table-wrap"><table><thead><tr><th>Target</th><th>Score</th><th>Why now</th><th>Relationship path</th><th>Next action</th></tr></thead><tbody>{{PRIORITY_ROWS}}</tbody></table></div>
+    </section>
+
+    <section id="relationships">
+      <div class="section-head"><div><div class="eyebrow">Relationship intelligence</div><h2>The shortest truthful paths</h2></div><p>Every edge is typed, dated, scored, and paired with the risk of overstating it.</p></div>
+      <div class="grid">{{RELATIONSHIP_CARDS}}</div>
+    </section>
+
+    <section id="signals">
+      <div class="section-head"><div><div class="eyebrow">Signal ledger</div><h2>What changed</h2></div><p>Dated evidence that moves a target up or down the queue.</p></div>
+      <div class="grid">{{SIGNAL_CARDS}}</div>
+    </section>
+
+    <section id="examples">
+      <div class="section-head"><div><div class="eyebrow">Public proof</div><h2>Engagement examples</h2></div><p>Publicly evidenced examples, labeled exactly as their sources support.</p></div>
+      <div class="grid">{{PUBLIC_EXAMPLES}}</div>
+    </section>
+
+    <section id="conversation">
+      <div class="section-head"><div><div class="eyebrow">Activation</div><h2>Conversation kits</h2></div><p>Context, hypothesis, proof, questions, and a reversible next step.</p></div>
+      <div class="grid">{{CONVERSATION_KITS}}</div>
+    </section>
+
+    <section id="sources">
+      <div class="section-head"><div><div class="eyebrow">Audit trail</div><h2>Source appendix</h2></div><p>Every consequential claim should be traceable from here.</p></div>
+      <div class="sources">{{SOURCE_APPENDIX}}</div>
+    </section>
+
+    <footer>Prepared with Opulent GTM Intelligence. Relationship paths express documented context, not presumed personal familiarity.</footer>
+  </main>
+</body>
+</html>

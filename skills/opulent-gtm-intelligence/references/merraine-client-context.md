@@ -20,6 +20,8 @@ Treat the client outcome as a two-sided intelligence system:
 4. Surface connection paths, shared context, and timely conversation hooks.
 5. Deliver an action queue that helps Merraine win work and execute searches faster.
 
+Make relationship intelligence visible in every demonstration. Jeremy should be able to see not only who matters, but why the account is relevant, how Merraine may be connected, what is verified, and the shortest truthful path to a conversation.
+
 ## Public company baseline
 
 Verify before each client-facing run because positioning can change.
@@ -35,6 +37,8 @@ Useful public sources:
 - `https://www.ceocfointerviews.com/merrainegroup23.html`
 - `https://www.idealist.org/en/recruiter/9560dafd564d40638970cb971ad90b10-merraine-group-port-saint-lucie`
 
+Load `merraine-public-examples.md` for verified demonstration seeds. Never describe an example as a current client unless the current source explicitly does so.
+
 ## Demo storyline
 
 Show the client a compact end-to-end run:
@@ -42,9 +46,10 @@ Show the client a compact end-to-end run:
 1. Start from one market thesis or open mandate.
 2. Discover and rank 10-20 organizations.
 3. Show three dated triggers and the people attached to them.
-4. Reveal a candidate-company map with shared context.
-5. Compare the likely incumbent search options and Merraine's angle.
-6. Produce a five-action queue with draft openers and CRM-ready fields.
-7. Open the Browserbase live view for one difficult source to make the verification visible.
+4. Reveal a candidate-company map with explicit relationship edges, strength, evidence, and risk.
+5. Open one detailed enrichment dossier and trace every important claim to its source.
+6. Compare the likely incumbent search options and Merraine's angle.
+7. Produce a five-action queue with truthful warm paths, draft openers, and CRM-ready fields.
+8. Open the Browserbase live view for one difficult source to make the verification visible.
 
 The client should leave with a usable target list and a clear mental model of how the system compounds, not a generic research report.

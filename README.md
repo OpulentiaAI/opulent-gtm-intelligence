@@ -22,6 +22,11 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
 
 python3 skills/opulent-gtm-intelligence/scripts/validate_intelligence_packet.py \
   path/to/packet.json
+
+python3 skills/opulent-gtm-intelligence/scripts/render_intelligence_report.py \
+  path/to/packet.json --output output/client-intelligence
 ```
+
+The renderer produces a polished executive overview plus detailed account and person dossiers with relationship paths, evidence, activation plans, and risks.
 
 The optional Grata, Attio, and Gmail CLIs under `cli/` are fallback adapters. Prefer Opulent's native tools and connected apps when available.
