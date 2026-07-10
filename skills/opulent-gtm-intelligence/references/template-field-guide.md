@@ -23,12 +23,15 @@ The command writes:
 | Section | Required fields | Purpose |
 | --- | --- | --- |
 | Executive brief | `executive_brief[]` | Put the decision and recommended move above the fold |
+| Data health | records, coverage, duplicates, staleness, conflicts | Show whether automation has a trustworthy foundation |
 | Accounts | name, score, confidence, why-now, evidence, angle, next action | Rank business-development or market targets |
 | People | name, score, confidence, why-now, evidence, angle, next action | Rank decision makers or candidates |
 | Relationships | from, to, type, strength, confidence, evidence, activation path, risk | Show the shortest truthful route to action |
 | Signals | title, date, impact, evidence | Explain what changed and why it matters now |
 | Public examples | organization, relationship label, evidence, demonstration value | Add proven client-relevant context without overstating it |
 | Conversation kits | target, context, hypothesis, proof, questions, CTA | Turn intelligence into a usable conversation |
+| Applications | name, version, trigger, scope, cursor, budget, policy, metric, stop conditions | Show the recurring operating system, not only the current snapshot |
+| System updates | system, action, target, field diff, policy, idempotency, result, verification | Make autonomous CRM behavior auditable |
 | Sources | derived automatically from evidence | Make every important claim auditable |
 
 ## Enrichment detail
@@ -55,6 +58,8 @@ For people or candidates, include when known:
 - Use score bars and confidence pills rather than dense prose.
 - Show relationship paths as explicit `from -> via -> to` cards.
 - Keep source links visible in dossiers and compact in the overview.
+- Render application status, cadence, review policy, metric, and stop conditions as operating cards.
+- Render CRM writes as field-level diffs with result and verification, never as an unqualified success count.
 - Preserve responsive and print layouts.
 - Do not replace the template with an unstyled Markdown dump.
 
@@ -67,4 +72,6 @@ Before delivery:
 3. Search the HTML output for unresolved `{{...}}` tokens.
 4. Open `index.html` and at least one dossier.
 5. Confirm the examples and relationship labels match their sources.
-6. Confirm the layout works at desktop and narrow widths.
+6. Confirm proposed applications are not styled or described as active.
+7. Confirm every verified CRM update has an identifier, idempotency key, and read-after-write receipt.
+8. Confirm the layout works at desktop and narrow widths.

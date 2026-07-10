@@ -24,6 +24,17 @@ Write:
 
 Do not overwrite human-verified values with estimates. Verify every create or update by reading the record back.
 
+Use the policy levels in `gtm-engineering-system.md`:
+
+- `autonomous_safe_field`: deterministic, source-backed enrichment only;
+- `review_required`: scoring, relationship judgment, ownership, pipeline, forecast, or conflicting values;
+- `draft_only`: prepare the payload without writing; and
+- `blocked`: missing connection, authorization, identifier, source, or policy.
+
+Match before create. Compute a field-level diff before update. Add an idempotency key to every create or update so retries cannot duplicate records or tasks. Preserve protected fields including opportunity stage, deal value, forecast category, owner, suppression, do-not-contact, sent-message state, and candidate status unless the client has explicitly defined a narrower authorized policy.
+
+For an autonomous field write, require `Verified` confidence, field evidence, source date, a non-conflicting target record, returned identifier, and read-after-write equality. Route conflicts to review instead of selecting the most convenient value.
+
 ## Email
 
 Default to a draft unless sending is explicitly authorized. Ground every claim in the packet. Preserve the thread, recipients, and sender identity.
@@ -38,12 +49,26 @@ Confirm timezone, attendees, duration, and meeting purpose. Do not create or mod
 
 Reuse the existing client folder. Store the final packet, source appendix, and export under a dated run folder. Avoid uploading sensitive research to a new third party without explicit authorization.
 
+## Scheduled applications
+
+Before installing or activating a scheduled or event-driven GTM application:
+
+1. Record the name, version, owner, objective, trigger, timezone, scope, and cursor.
+2. Set record, tool-call, runtime, and spend budgets.
+3. Define idempotency, lease, concurrency, retry, catch-up, and duplicate behavior.
+4. Declare the CRM write policy, protected fields, review gate, and notification route.
+5. Run and inspect a bounded representative batch.
+6. Define the metric, baseline, stop conditions, and escalation owner.
+7. Capture the installed schedule or function ID, first run ID, next run, and verification result.
+
+Use `proposed` when the application is designed but not installed. Use `active` only after the scheduler/function identifier and a verified run or installation receipt exist.
+
 ## Completion log
 
 Record each action as:
 
 ```text
-System | action | target | identifier | verification | result
+System | action | target | identifier | idempotency key | policy | verification | result
 ```
 
 Use `verified`, `drafted`, `blocked`, `skipped`, or `needs review`. Never report an unverified write as complete.

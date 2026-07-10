@@ -78,6 +78,10 @@
     .kpi { padding: 20px; background: var(--ink); color: #fff; border-radius: 18px; }
     .kpi strong { display: block; font: 700 34px/1 Georgia, serif; color: #f4d487; }
     .kpi span { display: block; margin-top: 8px; color: rgba(255,255,255,.72); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+    .health-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+    .health-card { padding: 20px; }
+    .health-card strong { display: block; font: 700 30px/1 Georgia, serif; color: var(--teal); }
+    .health-card span { display: block; margin-top: 8px; color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
     th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -105,6 +109,20 @@
     .signal { border-top: 4px solid var(--teal); }
     .example { border-top: 4px solid var(--gold); }
     .kit { grid-column: span 1; }
+    .application { border-top: 4px solid var(--ink-2); }
+    .app-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .status { display: inline-flex; padding: 5px 9px; border-radius: 999px; background: #ecefef; color: var(--muted); font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .status.active, .status.verified { color: #08615f; background: var(--teal-soft); }
+    .status.proposed, .status.drafted, .status.needs-review { color: #7b5a17; background: var(--gold-soft); }
+    .status.blocked, .status.paused { color: var(--danger); background: #fff0ed; }
+    .app-spec { display: grid; grid-template-columns: 92px 1fr; gap: 7px 12px; margin: 16px 0; }
+    .app-spec dt { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+    .app-spec dd { margin: 0; overflow-wrap: anywhere; }
+    .stop { padding: 12px 14px; background: #f4f7f5; border-radius: 10px; }
+    .stop ul { margin: 6px 0 0; padding-left: 18px; }
+    .diff { margin-bottom: 7px; }
+    .diff strong, .diff span { display: block; }
+    .diff span { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
     .kit blockquote { margin: 12px 0; padding: 12px 14px; color: var(--ink-2); background: #f4f7f5; border-left: 3px solid var(--teal); border-radius: 8px; }
     .questions { margin: 8px 0; padding-left: 18px; }
     .sources { columns: 2 320px; column-gap: 34px; }
@@ -115,11 +133,12 @@
       .hero { padding: 38px 28px; }
       .decision { grid-template-columns: 1fr; }
       .grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .health-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
     }
     @media (max-width: 620px) {
       .shell { width: min(100% - 20px, 1220px); margin-top: 10px; }
       .hero { border-radius: 20px; }
-      .grid, .kpis { grid-template-columns: 1fr; }
+      .grid, .kpis, .health-grid { grid-template-columns: 1fr; }
       .section-head { display: block; }
       .section-head p { margin-top: 8px; }
       th, td { padding: 11px; }
@@ -143,12 +162,17 @@
       <div class="meta"><span>{{MODE}} depth</span><span>Generated {{GENERATED_AT}}</span><span>Evidence-backed</span></div>
     </header>
     <nav class="nav">
-      <a href="#decision">Decision</a><a href="#priorities">Priorities</a><a href="#relationships">Relationships</a><a href="#signals">Signals</a><a href="#examples">Public examples</a><a href="#conversation">Conversation kits</a><a href="#sources">Sources</a>
+      <a href="#decision">Decision</a><a href="#health">Data health</a><a href="#priorities">Priorities</a><a href="#relationships">Relationships</a><a href="#signals">Signals</a><a href="#applications">Applications</a><a href="#updates">CRM updates</a><a href="#examples">Public examples</a><a href="#conversation">Conversation kits</a><a href="#sources">Sources</a>
     </nav>
 
     <section id="decision">
       <div class="section-head"><div><div class="eyebrow">Executive readout</div><h2>The decision in one screen</h2></div><p>What matters, what changed, and the smallest next move.</p></div>
       <div class="decision"><div class="panel brief">{{EXECUTIVE_BRIEF}}</div><div class="kpis">{{KPI_CARDS}}</div></div>
+    </section>
+
+    <section id="health">
+      <div class="section-head"><div><div class="eyebrow">Data foundation</div><h2>Can this workflow be trusted?</h2></div><p>Coverage, duplication, staleness, and conflicts before automation touches the system of record.</p></div>
+      <div class="health-grid">{{DATA_HEALTH_CARDS}}</div>
     </section>
 
     <section id="priorities">
@@ -166,6 +190,16 @@
       <div class="grid">{{SIGNAL_CARDS}}</div>
     </section>
 
+    <section id="applications">
+      <div class="section-head"><div><div class="eyebrow">Compounding system</div><h2>Scheduled GTM applications</h2></div><p>Versioned triggers, bounded enrichment, review policies, metrics, and explicit stop conditions.</p></div>
+      <div class="grid">{{APPLICATION_CARDS}}</div>
+    </section>
+
+    <section id="updates">
+      <div class="section-head"><div><div class="eyebrow">System of record</div><h2>CRM update ledger</h2></div><p>Field-level diffs distinguish proposals from policy-controlled, read-after-write verified mutations.</p></div>
+      <div class="panel table-wrap"><table><thead><tr><th>System</th><th>Target</th><th>Field diff</th><th>Policy & result</th><th>Receipt</th></tr></thead><tbody>{{SYSTEM_UPDATE_ROWS}}</tbody></table></div>
+    </section>
+
     <section id="examples">
       <div class="section-head"><div><div class="eyebrow">Public proof</div><h2>Engagement examples</h2></div><p>Publicly evidenced examples, labeled exactly as their sources support.</p></div>
       <div class="grid">{{PUBLIC_EXAMPLES}}</div>
@@ -181,7 +215,7 @@
       <div class="sources">{{SOURCE_APPENDIX}}</div>
     </section>
 
-    <footer>Prepared with Opulent GTM Intelligence. Relationship paths express documented context, not presumed personal familiarity.</footer>
+    <footer>Prepared with Opulent GTM Intelligence. Relationship paths express documented context, and autonomous updates are limited to the declared write policy.</footer>
   </main>
 </body>
 </html>

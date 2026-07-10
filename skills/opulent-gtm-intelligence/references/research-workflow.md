@@ -2,14 +2,15 @@
 
 ## Contents
 
-1. Build the baseline
+1. Build the baseline and data foundation
 2. Discover candidates in waves
 3. Gate before enrichment
-4. Enrich in lanes
-5. Build relationship intelligence
+4. Enrich through progressive waterfalls
+5. Build signal and relationship intelligence
 6. Score fit and timing
 7. Build competitor intelligence
-8. Synthesize the next move
+8. Design the activation play
+9. Synthesize and learn
 
 ## Depth modes
 
@@ -21,7 +22,7 @@
 
 Choose the mode from the decision and number of targets. State the budget before research and stop when the completion criteria are met.
 
-## 1. Build the baseline
+## 1. Build the baseline and data foundation
 
 Confirm:
 
@@ -32,6 +33,8 @@ Confirm:
 - proof points and differentiators;
 - known customers and competitors; and
 - the decision the packet must support.
+
+Inspect the system of record before discovery. Measure duplicates, unmatched people or companies, required-field coverage, staleness, suppressions, and protected human-owned fields. Define canonical identity keys and field ownership before proposing CRM updates.
 
 Research the client with the same rigor as targets. A competitive matrix is invalid when the client row comes from memory.
 
@@ -91,9 +94,9 @@ Competitor gate:
 - direct, adjacent, substitute, or status-quo category explicitly labeled;
 - ambiguous or inaccessible pages surfaced as `UNKNOWN`, not silently rejected.
 
-## 4. Enrich in lanes
+## 4. Enrich through progressive waterfalls
 
-Keep lane findings separate until synthesis.
+Load `gtm-engineering-system.md`. Keep lane and provider findings separate until synthesis.
 
 1. Official surface: positioning, services, customers, locations, leadership, pricing, jobs, and proof.
 2. Operational signals: expansion, technology, funding, partnerships, tenders, filings, hiring, and transformation.
@@ -101,9 +104,15 @@ Keep lane findings separate until synthesis.
 4. External signal: news, interviews, reviews, discussions, conference appearances, and comparison pages with dates.
 5. Competitive: differentiators, gaps, switching triggers, objections, and evidence-backed talk tracks.
 
+Within each lane, enrich field by field from the system of record through first-party sources, connected providers, search/fetch, and Browserbase fallback. Stop when the required confidence is reached. Record every provider attempt, match value, conflict, source, date, freshness, and cost.
+
+Add unique client-specific data points only after the data foundation is healthy. These should predict fit, timing, expansion, churn, candidate relevance, or relationship access; they should not be decorative research fields.
+
+For hyperspecific people or candidates, use a connected Clodo-style people-discovery service when available. Preserve the natural-language query and verify the evidence behind any ranked match before activation.
+
 For event prospecting, extract speakers or sponsors first, group by company, run the company gate, then enrich only people at passing companies.
 
-## 5. Build relationship intelligence
+## 5. Build signal and relationship intelligence
 
 Load `relationship-intelligence.md`. Treat it as a required enrichment lane.
 
@@ -115,6 +124,8 @@ For each passing company and person:
 4. Prefer one-hop paths. Use two hops only when both edges are independently verified.
 5. Record `no verified path` instead of stretching weak evidence.
 6. Rank the shortest truthful path alongside fit and timing.
+
+Bundle related first-party and third-party signals at the account level. Add effective date, expiry, novelty, affected people, and activation policy. A common signal such as funding or a job change is insufficient by itself; add client-specific context, decision-maker relevance, relationship history, and proof.
 
 ## 6. Score fit and timing
 
@@ -163,7 +174,13 @@ Build battle cards only from the verified research set. Include:
 - switching triggers; and
 - a talk track tied to the prospect's situation.
 
-## 8. Synthesize the next move
+## 8. Design the activation play
+
+When the work should repeat, define a GTM application from `gtm-engineering-system.md` before installing a schedule or webhook. Include trigger, input scope, incremental cursor, idempotency key, tool and spend budgets, concurrency, review gate, CRM policy, success metric, stop conditions, and escalation owner.
+
+Run the smallest representative batch first. Read the outputs, measure false positives and write safety, then schedule only the version that passes.
+
+## 9. Synthesize and learn
 
 For each prioritized account or person, answer:
 
@@ -174,6 +191,8 @@ For each prioritized account or person, answer:
 - What should they say or ask?
 - What is the next observable action?
 - What is the shortest truthful relationship path, or why is there none?
+- Which fields are safe to write autonomously, which require review, and which action needs explicit authorization?
+- What result will teach the next scheduled run?
 
 For executive-search and talent clients, connect both sides of the market:
 
@@ -190,3 +209,5 @@ Produce both:
 2. the polished HTML overview plus dossiers rendered from the bundled templates.
 
 Before reporting completion, inspect the overview and one dossier, verify all relationship labels, and confirm that the rendered HTML contains no unresolved template tokens.
+
+If the packet includes a GTM application or CRM updates, also inspect the application contract, protected-field policy, idempotency key, stop conditions, and verification receipt. Do not call a proposal active or a draft verified.

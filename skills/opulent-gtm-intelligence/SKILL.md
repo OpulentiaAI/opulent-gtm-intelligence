@@ -1,6 +1,6 @@
 ---
 name: opulent-gtm-intelligence
-description: Builds evidence-backed company research, account and candidate prospecting, relationship intelligence, competitive intelligence, meeting briefs, polished HTML dossiers, and CRM-ready next actions with Opulent's native search, fetch, Browserbase browser, computer, and connector tools. Use for target-account discovery, executive or candidate sourcing, prospect enrichment, relationship mapping, warm-path analysis, buying-signal research, competitor matrices, battle cards, event prospecting, client demos, and any request to turn scattered web or app context into a verified GTM intelligence packet.
+description: Builds evidence-backed company research, account and candidate prospecting, multi-source enrichment, relationship and signal intelligence, competitive intelligence, scheduled GTM applications, polished HTML dossiers, and policy-controlled CRM updates with Opulent's native search, fetch, Browserbase browser, computer, scheduler, and connector tools. Use for target-account discovery, executive or candidate sourcing, prospect enrichment, relationship mapping, warm-path analysis, buying-signal research, competitor matrices, battle cards, event prospecting, pre-call briefs, autonomous CRM hygiene, recurring pipeline monitors, and requests to turn scattered context into a verified GTM operating workflow.
 ---
 
 # Opulent GTM Intelligence
@@ -12,6 +12,7 @@ Turn research into an operator-ready decision packet. Optimize for the next conv
 Load the smallest complete reference set for the requested branch:
 
 - Always read `references/runtime-tools.md`, `references/research-workflow.md`, and `references/delivery-contract.md`.
+- Read `references/gtm-engineering-system.md` for enrichment design, signals, scheduled applications, evaluation, or CRM automation.
 - Read `references/relationship-intelligence.md` for every company, person, candidate, account, event, or outreach run. Relationship paths are a core enrichment lane, not an optional appendix.
 - Read `references/template-field-guide.md` before creating client-facing HTML, JSON, CSV, or CRM-ready output.
 - Read `references/system-actions.md` only before CRM, email, calendar, or file-storage writes.
@@ -21,17 +22,19 @@ Load the smallest complete reference set for the requested branch:
 ## Core operating loop
 
 1. Inspect existing workspace artifacts, prior research, CRM exports, email threads, client files, and saved packets. Reconcile before creating duplicate work.
-2. State the decision the research must support: whom to target, whom to recruit, why now, how to differentiate, or what to do next.
-3. Build or confirm a compact client profile: offer, ICP, geography, exclusions, proof points, known competitors, and desired output.
-4. Select `quick`, `deep`, or `deeper` mode from `references/research-workflow.md`. Set a research budget and completion criteria before searching.
-5. Run discovery waves across official sources, current signals, people, ecosystem adjacency, and comparisons. Search broadly, then gate candidates before expensive enrichment.
-6. Enrich the selected companies and people. Keep official facts, external signals, relationship edges, and analyst judgment separate.
-7. Build the relationship graph from verified one-hop and two-hop paths. Score evidence, recency, relevance, access, and reciprocity using `references/relationship-intelligence.md`.
-8. Score fit and timing from cited evidence. Use `Unknown` when evidence is missing; never turn an inference into a fact.
-9. Synthesize the smallest useful client deliverable using `references/delivery-contract.md` and the assets in `assets/templates/`.
-10. Validate with `python3 scripts/validate_intelligence_packet.py <packet.json>`, then render with `python3 scripts/render_intelligence_report.py <packet.json> --output <directory>`.
-11. Inspect the rendered `index.html` and at least one account/person dossier before delivery.
-12. Perform requested system writes only after the relevant connection and authorization checks. Verify every write by reading it back.
+2. State the decision and bottleneck the workflow must support: whom to target or recruit, why now, how to differentiate, what to update, or what should run repeatedly.
+3. Build or confirm a compact client profile: offer, ICP, geography, exclusions, proof points, known competitors, desired output, system of record, and protected fields.
+4. Audit the data foundation. Resolve identities, deduplicate, measure coverage and staleness, and define field ownership before activation.
+5. Select `quick`, `deep`, or `deeper` mode from `references/research-workflow.md`. Set record, tool-call, time, and spend budgets plus completion criteria.
+6. Run diverse discovery waves across official sources, current signals, people, ecosystem adjacency, and comparisons. Gate before expensive enrichment.
+7. Enrich passing records through a field-level waterfall. Keep official facts, provider attempts, external signals, relationship edges, and analyst judgment separate.
+8. Build the relationship graph and bundle signals at the account level. Score evidence, recency, relevance, access, reciprocity, novelty, and expiry.
+9. Score fit and timing from cited evidence. Use `Unknown` when evidence is missing; never turn an inference into a fact.
+10. When recurring or event-driven work is useful, define a versioned GTM application with trigger, cursor, idempotency key, budget, review gate, metric, stop condition, and write policy.
+11. Synthesize the client deliverable using `references/delivery-contract.md` and `assets/templates/`.
+12. Validate with `python3 scripts/validate_intelligence_packet.py <packet.json>`, then render with `python3 scripts/render_intelligence_report.py <packet.json> --output <directory>`.
+13. Inspect the overview and one dossier; when present, also inspect scheduled-application cards and the CRM update ledger before delivery.
+14. Perform authorized writes only inside the declared policy. Verify each write by record ID and read-after-write evidence; learn from outcomes and corrections.
 
 ## Evidence rules
 
@@ -43,6 +46,8 @@ Load the smallest complete reference set for the requested branch:
 - Never infer a company's product, industry, customer, or traction from design, framework, fonts, or generic marketing language.
 - Never guess an email address, phone number, revenue, funding, hiring intent, or candidate interest.
 - Never claim a warm introduction, mutual relationship, client status, or placement without relationship-specific evidence.
+- Never accept an enrichment provider's rank or value without preserving field-level provenance, freshness, and conflict status.
+- Never describe a proposed schedule or CRM update as active or verified without an installation/run identifier or read-after-write receipt.
 - Cap company fit at 30/100 when the product or service cannot be verified.
 - Cap person fit at 40/100 when current role or company cannot be verified.
 - Give `false` and `not found` different meanings. Absence of evidence is `Unknown`.
@@ -63,6 +68,9 @@ Finish only when:
 - every prioritized company and person has evidence, confidence, fit, timing, and a next action;
 - competitor claims that drive positioning are spot-checked against primary sources;
 - relationship paths include type, strength, confidence, evidence, freshness, and a truthful activation plan;
+- enrichment coverage, conflicts, freshness, and field provenance are visible;
+- every included scheduled application has an incremental cursor, idempotency, budget, review gate, metric, and stop condition;
+- every executed CRM mutation has a policy level, field diff, returned identifier, and verification result;
 - unknowns and blocked sources are visible;
 - requested artifacts exist, pass validation, and render without unresolved template tokens; and
 - requested system writes are verified or explicitly marked `drafted`, `blocked`, or `skipped`.

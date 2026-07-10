@@ -191,8 +191,119 @@ def conversation_cards(kits: Any) -> str:
     return "".join(cards)
 
 
+def data_health_cards(data: Any) -> str:
+    if not isinstance(data, dict) or not data:
+        return '<div class="panel empty">No data-health audit included.</div>'
+    fields = [
+        ("records_reviewed", "records reviewed", ""),
+        ("verified_field_coverage", "verified coverage", "%"),
+        ("duplicate_rate", "duplicate rate", "%"),
+        ("stale_rate", "stale rate", "%"),
+        ("conflicts", "field conflicts", ""),
+    ]
+    cards = []
+    for key, label, suffix in fields:
+        if key not in data:
+            continue
+        cards.append(
+            '<article class="panel health-card">'
+            f'<strong>{esc(data.get(key))}{suffix}</strong>'
+            f'<span>{esc(label)}</span>'
+            "</article>"
+        )
+    return "".join(cards) or '<div class="panel empty">No data-health metrics included.</div>'
+
+
+def application_cards(applications: Any) -> str:
+    if not isinstance(applications, list) or not applications:
+        return '<div class="panel empty">No scheduled or event-driven applications proposed.</div>'
+    cards = []
+    for application in applications:
+        if not isinstance(application, dict):
+            continue
+        trigger = application.get("trigger") if isinstance(application.get("trigger"), dict) else {}
+        trigger_text = str(trigger.get("type") or "manual").replace("_", " ")
+        if trigger.get("value"):
+            trigger_text += f" · {trigger.get('value')}"
+        if trigger.get("timezone"):
+            trigger_text += f" · {trigger.get('timezone')}"
+        metric = application.get("metric") if isinstance(application.get("metric"), dict) else {}
+        metric_text = metric.get("name") or "Metric not defined"
+        if "target" in metric:
+            metric_text += f" → {metric.get('target')}"
+        budget = application.get("budget") if isinstance(application.get("budget"), dict) else {}
+        budget_text = " · ".join(
+            f"{str(key).replace('_', ' ')}: {value}" for key, value in budget.items()
+        ) or "No budget recorded"
+        steps = application.get("steps") if isinstance(application.get("steps"), list) else []
+        step_text = " → ".join(str(step) for step in steps) or "No steps recorded"
+        stops = application.get("stop_conditions") if isinstance(application.get("stop_conditions"), list) else []
+        stop_html = "".join(f"<li>{esc(stop)}</li>" for stop in stops)
+        status = str(application.get("status") or "proposed")
+        cards.append(
+            '<article class="panel card application">'
+            f'<div class="app-head"><span class="status {esc(status)}">{esc(status)}</span>'
+            f'<span class="subtle">v{esc(application.get("version") or "unversioned")}</span></div>'
+            f'<h3>{esc(application.get("name") or "GTM application")}</h3>'
+            f'<p>{esc(application.get("objective") or "")}</p>'
+            f'<dl class="app-spec"><dt>Trigger</dt><dd>{esc(trigger_text)}</dd>'
+            f'<dt>Scope</dt><dd>{esc(application.get("input_scope") or "Not recorded")}</dd>'
+            f'<dt>Cursor</dt><dd>{esc(application.get("cursor") or "Not recorded")}</dd>'
+            f'<dt>Steps</dt><dd>{esc(step_text)}</dd>'
+            f'<dt>Write policy</dt><dd>{esc(str(application.get("write_policy") or "unknown").replace("_", " "))}</dd>'
+            f'<dt>Review gate</dt><dd>{esc(application.get("review_gate") or "Not recorded")}</dd>'
+            f'<dt>Metric</dt><dd>{esc(metric_text)}</dd>'
+            f'<dt>Budget</dt><dd>{esc(budget_text)}</dd></dl>'
+            f'<div class="stop"><strong>Stop conditions</strong><ul>{stop_html}</ul></div>'
+            f'{evidence_html(application.get("evidence"))}'
+            "</article>"
+        )
+    return "".join(cards)
+
+
+def system_update_rows(updates: Any) -> str:
+    if not isinstance(updates, list) or not updates:
+        return '<tr><td colspan="5" class="empty">No CRM or system updates recorded.</td></tr>'
+    rows = []
+    for update in updates:
+        if not isinstance(update, dict):
+            continue
+        fields = update.get("fields") if isinstance(update.get("fields"), list) else []
+        diffs = []
+        for field in fields:
+            if not isinstance(field, dict):
+                continue
+            before = esc(field.get("before") if "before" in field else "∅")
+            after = esc(field.get("after") if "after" in field else "∅")
+            diffs.append(
+                f'<div class="diff"><strong>{esc(field.get("field") or "field")}</strong>'
+                f'<span>{before} → {after}</span></div>'
+            )
+        diff_html = "".join(diffs) or '<span class="subtle">No field diff recorded</span>'
+        result = str(update.get("result") or "needs review")
+        rows.append(
+            "<tr>"
+            f'<td><strong>{esc(update.get("system") or "System")}</strong><div class="subtle">{esc(update.get("action") or "action")}</div></td>'
+            f'<td>{esc(update.get("target") or "Unknown")}</td>'
+            f'<td>{diff_html}</td>'
+            f'<td><span class="status {esc(result.replace(" ", "-"))}">{esc(result)}</span><div class="subtle">{esc(str(update.get("policy") or "unknown").replace("_", " "))}</div></td>'
+            f'<td>{esc(update.get("identifier") or "No identifier")}<div class="subtle">{esc(update.get("verification") or "Not verified")}</div></td>'
+            "</tr>"
+        )
+    return "".join(rows)
+
+
 def iter_evidence(packet: dict[str, Any]) -> Iterable[dict[str, Any]]:
-    collections = ["accounts", "people", "relationships", "signals", "public_examples", "competitors"]
+    collections = [
+        "accounts",
+        "people",
+        "relationships",
+        "signals",
+        "public_examples",
+        "competitors",
+        "applications",
+        "system_updates",
+    ]
     for key in collections:
         values = packet.get(key, [])
         if not isinstance(values, list):
@@ -205,6 +316,17 @@ def iter_evidence(packet: dict[str, Any]) -> Iterable[dict[str, Any]]:
                 for item in evidence:
                     if isinstance(item, dict):
                         yield item
+            if key == "system_updates":
+                fields = value.get("fields", [])
+                if isinstance(fields, list):
+                    for field in fields:
+                        if not isinstance(field, dict):
+                            continue
+                        field_evidence = field.get("evidence", [])
+                        if isinstance(field_evidence, list):
+                            for item in field_evidence:
+                                if isinstance(item, dict):
+                                    yield item
 
 
 def source_appendix(packet: dict[str, Any]) -> str:
@@ -321,8 +443,16 @@ def render_report(packet: dict[str, Any], output_dir: Path) -> None:
     brief_items = packet.get("executive_brief") if isinstance(packet.get("executive_brief"), list) else []
     brief_html = "<ul>" + "".join(f"<li>{esc(item)}</li>" for item in brief_items) + "</ul>"
     strong_paths = sum(1 for edge in edges if int(edge.get("strength", 0)) >= 80)
-    verified_targets = sum(1 for target in targets if target.get("confidence") == "Verified")
-    kpis = [(len(packet.get("accounts", [])), "accounts"), (len(packet.get("people", [])), "people"), (len(edges), "relationship edges"), (strong_paths, "direct paths"), (verified_targets, "verified targets")]
+    applications = packet.get("applications", []) if isinstance(packet.get("applications"), list) else []
+    updates = packet.get("system_updates", []) if isinstance(packet.get("system_updates"), list) else []
+    verified_updates = sum(1 for update in updates if isinstance(update, dict) and update.get("result") == "verified")
+    kpis = [
+        (len(targets), "priority targets"),
+        (len(edges), "relationship edges"),
+        (len(applications), "GTM applications"),
+        (verified_updates, "verified writes"),
+        (strong_paths, "direct paths"),
+    ]
     kpi_html = "".join(f'<div class="kpi"><strong>{value}</strong><span>{esc(label)}</span></div>' for value, label in kpis[:4])
 
     replacements = {
@@ -332,11 +462,14 @@ def render_report(packet: dict[str, Any], output_dir: Path) -> None:
         "GENERATED_AT": esc(packet.get("generated_at") or "Unknown"),
         "EXECUTIVE_BRIEF": brief_html,
         "KPI_CARDS": kpi_html,
+        "DATA_HEALTH_CARDS": data_health_cards(packet.get("data_health")),
         "PRIORITY_ROWS": priority_rows(targets, edges),
         "RELATIONSHIP_CARDS": relationship_cards(edges),
         "SIGNAL_CARDS": signal_cards(packet.get("signals")),
         "PUBLIC_EXAMPLES": public_example_cards(packet.get("public_examples")),
         "CONVERSATION_KITS": conversation_cards(packet.get("conversation_kits")),
+        "APPLICATION_CARDS": application_cards(applications),
+        "SYSTEM_UPDATE_ROWS": system_update_rows(updates),
         "SOURCE_APPENDIX": source_appendix(packet),
     }
     rendered = render_template(TEMPLATE_DIR / "intelligence-brief.html", replacements)

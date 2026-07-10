@@ -14,6 +14,31 @@ from typing import Any
 MODES = {"quick", "deep", "deeper"}
 CONFIDENCE = {"Verified", "Estimated", "Unknown"}
 FINAL_RESULTS = {"verified", "drafted", "blocked", "skipped", "needs review"}
+APPLICATION_STATUS = {"proposed", "active", "paused", "blocked"}
+TRIGGER_TYPES = {
+    "manual",
+    "schedule",
+    "webhook",
+    "crm_event",
+    "calendar_event",
+    "inbox_event",
+}
+WRITE_POLICIES = {
+    "autonomous_safe_field",
+    "review_required",
+    "draft_only",
+    "blocked",
+}
+PROTECTED_FIELDS = {
+    "opportunity_stage",
+    "deal_value",
+    "forecast_category",
+    "owner",
+    "suppression",
+    "do_not_contact",
+    "message_sent",
+    "candidate_status",
+}
 RELATION_TYPES = {
     "works_at",
     "worked_at",
@@ -190,6 +215,174 @@ def validate_conversation_kit(
         warnings.append(f"{location} uses mutual-connection language without relationship_edge.")
 
 
+def validate_data_health(item: Any, issues: list[str]) -> None:
+    if item in (None, {}):
+        return
+    if not isinstance(item, dict):
+        issues.append("data_health must be an object.")
+        return
+
+    records = item.get("records_reviewed")
+    if not isinstance(records, int) or isinstance(records, bool) or records < 0:
+        issues.append("data_health.records_reviewed must be a non-negative integer.")
+
+    for key in ("verified_field_coverage", "duplicate_rate", "stale_rate"):
+        value = item.get(key)
+        if not isinstance(value, (int, float)) or isinstance(value, bool) or not 0 <= value <= 100:
+            issues.append(f"data_health.{key} must be a number from 0 to 100.")
+
+    conflicts = item.get("conflicts")
+    if not isinstance(conflicts, int) or isinstance(conflicts, bool) or conflicts < 0:
+        issues.append("data_health.conflicts must be a non-negative integer.")
+
+
+def validate_application(
+    item: Any, index: int, issues: list[str], warnings: list[str]
+) -> None:
+    location = f"applications[{index}]"
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+
+    for key in (
+        "name",
+        "version",
+        "objective",
+        "owner",
+        "input_scope",
+        "cursor",
+        "idempotency_key",
+        "review_gate",
+    ):
+        if not item.get(key):
+            issues.append(f"{location} is missing {key}.")
+
+    status = item.get("status")
+    if status not in APPLICATION_STATUS:
+        issues.append(
+            f"{location}.status must be one of: " + ", ".join(sorted(APPLICATION_STATUS))
+        )
+
+    trigger = item.get("trigger")
+    if not isinstance(trigger, dict):
+        issues.append(f"{location}.trigger must be an object.")
+    else:
+        trigger_type = trigger.get("type")
+        if trigger_type not in TRIGGER_TYPES:
+            issues.append(
+                f"{location}.trigger.type must be one of: "
+                + ", ".join(sorted(TRIGGER_TYPES))
+            )
+        if trigger_type != "manual" and not trigger.get("value"):
+            issues.append(f"{location}.trigger.value is required for {trigger_type}.")
+        if trigger_type == "schedule" and not trigger.get("timezone"):
+            issues.append(f"{location}.trigger.timezone is required for schedules.")
+
+    steps = item.get("steps")
+    if not isinstance(steps, list) or not steps or not all(isinstance(step, str) and step for step in steps):
+        issues.append(f"{location}.steps must contain at least one named step.")
+
+    policy = item.get("write_policy")
+    if policy not in WRITE_POLICIES:
+        issues.append(
+            f"{location}.write_policy must be one of: "
+            + ", ".join(sorted(WRITE_POLICIES))
+        )
+
+    metric = item.get("metric")
+    if not isinstance(metric, dict) or not metric.get("name") or "target" not in metric:
+        issues.append(f"{location}.metric requires name and target.")
+
+    budget = item.get("budget")
+    if not isinstance(budget, dict) or not budget:
+        issues.append(f"{location}.budget must be a non-empty object.")
+    else:
+        for key, value in budget.items():
+            if not isinstance(value, (int, float)) or isinstance(value, bool) or value <= 0:
+                issues.append(f"{location}.budget.{key} must be a positive number.")
+
+    stop_conditions = item.get("stop_conditions")
+    if not isinstance(stop_conditions, list) or not stop_conditions:
+        issues.append(f"{location}.stop_conditions must contain at least one condition.")
+
+    validate_evidence(item.get("evidence"), location, issues, warnings)
+
+    if status == "active":
+        if not item.get("identifier"):
+            issues.append(f"{location} is active without an installation identifier.")
+        last_run = item.get("last_run")
+        if not isinstance(last_run, dict) or not last_run.get("run_id") or not last_run.get("result"):
+            issues.append(f"{location} is active without a verified last_run receipt.")
+
+
+def validate_system_update(
+    update: Any, index: int, issues: list[str], warnings: list[str]
+) -> None:
+    location = f"system_updates[{index}]"
+    if not isinstance(update, dict):
+        issues.append(f"{location} must be an object.")
+        return
+
+    for key in ("system", "action", "target"):
+        if not update.get(key):
+            issues.append(f"{location} is missing {key}.")
+
+    policy = update.get("policy")
+    if policy not in WRITE_POLICIES:
+        issues.append(
+            f"{location}.policy must be one of: " + ", ".join(sorted(WRITE_POLICIES))
+        )
+
+    result = update.get("result")
+    if result not in FINAL_RESULTS:
+        issues.append(
+            f"{location}.result must be one of: " + ", ".join(sorted(FINAL_RESULTS))
+        )
+
+    action = str(update.get("action", "")).lower()
+    if action in {"create", "update"} and not update.get("idempotency_key"):
+        issues.append(f"{location}.{action} requires idempotency_key.")
+
+    fields = update.get("fields", [])
+    if action in {"create", "update"} and (not isinstance(fields, list) or not fields):
+        issues.append(f"{location}.{action} requires a non-empty fields list.")
+        fields = []
+    elif not isinstance(fields, list):
+        issues.append(f"{location}.fields must be a list.")
+        fields = []
+
+    for field_index, field in enumerate(fields):
+        field_location = f"{location}.fields[{field_index}]"
+        if not isinstance(field, dict):
+            issues.append(f"{field_location} must be an object.")
+            continue
+        if not field.get("field"):
+            issues.append(f"{field_location} is missing field.")
+        if "after" not in field:
+            issues.append(f"{field_location} is missing after.")
+        if field.get("confidence") not in CONFIDENCE:
+            issues.append(f"{field_location}.confidence must be Verified, Estimated, or Unknown.")
+
+        field_name = str(field.get("field", ""))
+        if policy == "autonomous_safe_field":
+            if field.get("confidence") != "Verified":
+                issues.append(f"{field_location} must be Verified for autonomous_safe_field.")
+            validate_evidence(field.get("evidence"), field_location, issues, warnings)
+            if field_name in PROTECTED_FIELDS:
+                issues.append(f"{field_location}.{field_name} is protected from autonomous writes.")
+        elif field.get("evidence"):
+            validate_evidence(field.get("evidence"), field_location, issues, warnings)
+
+        if field_name in PROTECTED_FIELDS and result == "verified" and not update.get("approval"):
+            issues.append(f"{field_location}.{field_name} was verified without approval evidence.")
+
+    if result == "verified":
+        if not update.get("identifier"):
+            issues.append(f"{location} is verified without a returned identifier.")
+        if not update.get("verification"):
+            issues.append(f"{location} is verified without read-after-write evidence.")
+
+
 def validate(packet: Any) -> tuple[list[str], list[str]]:
     issues: list[str] = []
     warnings: list[str] = []
@@ -210,6 +403,8 @@ def validate(packet: Any) -> tuple[list[str], list[str]]:
     brief = packet.get("executive_brief")
     if not isinstance(brief, list) or not brief:
         issues.append("executive_brief must be a non-empty list.")
+
+    validate_data_health(packet.get("data_health"), issues)
 
     accounts = packet.get("accounts", [])
     people = packet.get("people", [])
@@ -266,21 +461,19 @@ def validate(packet: Any) -> tuple[list[str], list[str]]:
     for index, item in enumerate(conversation_kits):
         validate_conversation_kit(item, index, issues, warnings)
 
+    applications = packet.get("applications", [])
+    if not isinstance(applications, list):
+        issues.append("applications must be a list.")
+        applications = []
+    for index, item in enumerate(applications):
+        validate_application(item, index, issues, warnings)
+
     updates = packet.get("system_updates", [])
     if not isinstance(updates, list):
         issues.append("system_updates must be a list.")
     else:
         for index, update in enumerate(updates):
-            if not isinstance(update, dict):
-                issues.append(f"system_updates[{index}] must be an object.")
-                continue
-            if update.get("result") not in FINAL_RESULTS:
-                issues.append(
-                    f"system_updates[{index}].result must be one of: "
-                    + ", ".join(sorted(FINAL_RESULTS))
-                )
-            if update.get("result") == "verified" and not update.get("verification"):
-                issues.append(f"system_updates[{index}] is verified without verification evidence.")
+            validate_system_update(update, index, issues, warnings)
 
     return issues, warnings
 

@@ -8,11 +8,19 @@ Use the cheapest tool that can produce reliable evidence. Escalate only when the
 | --- | --- | --- |
 | Discover current sources, companies, people, events, or comparisons | `web_search` | The result needs page-level verification or an authenticated session |
 | Read a known public URL as text | `web_fetch` | The page is JS-heavy, protected, incomplete, or interaction-dependent |
+| Find a hyperspecific person or candidate from natural-language criteria | Connected Clodo or people-discovery tool | The result needs source verification, relationship context, or a fallback public search |
 | Interact with a public or authenticated website | Browserbase-backed `browser_*` tools | The task depends on a local desktop app or local-only session |
+| Run a browser-dependent application on a schedule or webhook | Opulent scheduler plus Browserbase function/session | Search or fetch can complete the work without a browser |
 | Read or operate a local app | `computer_action`, `computer_batch`, or lower-level `computer_*` tools | A connector exposes the same data more directly |
 | Read or write structured app data | The relevant connector/app tool | No connector is installed or authenticated |
 
 Do not require the external `browse` CLI. Opulent already owns search, fetch, browser, computer, and connector surfaces.
+
+Use the routing shape `search -> fetch -> browser`. Search discovers; fetch verifies static pages; Browserbase handles rendering, protected pages, interaction, screenshots, and authenticated continuity. Do not pay browser latency for broad discovery.
+
+## People discovery
+
+Use Clodo or an equivalent connector for natural-language persona search, niche experts, former employees, champions who moved, decision makers, and candidates whose fit depends on messy multi-source criteria. Save the original query, result rationale, source set, freshness, and returned contact provenance. Treat rank as a hypothesis until the evidence that drives action is verified.
 
 ## Search and fetch
 
@@ -38,6 +46,8 @@ Use Browserbase through Opulent's native browser tools:
 - `browser_get_session` and `browser_list_sessions`: reuse or audit sessions.
 
 Start one session per coherent authenticated workflow. Reuse it across pages to preserve cookies and reduce latency. Capture the final URL and a screenshot for visually material claims.
+
+For repeatable scheduled browser work, prefer a deployed Browserbase function or Opulent-managed remote session with bounded inputs, versioned code, retry rules, and a run receipt. Do not deploy a function merely to wrap search or fetch.
 
 Escalate from `web_fetch` to Browserbase when:
 

@@ -1,6 +1,6 @@
 # Opulent GTM Intelligence
 
-An Opulent-native skill for evidence-backed company research, account and candidate prospecting, competitive intelligence, meeting briefs, and CRM-ready next actions.
+An Opulent-native skill for evidence-backed company research, multi-source account and candidate enrichment, relationship and signal intelligence, competitive intelligence, scheduled GTM applications, meeting briefs, and policy-controlled CRM updates.
 
 The workflow uses Opulent's built-in `web_search` and `web_fetch` for broad research, Browserbase-backed `browser_*` tools for dynamic or authenticated sites, `computer_*` tools for local applications, and connected apps for CRM, email, calendar, and storage operations.
 
@@ -27,6 +27,6 @@ python3 skills/opulent-gtm-intelligence/scripts/render_intelligence_report.py \
   path/to/packet.json --output output/client-intelligence
 ```
 
-The renderer produces a polished executive overview plus detailed account and person dossiers with relationship paths, evidence, activation plans, and risks.
+The renderer produces a polished executive overview plus detailed account and person dossiers, data-health metrics, relationship paths, signal context, scheduled-application contracts, and an auditable CRM update ledger.
 
 The optional Grata, Attio, and Gmail CLIs under `cli/` are fallback adapters. Prefer Opulent's native tools and connected apps when available.
