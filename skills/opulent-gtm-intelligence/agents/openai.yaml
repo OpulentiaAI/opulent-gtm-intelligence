@@ -1,0 +1,4 @@
+interface:
+  display_name: "Opulent GTM Intelligence"
+  short_description: "Turn research into verified GTM action"
+  default_prompt: "Use $opulent-gtm-intelligence to build a verified company, people, and competitor intelligence packet with ranked next actions."

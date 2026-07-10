@@ -1,0 +1,22 @@
+{
+  "name": "grata-pp-cli",
+  "version": "0.1.0",
+  "description": "Token-efficient TypeScript CLI for the Grata company search, similar search, enrichment, and list APIs. Agent-native flags, compound sourcing commands, and a local mirror for offline compound queries. Printed in the style of cli-printing-press.",
+  "type": "module",
+  "bin": {
+    "grata-pp-cli": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "node dist/index.js --help && node scripts/test-offline.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.3"
+  }
+}

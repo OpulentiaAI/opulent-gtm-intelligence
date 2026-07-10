@@ -1,0 +1,22 @@
+{
+  "name": "email-pp-cli",
+  "version": "0.1.0",
+  "description": "Optional Gmail fallback adapter for Opulent GTM intelligence run updates and local mirrors.",
+  "type": "module",
+  "bin": {
+    "email-pp-cli": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "node dist/index.js --help && node scripts/test-offline.js && node scripts/test-endpoints.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.3"
+  }
+}
