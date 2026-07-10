@@ -1,4 +1,4 @@
 interface:
   display_name: "Opulent GTM Intelligence"
-  short_description: "Engineer verified, compounding GTM workflows"
-  default_prompt: "Use $opulent-gtm-intelligence to build an evidence-backed GTM operating workflow with multi-source enrichment, relationship and signal intelligence, scheduled applications, detailed dossiers, and policy-controlled CRM updates."
+  short_description: "Turn recent changes into verified GTM action"
+  default_prompt: "Use $opulent-gtm-intelligence to detect what changed since the last touch, score its conversation value, enrich the meaningful deltas, map truthful relationship paths, and route a polished brief through scheduled applications and policy-controlled CRM updates."

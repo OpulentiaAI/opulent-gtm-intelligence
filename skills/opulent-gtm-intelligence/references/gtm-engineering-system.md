@@ -94,21 +94,21 @@ Use people discovery to feed and grade the CRM, not to create a second system of
 
 ## 5. Signal and relationship intelligence
 
-Generic signals commoditize quickly. Prefer client-specific signals and compound multiple weak signals into one account-level view.
+Static data is context; recent change is conversation. Load `signal-intelligence.md`. Prefer client-specific deltas and compound multiple weak changes into one account-level view.
 
 For each signal record:
 
-- type, title, observed date, effective date, and expiry;
+- type, title, target, previous state, current state, normalized delta, observed date, effective date, and expiry;
 - target company and relevant people;
 - first-party or third-party source;
-- novelty and relevance to the client's offer;
+- novelty, magnitude, relevance, actionability, evidence-quality, and relationship-leverage components that add to a 100-point score;
 - corroborating account, person, relationship, and CRM context;
-- activation route and review policy; and
+- why it changes the call, conversation angle, verification task, activation route, and review policy; and
 - outcome after activation.
 
 Layer first-party activity with external changes when available. A job change becomes useful only after checking prior product use, new-company priorities, current stack, relationship history, and a truthful route to the person.
 
-Bundle signals per account. Prefer one prioritized digest over separate alerts that create noise. Load `relationship-intelligence.md` and attach the shortest truthful relationship path before routing a high-value signal.
+Bundle signals per account. Prefer one prioritized `What changed since last touch` digest over separate alerts that create noise. Load `relationship-intelligence.md` and attach the shortest truthful relationship path before routing a high-value signal. Refresh stable context only when its TTL expires; unlock deeper enrichment when a qualifying change appears.
 
 ## 6. Scheduled GTM applications
 
@@ -204,3 +204,5 @@ Use these as design references, then adapt them to Opulent's runtime:
 - Clodo: natural-language people discovery, live signal capture, contact enrichment, CRM feeding, and repeated persona searches: `https://clodo.ai/`, `https://clodo.ai/api`, `https://clodo.ai/customers/acctual`
 - Clay: data foundation -> data modeling -> data activation, centralized functions for decentralized chat invocation, multi-provider waterfalls, custom signal bundles, small-batch tests, schedules, closed-lost reheat, and CRM write-back: `https://www.clay.com/blog/gtm-engineering`, `https://www.clay.com/blog/functions`, `https://www.clay.com/blog/signals`, `https://www.clay.com/blog/how-clay-uses-clay-from-inside-claude-and-chatgpt`, `https://www.clay.com/use-cases/crm-enrichment`, `https://www.clay.com/guides/how-to-do-gtm-engineering`
 - Field Theory bookmark corpus: pre-call enrichment chain `https://x.com/fivosaresti/status/2072032494912704777`; bounded tools and caching `https://x.com/LangChain/status/2069769261778686044`; forkable Browserbase company research `https://x.com/JaySahnan/status/2047730585313980499`; signal-driven outbound `https://x.com/JaySahnan/status/2047368906420220237`; automation/event-driven sessions with auditability `https://x.com/dabit3/status/2057892146481414301`; cost-aware scheduled automation `https://x.com/maskaravivek/status/2060562913778160093`; an agent spine rather than point-automation sprawl `https://x.com/vasuman/status/2044453946199314648`; and eval-driven self-improvement `https://x.com/archiexzzz/status/2033258540312510702`.
+- Signal-first pre-call thesis: static enrichment is context while recent changes create conversation; prioritize hires, performance shifts, and competitive moves: `https://x.com/jamiejreach/status/2072274862962606268`.
+- Nim visual reference: narrow reading column, quiet zinc palette, rounded inset-ring surfaces, restrained typography, responsive layout, and dark mode adapted to Opulent's richer report shapes: `https://github.com/ibelick/nim`, `https://nim-fawn.vercel.app`.

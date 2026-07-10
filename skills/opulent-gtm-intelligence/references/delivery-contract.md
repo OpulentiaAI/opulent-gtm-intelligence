@@ -1,21 +1,22 @@
 # Client Delivery Contract
 
-Lead with the decision, then show the evidence.
+Lead with the recent change, then the decision and its evidence.
 
 ## Default packet
 
-1. **Executive brief**: five bullets covering the opportunity, why now, top targets, competitive implication, and recommended action.
-2. **Data health**: identity resolution, coverage, duplicates, conflicts, staleness, and protected-field policy.
-3. **Priority queue**: ranked companies and people with score, trigger, relationship path, evidence, angle, owner, and next action.
-4. **Relationship intelligence**: typed one-hop and two-hop paths, evidence strength, activation plan, and risk.
-5. **Signal ledger**: dated and expiring events that changed prioritization, bundled by account.
-6. **Company and person dossiers**: detailed enrichment, provider provenance, unknowns, relationship context, and source links.
-7. **Competitive view**: atomic matrix plus where the client wins, loses, and should reframe.
-8. **Conversation kit**: opening line, three discovery questions, proof to use, objection response, and a safe call to action.
-9. **Scheduled GTM applications**: versioned trigger, cursor, budget, review gate, metric, stop condition, and run state.
-10. **CRM update ledger**: proposed or executed field diffs, policy, identifiers, and read-after-write verification.
-11. **Monday-morning actions**: the smallest set of actions that moves the pipeline.
-12. **Verification appendix**: sources, confidence, freshness, blocked sources, and system-write receipts.
+1. **Change brief**: the three to five highest-leverage changes since the last touch, each with before/after state, score, and conversation implication.
+2. **Executive brief**: five bullets covering the opportunity, why now, top targets, competitive implication, and recommended action.
+3. **Data health**: identity resolution, coverage, duplicates, conflicts, staleness, and protected-field policy.
+4. **Priority queue**: ranked companies and people with score, trigger, relationship path, evidence, angle, owner, and next action.
+5. **Relationship intelligence**: typed one-hop and two-hop paths, evidence strength, activation plan, and risk.
+6. **Signal ledger**: dated, scored, and expiring before/after changes that altered prioritization or conversation, bundled by account.
+7. **Company and person dossiers**: detailed enrichment, provider provenance, unknowns, relationship context, and source links.
+8. **Competitive view**: atomic matrix plus where the client wins, loses, and should reframe.
+9. **Conversation kit**: opening line, three discovery questions, proof to use, objection response, and a safe call to action.
+10. **Scheduled GTM applications**: versioned trigger, cursor, budget, review gate, metric, stop condition, and run state.
+11. **CRM update ledger**: proposed or executed field diffs, policy, identifiers, and read-after-write verification.
+12. **Monday-morning actions**: the smallest set of actions that moves the pipeline.
+13. **Verification appendix**: sources, confidence, freshness, blocked sources, and system-write receipts.
 
 Omit sections that do not support the decision.
 
@@ -100,7 +101,36 @@ This map should demonstrate background work compounding into an edge for both bu
       "risk": "Coattendance does not prove interaction."
     }
   ],
-  "signals": [],
+  "signals": [
+    {
+      "type": "leadership_hire",
+      "title": "New operations leader started",
+      "target": "Example Health System",
+      "observed_at": "2026-07-09T12:00:00Z",
+      "effective_at": "2026-07-01",
+      "expires_at": "2026-08-30",
+      "previous_state": "Role vacant",
+      "current_state": "Named leader in role",
+      "delta": "Vacant -> filled",
+      "source_kind": "first_party",
+      "confidence": "Verified",
+      "freshness_days": 8,
+      "novelty": 18,
+      "magnitude": 15,
+      "relevance": 19,
+      "actionability": 13,
+      "evidence_quality": 15,
+      "relationship_leverage": 6,
+      "score": 86,
+      "affected_people": ["New operations leader"],
+      "relationship_context": "No verified direct path",
+      "why_it_changes_the_call": "The discussion should test the new operating mandate.",
+      "conversation_angle": "Ask which operating constraint the leader was hired to change first.",
+      "verification_task": "Confirm remit on the leadership page.",
+      "route": "account-owner review",
+      "evidence": [{"url": "https://example.org/news", "date": "2026-07-01"}]
+    }
+  ],
   "public_examples": [],
   "conversation_kits": [],
   "competitors": [],
@@ -157,6 +187,7 @@ Render it with `scripts/render_intelligence_report.py`. Deliver the rendered ove
 
 - Prefer ten strong targets over one hundred unranked names.
 - Put the highest-leverage action in the first screen.
+- Put `What changed since last touch` before static enrichment and make every routed signal show `before -> after`.
 - Make every score explainable.
 - Date every volatile signal.
 - Show unknowns without apology.

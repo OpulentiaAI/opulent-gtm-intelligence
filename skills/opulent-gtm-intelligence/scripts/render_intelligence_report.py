@@ -133,18 +133,45 @@ def relationship_cards(edges: list[dict[str, Any]]) -> str:
     return "".join(cards)
 
 
-def signal_cards(signals: Any) -> str:
+def signal_cards(signals: Any, as_of: Any = None) -> str:
     if not isinstance(signals, list) or not signals:
         return '<div class="panel empty">No dated signals recorded.</div>'
     cards = []
-    for signal in signals:
+    ordered = sorted(
+        (signal for signal in signals if isinstance(signal, dict)),
+        key=lambda item: int(item.get("score", 0)),
+        reverse=True,
+    )
+    for signal in ordered:
         if not isinstance(signal, dict):
             continue
+        score = max(0, min(100, int(signal.get("score", 0))))
+        confidence = confidence_pill(signal.get("confidence"))
+        signal_type = str(signal.get("type") or "signal").replace("_", " ")
+        affected = signal.get("affected_people") if isinstance(signal.get("affected_people"), list) else []
+        affected_text = ", ".join(str(person) for person in affected) or "No named person"
+        expired = bool(
+            signal.get("expires_at")
+            and as_of
+            and str(signal.get("expires_at"))[:10] < str(as_of)[:10]
+        )
+        window_status = '<span class="status blocked">expired</span>' if expired else '<span class="status active">active window</span>'
         cards.append(
             '<article class="panel card signal">'
-            f'<div class="subtle">{esc(signal.get("date") or "Undated")}</div>'
+            f'<div class="signal-head"><div><span class="signal-type">{esc(signal_type)}</span>{confidence}{window_status}</div>'
+            f'<div class="signal-score">{score}<span>/100</span></div></div>'
+            f'<div class="subtle">{esc(signal.get("target") or "Unknown target")} · effective {esc(signal.get("effective_at") or "Undated")} · observed {esc(signal.get("freshness_days") or 0)}d ago</div>'
             f'<h3>{esc(signal.get("title") or "Signal")}</h3>'
-            f'<p>{esc(signal.get("impact") or signal.get("description") or "")}</p>'
+            f'<div class="delta"><div><span>Before</span><strong>{esc(signal.get("previous_state") or "Unknown")}</strong></div><div class="delta-arrow">→</div><div><span>Now</span><strong>{esc(signal.get("current_state") or "Unknown")}</strong></div></div>'
+            f'<p class="delta-summary">{esc(signal.get("delta") or "No normalized delta")}</p>'
+            f'<div class="call-angle"><span>Changes the call</span>{esc(signal.get("why_it_changes_the_call") or "No implication recorded.")}</div>'
+            f'<p><strong>Conversation angle:</strong> {esc(signal.get("conversation_angle") or "No angle recorded.")}</p>'
+            f'<dl class="signal-meta"><dt>Affected</dt><dd>{esc(affected_text)}</dd>'
+            f'<dt>Relationship</dt><dd>{esc(signal.get("relationship_context") or "No context")}</dd>'
+            f'<dt>Verify</dt><dd>{esc(signal.get("verification_task") or "No task")}</dd>'
+            f'<dt>Route</dt><dd>{esc(signal.get("route") or "No route")}</dd>'
+            f'<dt>Expires</dt><dd>{esc(signal.get("expires_at") or "Unknown")}</dd></dl>'
+            f'<div class="bar"><span style="width:{score}%"></span></div>'
             f'{evidence_html(signal.get("evidence"))}'
             "</article>"
         )
@@ -386,6 +413,18 @@ def dossier_relationships(edges: list[dict[str, Any]], name: str) -> str:
     return "".join(rows)
 
 
+def dossier_signals(signals: Any, name: str, as_of: Any = None) -> str:
+    if not isinstance(signals, list):
+        return '<p class="empty">No recent changes recorded for this target.</p>'
+    relevant = [
+        signal for signal in signals
+        if isinstance(signal, dict) and signal.get("target") == name
+    ]
+    if not relevant:
+        return '<p class="empty">No recent changes recorded for this target.</p>'
+    return signal_cards(relevant, as_of)
+
+
 def dossier_risks(target: dict[str, Any]) -> str:
     risks = target.get("risks")
     unknowns = target.get("unknowns")
@@ -421,6 +460,7 @@ def render_dossiers(packet: dict[str, Any], output_dir: Path, edges: list[dict[s
                 "WHY_NOW": esc(target.get("why_now") or "No current signal recorded."),
                 "ANGLE": esc(target.get("angle") or "No recommended angle recorded."),
                 "ENRICHMENT": enrichment_html(target),
+                "SIGNALS": dossier_signals(packet.get("signals"), name, packet.get("generated_at")),
                 "RELATIONSHIPS": dossier_relationships(edges, name),
                 "NEXT_ACTION": f'<div class="action">{esc(action_text(target.get("next_action")))}</div>',
                 "RISKS": dossier_risks(target),
@@ -446,7 +486,13 @@ def render_report(packet: dict[str, Any], output_dir: Path) -> None:
     applications = packet.get("applications", []) if isinstance(packet.get("applications"), list) else []
     updates = packet.get("system_updates", []) if isinstance(packet.get("system_updates"), list) else []
     verified_updates = sum(1 for update in updates if isinstance(update, dict) and update.get("result") == "verified")
+    signals = packet.get("signals", []) if isinstance(packet.get("signals"), list) else []
+    act_now_signals = sum(
+        1 for signal in signals
+        if isinstance(signal, dict) and int(signal.get("score", 0)) >= 80
+    )
     kpis = [
+        (act_now_signals, "act-now changes"),
         (len(targets), "priority targets"),
         (len(edges), "relationship edges"),
         (len(applications), "GTM applications"),
@@ -465,7 +511,7 @@ def render_report(packet: dict[str, Any], output_dir: Path) -> None:
         "DATA_HEALTH_CARDS": data_health_cards(packet.get("data_health")),
         "PRIORITY_ROWS": priority_rows(targets, edges),
         "RELATIONSHIP_CARDS": relationship_cards(edges),
-        "SIGNAL_CARDS": signal_cards(packet.get("signals")),
+        "SIGNAL_CARDS": signal_cards(packet.get("signals"), packet.get("generated_at")),
         "PUBLIC_EXAMPLES": public_example_cards(packet.get("public_examples")),
         "CONVERSATION_KITS": conversation_cards(packet.get("conversation_kits")),
         "APPLICATION_CARDS": application_cards(applications),

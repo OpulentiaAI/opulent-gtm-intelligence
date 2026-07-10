@@ -3,14 +3,15 @@
 ## Contents
 
 1. Build the baseline and data foundation
-2. Discover candidates in waves
-3. Gate before enrichment
-4. Enrich through progressive waterfalls
-5. Build signal and relationship intelligence
-6. Score fit and timing
-7. Build competitor intelligence
-8. Design the activation play
-9. Synthesize and learn
+2. Detect recent changes
+3. Discover candidates in waves
+4. Gate before enrichment
+5. Enrich through progressive waterfalls
+6. Build signal and relationship intelligence
+7. Score fit and timing
+8. Build competitor intelligence
+9. Design the activation play
+10. Synthesize and learn
 
 ## Depth modes
 
@@ -38,7 +39,15 @@ Inspect the system of record before discovery. Measure duplicates, unmatched peo
 
 Research the client with the same rigor as targets. A competitive matrix is invalid when the client row comes from memory.
 
-## 2. Discover candidates in waves
+## 2. Detect recent changes
+
+Load `signal-intelligence.md`. Snapshot stable context once, then monitor volatile surfaces and compare each observation with the last verified baseline. Preserve `previous_state`, `current_state`, `delta`, effective date, observation date, expiry, evidence, and verification task.
+
+Lead every prep brief with `What changed since last touch`. Use funding, headcount, biography, and firmographics as context; prioritize hires, departures, missed targets, product or pricing shifts, competitor moves, transformation programs, relationship activity, and other dated changes that alter the conversation.
+
+Only unlock broad or expensive enrichment after a delta reaches the research threshold or a durable strategic reason independently justifies it.
+
+## 3. Discover candidates in waves
 
 Use distinct query waves so one search pattern does not define the universe.
 
@@ -68,7 +77,7 @@ Competitor waves:
 
 Deduplicate by canonical domain for companies and by verified profile plus current company for people.
 
-## 3. Gate before enrichment
+## 4. Gate before enrichment
 
 Enrich only candidates that can plausibly change the decision.
 
@@ -77,7 +86,7 @@ Company gate:
 - verifiable product or service;
 - ICP category fit;
 - geography and scale fit;
-- a current trigger or durable strategic reason; and
+- a normalized recent change with client-specific conversation value, or a durable strategic reason; and
 - a lawful, credible route to a relevant person.
 
 Person gate:
@@ -94,7 +103,7 @@ Competitor gate:
 - direct, adjacent, substitute, or status-quo category explicitly labeled;
 - ambiguous or inaccessible pages surfaced as `UNKNOWN`, not silently rejected.
 
-## 4. Enrich through progressive waterfalls
+## 5. Enrich through progressive waterfalls
 
 Load `gtm-engineering-system.md`. Keep lane and provider findings separate until synthesis.
 
@@ -112,7 +121,7 @@ For hyperspecific people or candidates, use a connected Clodo-style people-disco
 
 For event prospecting, extract speakers or sponsors first, group by company, run the company gate, then enrich only people at passing companies.
 
-## 5. Build signal and relationship intelligence
+## 6. Build signal and relationship intelligence
 
 Load `relationship-intelligence.md`. Treat it as a required enrichment lane.
 
@@ -125,9 +134,9 @@ For each passing company and person:
 5. Record `no verified path` instead of stretching weak evidence.
 6. Rank the shortest truthful path alongside fit and timing.
 
-Bundle related first-party and third-party signals at the account level. Add effective date, expiry, novelty, affected people, and activation policy. A common signal such as funding or a job change is insufficient by itself; add client-specific context, decision-maker relevance, relationship history, and proof.
+Bundle related first-party and third-party changes at the account level. Add the before/after state, effective and observed dates, expiry, score components, affected people, relationship context, conversation angle, verification task, and activation policy. A common event such as funding or a job change is insufficient by itself; explain what changed for the decision maker and how it changes the next call.
 
-## 6. Score fit and timing
+## 7. Score fit and timing
 
 Use a 100-point account score:
 
@@ -154,7 +163,7 @@ Priority bands:
 - `40-59`: nurture or monitor
 - `0-39`: hold or reject
 
-## 7. Build competitor intelligence
+## 8. Build competitor intelligence
 
 Create a shared atomic taxonomy before filling a matrix. Each row must be a yes/no or bounded comparison that means the same thing for every company.
 
@@ -174,13 +183,13 @@ Build battle cards only from the verified research set. Include:
 - switching triggers; and
 - a talk track tied to the prospect's situation.
 
-## 8. Design the activation play
+## 9. Design the activation play
 
 When the work should repeat, define a GTM application from `gtm-engineering-system.md` before installing a schedule or webhook. Include trigger, input scope, incremental cursor, idempotency key, tool and spend budgets, concurrency, review gate, CRM policy, success metric, stop conditions, and escalation owner.
 
 Run the smallest representative batch first. Read the outputs, measure false positives and write safety, then schedule only the version that passes.
 
-## 9. Synthesize and learn
+## 10. Synthesize and learn
 
 For each prioritized account or person, answer:
 

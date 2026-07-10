@@ -27,7 +27,7 @@ The command writes:
 | Accounts | name, score, confidence, why-now, evidence, angle, next action | Rank business-development or market targets |
 | People | name, score, confidence, why-now, evidence, angle, next action | Rank decision makers or candidates |
 | Relationships | from, to, type, strength, confidence, evidence, activation path, risk | Show the shortest truthful route to action |
-| Signals | title, date, impact, evidence | Explain what changed and why it matters now |
+| Signals | type, target, observed/effective/expiry dates, previous/current/delta, score components, confidence, call implication, angle, verification, route, evidence | Explain what changed, prove the delta, and change the next conversation |
 | Public examples | organization, relationship label, evidence, demonstration value | Add proven client-relevant context without overstating it |
 | Conversation kits | target, context, hypothesis, proof, questions, CTA | Turn intelligence into a usable conversation |
 | Applications | name, version, trigger, scope, cursor, budget, policy, metric, stop conditions | Show the recurring operating system, not only the current snapshot |
@@ -53,9 +53,10 @@ For people or candidates, include when known:
 
 ## Visual standard
 
-- Use the template's navy, warm ivory, teal, and gold palette.
-- Keep the executive decision within the first viewport.
-- Use score bars and confidence pills rather than dense prose.
+- Follow the Nim-derived visual system: narrow reading measure, zinc-neutral light/dark themes, Geist-like sans typography, large vertical rhythm, rounded inset-ring cards, and restrained accent color.
+- Keep `What changed since last touch` within the first viewport and place the executive interpretation immediately after it.
+- Use compact score bars and confidence pills rather than dense prose.
+- Render every material signal as a clear `previous state -> current state` delta with recency, expiry, score, and conversation angle.
 - Show relationship paths as explicit `from -> via -> to` cards.
 - Keep source links visible in dossiers and compact in the overview.
 - Render application status, cadence, review policy, metric, and stop conditions as operating cards.
@@ -75,3 +76,4 @@ Before delivery:
 6. Confirm proposed applications are not styled or described as active.
 7. Confirm every verified CRM update has an identifier, idempotency key, and read-after-write receipt.
 8. Confirm the layout works at desktop and narrow widths.
+9. Confirm every act-now signal has a verified delta, additive score components, and a non-expired route.

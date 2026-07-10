@@ -1,45 +1,32 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark">
   <title>{{NAME}} — Intelligence Dossier</title>
   <style>
-    :root { --ink:#10263d; --ivory:#f7f4ec; --paper:#fffdf8; --teal:#0d7c7b; --gold:#d2a84b; --muted:#657583; --line:#dce2e3; --danger:#a34c46; }
-    * { box-sizing: border-box; }
-    body { margin:0; color:var(--ink); background:linear-gradient(145deg,#f8f3e8,#eef5f2); font:15px/1.55 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-    a { color:var(--teal); text-decoration:none; overflow-wrap:anywhere; } a:hover{text-decoration:underline}
-    .shell{width:min(1040px,calc(100% - 32px));margin:24px auto 64px}
-    .top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:18px}.back{font-weight:800}
-    .hero{padding:38px;border-radius:24px;color:#fff;background:linear-gradient(120deg,#0d2238,#164657 65%,#0d7c7b);box-shadow:0 18px 55px rgba(16,38,61,.14)}
-    .eyebrow{font-size:11px;font-weight:850;letter-spacing:.16em;text-transform:uppercase;color:#f4d487}
-    h1{margin:9px 0 4px;font:700 clamp(32px,5vw,56px)/1.05 Georgia,serif;letter-spacing:-.03em}.subtitle{color:rgba(255,255,255,.78);font-size:17px}
-    .hero-grid{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}.score{font:700 58px/1 Georgia,serif;color:#f4d487;text-align:right}.score span{display:block;font:700 11px/1.2 Inter,sans-serif;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.12em}
-    .pill{display:inline-block;margin-top:14px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}.grid>*{min-width:0}.panel{min-width:0;padding:24px;background:rgba(255,253,248,.94);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 28px rgba(16,38,61,.07)}.wide{grid-column:1/-1}
-    h2{margin:0 0 12px;font:700 23px/1.15 Georgia,serif}.callout{padding:14px 16px;background:#e2f2ef;border-left:4px solid var(--teal);border-radius:9px;font-size:16px}.risk{padding:12px 14px;background:#fff0ed;border-left:4px solid var(--danger);border-radius:9px;color:var(--danger)}
-    dl{display:grid;grid-template-columns:minmax(130px,.38fr) 1fr;gap:0;margin:0}dt,dd{margin:0;padding:10px 0;border-bottom:1px solid var(--line)}dt{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}dd{font-weight:600}
-    .edge{padding:14px 0;border-bottom:1px solid var(--line)}.edge:last-child{border:0}.path{display:flex;flex-wrap:wrap;align-items:center;gap:7px}.node,.via{padding:6px 9px;border-radius:8px;font-weight:750}.node{background:#dff2ef}.via{background:#f5ead0;color:#70531c}.arrow{color:var(--gold);font-weight:900}.bar{height:7px;margin:9px 0;background:#e6ebea;border-radius:999px;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--teal))}
-    .evidence{margin:0;padding-left:20px}.evidence li{margin:8px 0}.action{font-size:18px;font-weight:800}.small{color:var(--muted);font-size:13px}.empty{color:var(--muted);font-style:italic}
-    footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
-    @media(max-width:700px){.grid{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr}.score{text-align:left}dl{grid-template-columns:1fr}dd{padding-top:0}.top{align-items:flex-start;flex-direction:column}}
-    @media print{body{background:#fff}.shell{width:100%;margin:0}.hero,.panel{box-shadow:none}.back{display:none}}
+    :root{--bg:#fff;--surface:#fff;--surface-2:#fafafa;--ink:#18181b;--muted:#71717a;--faint:#a1a1aa;--line:rgba(161,161,170,.28);--accent:#0f766e;--accent-soft:#f0fdfa;--amber:#a16207;--amber-soft:#fffbeb;--danger:#b91c1c;--danger-soft:#fef2f2;--ring:inset 0 0 0 1px var(--line)}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Geist,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.01em}a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}.shell{width:min(820px,calc(100% - 36px));margin:0 auto;padding:56px 0 72px}.top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:72px}.back{font-weight:600}.small,.subtle{color:var(--muted);font-size:12px}.hero .eyebrow,.signal-type{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}.hero-grid{display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px}.hero h1{margin:8px 0 5px;font-size:clamp(38px,7vw,66px);line-height:1;font-weight:570;letter-spacing:-.05em}.subtitle{color:var(--muted);font-size:18px}.score{font-size:48px;line-height:1;font-weight:570;letter-spacing:-.05em;text-align:right}.score span{display:block;color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}.pill,.status{display:inline-flex;margin-top:12px;padding:5px 9px;border-radius:999px;background:var(--surface-2);box-shadow:var(--ring);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}.pill.verified,.status.active{color:var(--accent);background:var(--accent-soft)}.pill.estimated{color:var(--amber);background:var(--amber-soft)}.status.blocked{color:var(--danger);background:var(--danger-soft)}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:72px}.grid>*{min-width:0}.panel{padding:20px;border-radius:15px;background:var(--surface);box-shadow:var(--ring)}.wide{grid-column:1/-1}h2{margin:0 0 12px;font-size:20px;font-weight:570;letter-spacing:-.025em}.callout{padding:13px;border-radius:11px;background:var(--surface-2)}.risk{padding:11px;border-radius:9px;background:var(--danger-soft);color:var(--danger)}
+    dl{display:grid;grid-template-columns:minmax(130px,.34fr) 1fr;gap:0;margin:0}dt,dd{margin:0;padding:9px 0;border-bottom:1px solid var(--line)}dt{color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em}dd{font-weight:520}.edge{padding:13px 0;border-bottom:1px solid var(--line)}.edge:last-child{border:0}.path{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.node,.via{padding:5px 8px;border-radius:8px;background:var(--surface-2);box-shadow:var(--ring);font-size:12px;font-weight:600}.via{color:var(--amber);background:var(--amber-soft)}.arrow{color:var(--faint)}.bar{height:5px;margin:10px 0;overflow:hidden;border-radius:999px;background:var(--surface-2);box-shadow:var(--ring)}.bar span{display:block;height:100%;background:var(--accent)}.action{font-size:17px;font-weight:600}.empty{color:var(--muted);font-style:italic}
+    .wide .signal{margin-top:10px}.signal{position:relative;overflow:hidden}.signal::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:2px;background:var(--accent)}.signal-head{display:flex;justify-content:space-between;gap:12px}.signal-head>div:first-child{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.signal-score{font-size:24px;font-weight:590}.signal-score span{color:var(--faint);font-size:10px}.signal h3{margin:9px 0;font-size:17px}.delta{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:14px 0 8px}.delta>div:not(.delta-arrow){padding:10px;border-radius:10px;background:var(--surface-2);box-shadow:var(--ring)}.delta span,.call-angle span{display:block;color:var(--muted);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.delta strong{display:block;margin-top:3px;font-size:12px}.delta-arrow{color:var(--faint)}.delta-summary{font-weight:600}.call-angle{padding:12px;border-radius:10px;background:var(--accent-soft)}.signal-meta{grid-template-columns:88px 1fr;margin-top:12px}.signal-meta dt,.signal-meta dd{padding:5px 0;border:0;font-size:10px}.signal-meta dd{font-size:12px}.evidence{margin:12px 0 0;padding-left:17px}.evidence li{margin-top:6px;color:var(--muted);font-size:11px;overflow-wrap:anywhere}
+    footer{margin-top:72px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}
+    @media(prefers-color-scheme:dark){:root{--bg:#09090b;--surface:#0f0f12;--surface-2:#18181b;--ink:#f4f4f5;--muted:#a1a1aa;--faint:#71717a;--line:rgba(161,161,170,.18);--accent:#5eead4;--accent-soft:#102b29;--amber:#facc15;--amber-soft:#2b2610;--danger:#fca5a5;--danger-soft:#311415}}
+    @media(max-width:650px){.shell{padding-top:28px}.top{margin-bottom:48px;align-items:flex-start;flex-direction:column}.hero-grid,.grid{grid-template-columns:1fr}.score{text-align:left;margin-top:14px}.wide{grid-column:auto}dl,.signal-meta{grid-template-columns:1fr}dd{padding-top:0}.delta{grid-template-columns:1fr}.delta-arrow{transform:rotate(90deg);justify-self:center}}
+    @media print{.shell{width:100%;padding:0}.back{display:none}.panel{box-shadow:inset 0 0 0 1px #ddd}}
   </style>
 </head>
-<body>
-  <main class="shell">
-    <div class="top"><a class="back" href="../index.html">← Intelligence overview</a><span class="small">Generated {{GENERATED_AT}}</span></div>
-    <header class="hero"><div class="hero-grid"><div><div class="eyebrow">{{KIND}} intelligence dossier</div><h1>{{NAME}}</h1><div class="subtitle">{{SUBTITLE}}</div><span class="pill">{{CONFIDENCE}}</span></div><div class="score">{{SCORE}}<span>fit score / 100</span></div></div></header>
-    <div class="grid">
-      <section class="panel"><h2>Why now</h2><div class="callout">{{WHY_NOW}}</div></section>
-      <section class="panel"><h2>Recommended angle</h2><div class="callout">{{ANGLE}}</div></section>
-      <section class="panel wide"><h2>Enrichment detail</h2><dl>{{ENRICHMENT}}</dl></section>
-      <section class="panel wide"><h2>Relationship intelligence</h2>{{RELATIONSHIPS}}</section>
-      <section class="panel"><h2>Next action</h2>{{NEXT_ACTION}}</section>
-      <section class="panel"><h2>Risks and unknowns</h2>{{RISKS}}</section>
-      <section class="panel wide"><h2>Evidence</h2>{{EVIDENCE}}</section>
-    </div>
-    <footer>Prepared with Opulent GTM Intelligence. Verify stale or ambiguous relationship edges before external use.</footer>
-  </main>
-</body>
-</html>
+<body><main class="shell">
+  <div class="top"><a class="back" href="../index.html">← Intelligence overview</a><span class="small">Generated {{GENERATED_AT}}</span></div>
+  <header class="hero"><div class="hero-grid"><div><div class="eyebrow">{{KIND}} intelligence dossier</div><h1>{{NAME}}</h1><div class="subtitle">{{SUBTITLE}}</div><span class="pill">{{CONFIDENCE}}</span></div><div class="score">{{SCORE}}<span>fit score / 100</span></div></div></header>
+  <div class="grid">
+    <section class="panel wide"><h2>What changed since last touch</h2>{{SIGNALS}}</section>
+    <section class="panel"><h2>Why now</h2><div class="callout">{{WHY_NOW}}</div></section>
+    <section class="panel"><h2>Recommended angle</h2><div class="callout">{{ANGLE}}</div></section>
+    <section class="panel wide"><h2>Context and enrichment</h2><dl>{{ENRICHMENT}}</dl></section>
+    <section class="panel wide"><h2>Relationship intelligence</h2>{{RELATIONSHIPS}}</section>
+    <section class="panel"><h2>Next action</h2>{{NEXT_ACTION}}</section>
+    <section class="panel"><h2>Risks and unknowns</h2>{{RISKS}}</section>
+    <section class="panel wide"><h2>Evidence</h2>{{EVIDENCE}}</section>
+  </div>
+  <footer>Prepared with Opulent GTM Intelligence. Static enrichment is context; dated changes and truthful relationship paths shape the conversation.</footer>
+</main></body></html>

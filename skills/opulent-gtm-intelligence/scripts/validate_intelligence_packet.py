@@ -58,6 +58,60 @@ RELATION_TYPES = {
     "public_interaction",
     "introduced_by",
 }
+SIGNAL_TYPES = {
+    "leadership_hire",
+    "leadership_departure",
+    "promotion",
+    "champion_move",
+    "board_change",
+    "performance_change",
+    "layoff",
+    "competitive_move",
+    "pricing_change",
+    "product_launch",
+    "product_deprecation",
+    "outage",
+    "security_incident",
+    "hiring_cluster",
+    "expansion",
+    "contraction",
+    "technology_change",
+    "transformation_program",
+    "funding",
+    "merger_acquisition",
+    "ownership_change",
+    "regulatory_change",
+    "legal_event",
+    "relationship_activity",
+    "search_mandate",
+    "other",
+}
+SIGNAL_SOURCE_KINDS = {
+    "first_party",
+    "filing",
+    "direct_communication",
+    "licensed_provider",
+    "third_party",
+    "crm",
+    "inbox",
+    "calendar",
+}
+SIGNAL_SCORE_COMPONENTS = (
+    "novelty",
+    "magnitude",
+    "relevance",
+    "actionability",
+    "evidence_quality",
+    "relationship_leverage",
+)
+SIGNAL_COMPONENT_MAX = {
+    "novelty": 20,
+    "magnitude": 20,
+    "relevance": 20,
+    "actionability": 15,
+    "evidence_quality": 15,
+    "relationship_leverage": 10,
+}
 
 
 def is_url(value: Any) -> bool:
@@ -72,6 +126,12 @@ def validate_iso_date(value: Any) -> bool:
     except ValueError:
         return False
     return True
+
+
+def parse_iso_date(value: Any):
+    if not validate_iso_date(value):
+        return None
+    return datetime.fromisoformat(str(value).replace("Z", "+00:00")).date()
 
 
 def validate_evidence(
@@ -172,16 +232,102 @@ def validate_relationship(
         warnings.append(f"{location} is scored as a direct path without Verified confidence.")
 
 
-def validate_signal(item: Any, index: int, issues: list[str], warnings: list[str]) -> None:
+def validate_signal(
+    item: Any,
+    index: int,
+    issues: list[str],
+    warnings: list[str],
+    as_of: Any = None,
+) -> None:
     location = f"signals[{index}]"
     if not isinstance(item, dict):
         issues.append(f"{location} must be an object.")
         return
-    for key in ("title", "date", "impact"):
+    for key in (
+        "title",
+        "target",
+        "previous_state",
+        "current_state",
+        "delta",
+        "relationship_context",
+        "why_it_changes_the_call",
+        "conversation_angle",
+        "verification_task",
+        "route",
+    ):
         if not item.get(key):
             issues.append(f"{location} is missing {key}.")
-    if item.get("date") and not validate_iso_date(item.get("date")):
-        issues.append(f"{location}.date must be an ISO 8601 date or timestamp.")
+
+    signal_type = item.get("type")
+    if signal_type not in SIGNAL_TYPES:
+        issues.append(
+            f"{location}.type must be one of: " + ", ".join(sorted(SIGNAL_TYPES))
+        )
+
+    source_kind = item.get("source_kind")
+    if source_kind not in SIGNAL_SOURCE_KINDS:
+        issues.append(
+            f"{location}.source_kind must be one of: "
+            + ", ".join(sorted(SIGNAL_SOURCE_KINDS))
+        )
+
+    for key in ("observed_at", "effective_at", "expires_at"):
+        if not validate_iso_date(item.get(key)):
+            issues.append(f"{location}.{key} must be an ISO 8601 date or timestamp.")
+
+    effective_date = parse_iso_date(item.get("effective_at"))
+    expiry_date = parse_iso_date(item.get("expires_at"))
+    as_of_date = parse_iso_date(as_of)
+    if effective_date and expiry_date and expiry_date < effective_date:
+        issues.append(f"{location}.expires_at cannot be before effective_at.")
+
+    confidence = item.get("confidence")
+    if confidence not in CONFIDENCE:
+        issues.append(f"{location}.confidence must be Verified, Estimated, or Unknown.")
+
+    freshness = item.get("freshness_days")
+    if not isinstance(freshness, int) or isinstance(freshness, bool) or freshness < 0:
+        issues.append(f"{location}.freshness_days must be a non-negative integer.")
+
+    component_total = 0.0
+    component_valid = True
+    for key in SIGNAL_SCORE_COMPONENTS:
+        value = item.get(key)
+        maximum = SIGNAL_COMPONENT_MAX[key]
+        if (
+            not isinstance(value, (int, float))
+            or isinstance(value, bool)
+            or not 0 <= value <= maximum
+        ):
+            issues.append(f"{location}.{key} must be a number from 0 to {maximum}.")
+            component_valid = False
+        else:
+            component_total += float(value)
+
+    score = item.get("score")
+    if not isinstance(score, (int, float)) or isinstance(score, bool) or not 0 <= score <= 100:
+        issues.append(f"{location}.score must be a number from 0 to 100.")
+    elif component_valid and abs(float(score) - component_total) > 0.001:
+        issues.append(
+            f"{location}.score must equal the six score components ({component_total:g})."
+        )
+
+    affected_people = item.get("affected_people")
+    if not isinstance(affected_people, list):
+        issues.append(f"{location}.affected_people must be a list, even when empty.")
+
+    if confidence == "Estimated" and isinstance(score, (int, float)) and score > 79:
+        issues.append(f"{location}.score cannot exceed 79 for Estimated confidence.")
+    if confidence == "Unknown" and isinstance(score, (int, float)) and score > 39:
+        issues.append(f"{location}.score cannot exceed 39 for Unknown confidence.")
+    if str(item.get("previous_state", "")).strip().lower() == "unknown" and isinstance(score, (int, float)) and score >= 80:
+        issues.append(f"{location} cannot be act-now while previous_state is Unknown.")
+    if expiry_date and as_of_date and expiry_date < as_of_date:
+        if isinstance(score, (int, float)) and score >= 80:
+            issues.append(f"{location} cannot be act-now after expires_at.")
+        else:
+            warnings.append(f"{location} is expired and should route to re-verification, not outreach.")
+
     validate_evidence(item.get("evidence"), location, issues, warnings)
 
 
@@ -445,7 +591,7 @@ def validate(packet: Any) -> tuple[list[str], list[str]]:
         issues.append("signals must be a list.")
         signals = []
     for index, item in enumerate(signals):
-        validate_signal(item, index, issues, warnings)
+        validate_signal(item, index, issues, warnings, packet.get("generated_at"))
 
     public_examples = packet.get("public_examples", [])
     if not isinstance(public_examples, list):

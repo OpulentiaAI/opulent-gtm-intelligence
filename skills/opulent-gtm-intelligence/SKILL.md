@@ -13,6 +13,7 @@ Load the smallest complete reference set for the requested branch:
 
 - Always read `references/runtime-tools.md`, `references/research-workflow.md`, and `references/delivery-contract.md`.
 - Read `references/gtm-engineering-system.md` for enrichment design, signals, scheduled applications, evaluation, or CRM automation.
+- Read `references/signal-intelligence.md` for every signal, pre-call, account-prioritization, monitor, or recurring-enrichment run. A signal must prove a recent delta, not merely repeat static context.
 - Read `references/relationship-intelligence.md` for every company, person, candidate, account, event, or outreach run. Relationship paths are a core enrichment lane, not an optional appendix.
 - Read `references/template-field-guide.md` before creating client-facing HTML, JSON, CSV, or CRM-ready output.
 - Read `references/system-actions.md` only before CRM, email, calendar, or file-storage writes.
@@ -26,9 +27,9 @@ Load the smallest complete reference set for the requested branch:
 3. Build or confirm a compact client profile: offer, ICP, geography, exclusions, proof points, known competitors, desired output, system of record, and protected fields.
 4. Audit the data foundation. Resolve identities, deduplicate, measure coverage and staleness, and define field ownership before activation.
 5. Select `quick`, `deep`, or `deeper` mode from `references/research-workflow.md`. Set record, tool-call, time, and spend budgets plus completion criteria.
-6. Run diverse discovery waves across official sources, current signals, people, ecosystem adjacency, and comparisons. Gate before expensive enrichment.
-7. Enrich passing records through a field-level waterfall. Keep official facts, provider attempts, external signals, relationship edges, and analyst judgment separate.
-8. Build the relationship graph and bundle signals at the account level. Score evidence, recency, relevance, access, reciprocity, novelty, and expiry.
+6. Establish a dated baseline, then run diverse discovery waves across volatile first-party surfaces, current signals, people, ecosystem adjacency, and comparisons. Detect and normalize deltas before expensive enrichment.
+7. Enrich records whose change or durable strategic reason passes the gate. Keep baseline facts, observed changes, provider attempts, relationship edges, and analyst judgment separate.
+8. Build the relationship graph and bundle recent changes at the account level. Score novelty, magnitude, client relevance, persona actionability, evidence quality, relationship leverage, and expiry.
 9. Score fit and timing from cited evidence. Use `Unknown` when evidence is missing; never turn an inference into a fact.
 10. When recurring or event-driven work is useful, define a versioned GTM application with trigger, cursor, idempotency key, budget, review gate, metric, stop condition, and write policy.
 11. Synthesize the client deliverable using `references/delivery-contract.md` and `assets/templates/`.
@@ -48,6 +49,7 @@ Load the smallest complete reference set for the requested branch:
 - Never claim a warm introduction, mutual relationship, client status, or placement without relationship-specific evidence.
 - Never accept an enrichment provider's rank or value without preserving field-level provenance, freshness, and conflict status.
 - Never describe a proposed schedule or CRM update as active or verified without an installation/run identifier or read-after-write receipt.
+- Never call a static fact a signal. Require a previous state, current state, dated delta, or mark the previous state `Unknown` and keep it out of the act-now band.
 - Cap company fit at 30/100 when the product or service cannot be verified.
 - Cap person fit at 40/100 when current role or company cannot be verified.
 - Give `false` and `not found` different meanings. Absence of evidence is `Unknown`.
