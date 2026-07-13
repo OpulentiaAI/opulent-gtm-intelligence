@@ -37,6 +37,8 @@ Confirm:
 
 Inspect the system of record before discovery. Measure duplicates, unmatched people or companies, required-field coverage, staleness, suppressions, and protected human-owned fields. Define canonical identity keys and field ownership before proposing CRM updates.
 
+When Context is available, load `contextdev-execution.md`. Prefetch and resolve known companies before broad enrichment. For every Context-backed step, state the natural-language job followed by the exact method, endpoint, params/body, expected response, request tags, Opulent route, and write policy.
+
 Research the client with the same rigor as targets. A competitive matrix is invalid when the client row comes from memory.
 
 ## 2. Detect recent changes
@@ -119,6 +121,8 @@ Add unique client-specific data points only after the data foundation is healthy
 
 For hyperspecific people or candidates, use a connected Clodo-style people-discovery service when available. Preserve the natural-language query and verify the evidence behind any ranked match before activation.
 
+Clodo-style discovery and Context are complementary: Clodo finds people from natural-language criteria; Context `/people/retrieve` enriches a known LinkedIn identity; Context `/brand/retrieve` resolves the employer; Context `/web/extract` fact-checks the ICP and timing thesis. Do not describe `/people/retrieve` as a search endpoint.
+
 For event prospecting, extract speakers or sponsors first, group by company, run the company gate, then enrich only people at passing companies.
 
 ## 6. Build signal and relationship intelligence
@@ -186,6 +190,8 @@ Build battle cards only from the verified research set. Include:
 ## 9. Design the activation play
 
 When the work should repeat, define a GTM application from `gtm-engineering-system.md` before installing a schedule or webhook. Include trigger, input scope, incremental cursor, idempotency key, tool and spend budgets, concurrency, review gate, CRM policy, success metric, stop conditions, and escalation owner.
+
+For a public-web baseline, create a Context page/exact, sitemap/exact, or extract/semantic monitor. Verify the signed webhook, fetch the full change record, normalize before/after evidence into the signal ledger, and let the Opulent application add CRM, inbox, calendar, and relationship context. The initial Context run creates a baseline and must not be presented as a detected signal.
 
 Run the smallest representative batch first. Read the outputs, measure false positives and write safety, then schedule only the version that passes.
 

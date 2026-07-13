@@ -6,6 +6,10 @@ Use the cheapest tool that can produce reliable evidence. Escalate only when the
 
 | Need | Preferred tool | Escalate when |
 | --- | --- | --- |
+| Resolve an inbound company, known domain, or work email | Context `POST /utility/prefetch` then `POST /brand/retrieve` | Identity conflicts with CRM or the provider returns sparse data |
+| Extract fact-checked ICP, initiative, buyer, or signal fields from public pages | Context `POST /web/extract` with a client-specific JSON Schema and `factCheck: true` | A high-consequence claim needs corroboration or the page is authenticated/interaction-heavy |
+| Maintain a before/after public-web baseline | Context `POST /monitors` with a supported target/detection pair | The source requires authentication, a browser action, or non-web system context |
+| Enrich a known person with a verified LinkedIn URL | Context `POST /people/retrieve` | The person still needs discovery or current-role corroboration |
 | Discover current sources, companies, people, events, or comparisons | `web_search` | The result needs page-level verification or an authenticated session |
 | Read a known public URL as text | `web_fetch` | The page is JS-heavy, protected, incomplete, or interaction-dependent |
 | Find a hyperspecific person or candidate from natural-language criteria | Connected Clodo or people-discovery tool | The result needs source verification, relationship context, or a fallback public search |
@@ -16,11 +20,15 @@ Use the cheapest tool that can produce reliable evidence. Escalate only when the
 
 Do not require the external `browse` CLI. Opulent already owns search, fetch, browser, computer, and connector surfaces.
 
-Use the routing shape `search -> fetch -> browser`. Search discovers; fetch verifies static pages; Browserbase handles rendering, protected pages, interaction, screenshots, and authenticated continuity. Do not pay browser latency for broad discovery.
+Use the routing shape `resolve -> search/discover -> extract -> corroborate -> browser fallback`. Context resolves and structures public evidence; Opulent search/fetch broadens and corroborates; Browserbase handles rendering, protected pages, interaction, screenshots, and authenticated continuity. Do not pay browser latency for broad discovery.
+
+## Context.dev
+
+Load `contextdev-execution.md` before using Context. Every Context operation must expose the operator's natural-language job and the exact API method, full endpoint, params/body, expected response, route, tags, write policy, status, and execution receipt. Use `POST /people/retrieve` only for a person whose LinkedIn URL is already known; use Clodo-style natural-language discovery to find people. Prefer `POST /web/extract` with `factCheck: true` for fields that affect scoring, outreach, or CRM. Use Context monitors for public before/after evidence and the Opulent scheduler for orchestration, bundling, relationship enrichment, notification, and governed writes.
 
 ## People discovery
 
-Use Clodo or an equivalent connector for natural-language persona search, niche experts, former employees, champions who moved, decision makers, and candidates whose fit depends on messy multi-source criteria. Save the original query, result rationale, source set, freshness, and returned contact provenance. Treat rank as a hypothesis until the evidence that drives action is verified.
+Use Clodo or an equivalent connector for natural-language persona search, niche experts, former employees, champions who moved, decision makers, and candidates whose fit depends on messy multi-source criteria. Save the original query, result rationale, source set, freshness, and returned contact provenance. Treat rank as a hypothesis until the evidence that drives action is verified. Resolve known LinkedIn results through Context `/people/retrieve`, resolve their companies through `/brand/retrieve`, and fact-check action-driving fields before activation.
 
 ## Search and fetch
 

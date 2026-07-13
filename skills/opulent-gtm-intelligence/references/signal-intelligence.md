@@ -71,6 +71,8 @@ Run `baseline -> observe -> diff -> normalize -> corroborate -> resolve -> score
 8. **Route safely.** Draft the conversation angle, notification, task, or allowed CRM diff. Never let a score autonomously change a protected judgment field.
 9. **Measure.** Record accepted/rejected signal, conversation outcome, opportunity impact, and reviewer correction.
 
+When Context is available, use `POST /monitors` for public-web baselines and preserve `context_monitor_id`, `context_run_id`, `context_change_id`, provider importance/confidence, before/after evidence, matched URLs, signature verification, and credit receipt. Supported pairings are page/exact, sitemap/exact, and extract/semantic. The first run is baseline creation, not a change. Verify `X-Context-Signature`, route with `X-Context-Event`, and deduplicate with `X-Context-Id` before any enrichment or write.
+
 Broad enrichment follows meaningful change. Do not repeatedly pay to refresh stable firmographics for an unchanged account.
 
 ## 3. Taxonomy and source plan

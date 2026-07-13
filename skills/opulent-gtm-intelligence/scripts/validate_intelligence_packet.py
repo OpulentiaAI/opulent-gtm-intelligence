@@ -15,6 +15,27 @@ MODES = {"quick", "deep", "deeper"}
 CONFIDENCE = {"Verified", "Estimated", "Unknown"}
 FINAL_RESULTS = {"verified", "drafted", "blocked", "skipped", "needs review"}
 APPLICATION_STATUS = {"proposed", "active", "paused", "blocked"}
+CONTEXT_OPERATION_STATUS = {"proposed", "executed", "failed", "blocked"}
+CONTEXT_METHODS = {
+    "/parse": "POST",
+    "/web/scrape/markdown": "GET",
+    "/web/crawl": "POST",
+    "/web/extract": "POST",
+    "/web/search": "POST",
+    "/web/competitors": "GET",
+    "/people/retrieve": "POST",
+    "/brand/retrieve": "POST",
+    "/brand/ai/query": "POST",
+    "/brand/ai/product": "POST",
+    "/brand/ai/products": "POST",
+    "/utility/prefetch": "POST",
+    "/web/naics": "GET",
+    "/web/sic": "GET",
+    "/web/screenshot": "GET",
+    "/web/styleguide": "GET",
+    "/web/fonts": "GET",
+    "/monitors": "POST",
+}
 TRIGGER_TYPES = {
     "manual",
     "schedule",
@@ -529,6 +550,83 @@ def validate_system_update(
             issues.append(f"{location} is verified without read-after-write evidence.")
 
 
+def validate_context_operation(
+    item: Any, index: int, issues: list[str], warnings: list[str]
+) -> None:
+    location = f"context_operations[{index}]"
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+
+    for key in (
+        "natural_language_job",
+        "method",
+        "endpoint",
+        "expected_response",
+        "opulent_route",
+        "write_policy",
+        "status",
+    ):
+        if not item.get(key):
+            issues.append(f"{location} is missing {key}.")
+
+    endpoint = item.get("endpoint")
+    prefix = "https://api.context.dev/v1"
+    path = str(endpoint)[len(prefix):] if isinstance(endpoint, str) and endpoint.startswith(prefix) else ""
+    if not path:
+        issues.append(f"{location}.endpoint must start with {prefix}.")
+    else:
+        normalized = path
+        if path.startswith("/monitors/"):
+            if path.endswith("/run"):
+                expected_method = "POST"
+            else:
+                expected_method = "GET"
+        elif path.startswith("/monitors") and path != "/monitors":
+            expected_method = "GET"
+        else:
+            expected_method = CONTEXT_METHODS.get(normalized)
+        method = str(item.get("method", "")).upper()
+        if expected_method and method != expected_method:
+            issues.append(f"{location}.method must be {expected_method} for {path}.")
+        if not expected_method:
+            warnings.append(f"{location}.endpoint is not in the validated Context GTM endpoint set.")
+
+    if not isinstance(item.get("params"), dict):
+        issues.append(f"{location}.params must be an object, even when empty.")
+    if not isinstance(item.get("body"), dict):
+        issues.append(f"{location}.body must be an object, even when empty.")
+
+    body = item.get("body") if isinstance(item.get("body"), dict) else {}
+    tags = item.get("tags") if isinstance(item.get("tags"), list) else body.get("tags")
+    if not isinstance(tags, list) or len(tags) < 3 or not all(isinstance(tag, str) and tag for tag in tags):
+        issues.append(f"{location} requires at least three non-empty request tags in tags or body.tags.")
+
+    policy = item.get("write_policy")
+    if policy not in WRITE_POLICIES:
+        issues.append(
+            f"{location}.write_policy must be one of: " + ", ".join(sorted(WRITE_POLICIES))
+        )
+
+    status = item.get("status")
+    if status not in CONTEXT_OPERATION_STATUS:
+        issues.append(
+            f"{location}.status must be one of: "
+            + ", ".join(sorted(CONTEXT_OPERATION_STATUS))
+        )
+    if status == "executed":
+        receipt = item.get("receipt")
+        if not isinstance(receipt, dict):
+            issues.append(f"{location} is executed without a receipt object.")
+        else:
+            if not any(receipt.get(key) for key in ("request_id", "monitor_id", "run_id", "change_id")):
+                issues.append(f"{location}.receipt requires a request, monitor, run, or change identifier.")
+            if not receipt.get("verification"):
+                issues.append(f"{location}.receipt requires verification.")
+
+    validate_evidence(item.get("evidence"), location, issues, warnings)
+
+
 def validate(packet: Any) -> tuple[list[str], list[str]]:
     issues: list[str] = []
     warnings: list[str] = []
@@ -613,6 +711,13 @@ def validate(packet: Any) -> tuple[list[str], list[str]]:
         applications = []
     for index, item in enumerate(applications):
         validate_application(item, index, issues, warnings)
+
+    context_operations = packet.get("context_operations", [])
+    if not isinstance(context_operations, list):
+        issues.append("context_operations must be a list.")
+        context_operations = []
+    for index, item in enumerate(context_operations):
+        validate_context_operation(item, index, issues, warnings)
 
     updates = packet.get("system_updates", [])
     if not isinstance(updates, list):

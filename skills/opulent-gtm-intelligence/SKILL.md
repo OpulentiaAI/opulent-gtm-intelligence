@@ -1,6 +1,6 @@
 ---
 name: opulent-gtm-intelligence
-description: Builds evidence-backed company research, account and candidate prospecting, multi-source enrichment, relationship and signal intelligence, competitive intelligence, scheduled GTM applications, polished HTML dossiers, and policy-controlled CRM updates with Opulent's native search, fetch, Browserbase browser, computer, scheduler, and connector tools. Use for target-account discovery, executive or candidate sourcing, prospect enrichment, relationship mapping, warm-path analysis, buying-signal research, competitor matrices, battle cards, event prospecting, pre-call briefs, autonomous CRM hygiene, recurring pipeline monitors, and requests to turn scattered context into a verified GTM operating workflow.
+description: Builds executable, evidence-backed top-of-funnel and GTM intelligence with Context.dev, Opulent search and fetch, Browserbase, computer, scheduler, connectors, and Clodo-style natural-language discovery. Use for company and person enrichment, target-account or candidate discovery, relationship mapping, recent-signal extraction, change monitors, competitive intelligence, pre-call briefs, scheduled GTM applications, polished dossiers, and policy-controlled CRM updates.
 ---
 
 # Opulent GTM Intelligence
@@ -12,6 +12,7 @@ Turn research into an operator-ready decision packet. Optimize for the next conv
 Load the smallest complete reference set for the requested branch:
 
 - Always read `references/runtime-tools.md`, `references/research-workflow.md`, and `references/delivery-contract.md`.
+- Read `references/contextdev-execution.md` for every company or person enrichment, public-web extraction, lead-scoring, Context monitor, or top-of-funnel application. Every Context capability must include its natural-language job and exact API method, endpoint, and parameters.
 - Read `references/gtm-engineering-system.md` for enrichment design, signals, scheduled applications, evaluation, or CRM automation.
 - Read `references/signal-intelligence.md` for every signal, pre-call, account-prioritization, monitor, or recurring-enrichment run. A signal must prove a recent delta, not merely repeat static context.
 - Read `references/relationship-intelligence.md` for every company, person, candidate, account, event, or outreach run. Relationship paths are a core enrichment lane, not an optional appendix.
@@ -27,7 +28,7 @@ Load the smallest complete reference set for the requested branch:
 3. Build or confirm a compact client profile: offer, ICP, geography, exclusions, proof points, known competitors, desired output, system of record, and protected fields.
 4. Audit the data foundation. Resolve identities, deduplicate, measure coverage and staleness, and define field ownership before activation.
 5. Select `quick`, `deep`, or `deeper` mode from `references/research-workflow.md`. Set record, tool-call, time, and spend budgets plus completion criteria.
-6. Establish a dated baseline, then run diverse discovery waves across volatile first-party surfaces, current signals, people, ecosystem adjacency, and comparisons. Detect and normalize deltas before expensive enrichment.
+6. Establish a dated baseline, then run diverse discovery waves across volatile first-party surfaces, current signals, people, ecosystem adjacency, and comparisons. Use Context's fact-checked extraction and monitors when available; express each call in natural language plus an API contract. Detect and normalize deltas before expensive enrichment.
 7. Enrich records whose change or durable strategic reason passes the gate. Keep baseline facts, observed changes, provider attempts, relationship edges, and analyst judgment separate.
 8. Build the relationship graph and bundle recent changes at the account level. Score novelty, magnitude, client relevance, persona actionability, evidence quality, relationship leverage, and expiry.
 9. Score fit and timing from cited evidence. Use `Unknown` when evidence is missing; never turn an inference into a fact.
@@ -48,6 +49,7 @@ Load the smallest complete reference set for the requested branch:
 - Never guess an email address, phone number, revenue, funding, hiring intent, or candidate interest.
 - Never claim a warm introduction, mutual relationship, client status, or placement without relationship-specific evidence.
 - Never accept an enrichment provider's rank or value without preserving field-level provenance, freshness, and conflict status.
+- Never write `use Context to enrich` without the operator's natural-language job, method, full endpoint, params/body, expected response, Opulent route, request tags, write policy, execution status, and receipt when executed.
 - Never describe a proposed schedule or CRM update as active or verified without an installation/run identifier or read-after-write receipt.
 - Never call a static fact a signal. Require a previous state, current state, dated delta, or mark the previous state `Unknown` and keep it out of the act-now band.
 - Cap company fit at 30/100 when the product or service cannot be verified.

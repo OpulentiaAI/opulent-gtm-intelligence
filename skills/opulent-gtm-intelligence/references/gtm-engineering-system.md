@@ -60,11 +60,12 @@ Start with data health before activating a play:
 Use this default waterfall:
 
 1. Existing CRM and direct communications.
-2. First-party company, person, filing, event, or public-record source.
-3. Connected licensed provider or people-discovery service.
-4. Opulent search and fetch.
-5. Browserbase browser for rendered, protected, paginated, or authenticated evidence.
-6. Analyst inference, always labeled `Estimated` and never used as verified contact data.
+2. Context company resolution and cache prefetch for known domains or work emails.
+3. First-party company, person, filing, event, or public-record source, shaped through Context fact-checked extraction when useful.
+4. Connected Clodo-style people discovery or other licensed provider.
+5. Opulent search and fetch for breadth and independent corroboration.
+6. Browserbase browser for rendered, protected, paginated, or authenticated evidence.
+7. Analyst inference, always labeled `Estimated` and never used as verified contact data.
 
 For every provider attempt, record `provider`, `attempted_at`, `result`, `value`, `confidence`, `source`, `cost`, and `fresh_until`. Distinguish `not found`, `blocked`, `conflict`, and `not attempted`.
 
@@ -89,6 +90,8 @@ When Clodo or an equivalent people-discovery connector is available, use it for 
 - contact or profile enrichment after the person passes the relevance gate.
 
 Treat the returned rank as a discovery hypothesis. Preserve the search query, match rationale, underlying sources, freshness, and contact provenance. Verify any claim that drives outreach or CRM mutation.
+
+Use the four-stage operating motion `Search -> Understand -> Enrich -> Reach`: preserve the plain-English ICP, rank with explainable fit and timing, enrich only passing identities, and activate through the existing system of record. Context makes the middle stages executable: `/brand/retrieve` resolves companies, `/people/retrieve` enriches known LinkedIn identities, `/web/extract` builds a fact-checked record, and `/monitors` keeps volatile evidence fresh. Every Context step must include the natural-language job and its exact API contract from `contextdev-execution.md`.
 
 Use people discovery to feed and grade the CRM, not to create a second system of record. Deduplicate returned people before insert. Keep list membership and search rationale separate from durable person fields.
 
@@ -132,6 +135,12 @@ Required application contract:
 Default to incremental runs from the last verified cursor. Use idempotency keys so retries do not duplicate records, tasks, alerts, or outreach. Pause on repeated authentication failures, error-budget breach, source drift, cost spike, or degraded precision.
 
 Strong starter applications:
+
+- inbound speed-to-intelligence: prefetch company identity, fact-check ICP and one recent change, attach relationship context, and write only safe verified fields;
+- living natural-language pipeline: rerun a shared Clodo-style thesis, resolve and gate results, and add Context monitors only for passing accounts;
+- leadership and mandate radar: monitor leadership, careers, board, and newsroom surfaces, then bundle meaningful changes into `What changed since last touch`;
+- competitor displacement and closed-lost reheat: monitor pricing, product, comparison, documentation, and status changes that alter the original decision;
+- two-sided search intelligence: run parallel company-mandate and candidate/expert pipelines, then connect them through verified relationship and timing evidence;
 
 - pre-call account and relationship brief on calendar booking;
 - weekly ICP and intent radar;

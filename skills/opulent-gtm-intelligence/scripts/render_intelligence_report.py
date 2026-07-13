@@ -288,6 +288,38 @@ def application_cards(applications: Any) -> str:
     return "".join(cards)
 
 
+def context_operation_cards(operations: Any) -> str:
+    if not isinstance(operations, list) or not operations:
+        return '<div class="panel empty">No Context.dev operations proposed or executed.</div>'
+    cards = []
+    for operation in operations:
+        if not isinstance(operation, dict):
+            continue
+        status = str(operation.get("status") or "proposed")
+        method = str(operation.get("method") or "METHOD").upper()
+        endpoint = str(operation.get("endpoint") or "No endpoint")
+        request = {
+            "params": operation.get("params") if isinstance(operation.get("params"), dict) else {},
+            "body": operation.get("body") if isinstance(operation.get("body"), dict) else {},
+        }
+        receipt = operation.get("receipt") if isinstance(operation.get("receipt"), dict) else None
+        receipt_text = json.dumps(receipt, ensure_ascii=False, indent=2) if receipt else "Not executed; no receipt expected."
+        cards.append(
+            '<article class="panel card context-operation">'
+            f'<div class="app-head"><span class="status {esc(status)}">{esc(status)}</span><span class="subtle">Context.dev</span></div>'
+            f'<h3>{esc(operation.get("natural_language_job") or "Context operation")}</h3>'
+            f'<div class="api-line"><strong>{esc(method)}</strong><code>{esc(endpoint)}</code></div>'
+            f'<pre>{esc(json.dumps(request, ensure_ascii=False, indent=2))}</pre>'
+            f'<dl class="app-spec"><dt>Expected</dt><dd>{esc(operation.get("expected_response") or "Not recorded")}</dd>'
+            f'<dt>Opulent route</dt><dd>{esc(operation.get("opulent_route") or "Not recorded")}</dd>'
+            f'<dt>Write policy</dt><dd>{esc(str(operation.get("write_policy") or "unknown").replace("_", " "))}</dd>'
+            f'<dt>Receipt</dt><dd><pre>{esc(receipt_text)}</pre></dd></dl>'
+            f'{evidence_html(operation.get("evidence"))}'
+            '</article>'
+        )
+    return "".join(cards)
+
+
 def system_update_rows(updates: Any) -> str:
     if not isinstance(updates, list) or not updates:
         return '<tr><td colspan="5" class="empty">No CRM or system updates recorded.</td></tr>'
@@ -329,6 +361,7 @@ def iter_evidence(packet: dict[str, Any]) -> Iterable[dict[str, Any]]:
         "public_examples",
         "competitors",
         "applications",
+        "context_operations",
         "system_updates",
     ]
     for key in collections:
@@ -515,6 +548,7 @@ def render_report(packet: dict[str, Any], output_dir: Path) -> None:
         "PUBLIC_EXAMPLES": public_example_cards(packet.get("public_examples")),
         "CONVERSATION_KITS": conversation_cards(packet.get("conversation_kits")),
         "APPLICATION_CARDS": application_cards(applications),
+        "CONTEXT_OPERATION_CARDS": context_operation_cards(packet.get("context_operations")),
         "SYSTEM_UPDATE_ROWS": system_update_rows(updates),
         "SOURCE_APPENDIX": source_appendix(packet),
     }

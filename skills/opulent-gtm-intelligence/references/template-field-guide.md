@@ -30,6 +30,7 @@ The command writes:
 | Signals | type, target, observed/effective/expiry dates, previous/current/delta, score components, confidence, call implication, angle, verification, route, evidence | Explain what changed, prove the delta, and change the next conversation |
 | Public examples | organization, relationship label, evidence, demonstration value | Add proven client-relevant context without overstating it |
 | Conversation kits | target, context, hypothesis, proof, questions, CTA | Turn intelligence into a usable conversation |
+| Context operations | natural-language job, method, endpoint, params/body, expected response, route, tags, write policy, status, receipt | Make public-web enrichment and monitoring executable and auditable |
 | Applications | name, version, trigger, scope, cursor, budget, policy, metric, stop conditions | Show the recurring operating system, not only the current snapshot |
 | System updates | system, action, target, field diff, policy, idempotency, result, verification | Make autonomous CRM behavior auditable |
 | Sources | derived automatically from evidence | Make every important claim auditable |
@@ -59,6 +60,7 @@ For people or candidates, include when known:
 - Render every material signal as a clear `previous state -> current state` delta with recency, expiry, score, and conversation angle.
 - Show relationship paths as explicit `from -> via -> to` cards.
 - Keep source links visible in dossiers and compact in the overview.
+- Render the Context execution ledger as operator language first and API contract second; proposed calls must not look active.
 - Render application status, cadence, review policy, metric, and stop conditions as operating cards.
 - Render CRM writes as field-level diffs with result and verification, never as an unqualified success count.
 - Preserve responsive and print layouts.

@@ -14,6 +14,7 @@ Lead with the recent change, then the decision and its evidence.
 8. **Competitive view**: atomic matrix plus where the client wins, loses, and should reframe.
 9. **Conversation kit**: opening line, three discovery questions, proof to use, objection response, and a safe call to action.
 10. **Scheduled GTM applications**: versioned trigger, cursor, budget, review gate, metric, stop condition, and run state.
+11. **Context execution ledger**: every Context-backed capability in natural language plus method, full endpoint, params/body, expected response, Opulent route, request tags, write policy, status, evidence, and receipt.
 11. **CRM update ledger**: proposed or executed field diffs, policy, identifiers, and read-after-write verification.
 12. **Monday-morning actions**: the smallest set of actions that moves the pipeline.
 13. **Verification appendix**: sources, confidence, freshness, blocked sources, and system-write receipts.
@@ -155,6 +156,26 @@ This map should demonstrate background work compounding into an edge for both bu
       "evidence": [{"url": "https://example.org/source", "date": "2026-07-09"}]
     }
   ],
+  "context_operations": [
+    {
+      "natural_language_job": "Watch the target's public leadership and careers surfaces for a new executive, vacancy, or retained-search mandate and return before/after evidence.",
+      "method": "POST",
+      "endpoint": "https://api.context.dev/v1/monitors",
+      "params": {},
+      "body": {
+        "name": "Target leadership and mandate radar",
+        "target": {"type": "extract", "url": "https://example.com", "instructions": "Track leadership, vacancies, and search mandates.", "max_pages": 10},
+        "change_detection": {"type": "semantic", "confidence_threshold": 0.8},
+        "schedule": {"type": "interval", "frequency": 1, "unit": "days"},
+        "tags": ["client:example", "app:mandate-radar", "run:run_123", "env:production"]
+      },
+      "expected_response": "A monitor identifier and webhook secret; later runs yield evidence-bearing change records.",
+      "opulent_route": "Verify signed events, normalize the delta, add relationship context, score it, then propose a CRM-safe update.",
+      "write_policy": "review_required",
+      "status": "proposed",
+      "evidence": [{"url": "https://docs.context.dev/monitoring/overview", "date": "2026-07-13"}]
+    }
+  ],
   "system_updates": [
     {
       "system": "CRM",
@@ -195,5 +216,6 @@ Render it with `scripts/render_intelligence_report.py`. Deliver the rendered ove
 - Separate client-ready prose from audit detail.
 - Make the shortest truthful relationship path visible for every priority target.
 - Distinguish `proposed`, `active`, `paused`, and `blocked` applications.
+- Never render a Context operation as executed without a receipt containing a request or monitor/run/change identifier and verification result.
 - Treat autonomous CRM writes as policy-controlled diffs with idempotency and read-after-write receipts.
 - Use the bundled visual templates and inspect the output before delivery.

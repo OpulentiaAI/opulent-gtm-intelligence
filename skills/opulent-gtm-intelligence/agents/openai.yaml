@@ -1,4 +1,4 @@
 interface:
   display_name: "Opulent GTM Intelligence"
-  short_description: "Turn recent changes into verified GTM action"
-  default_prompt: "Use $opulent-gtm-intelligence to detect what changed since the last touch, score its conversation value, enrich the meaningful deltas, map truthful relationship paths, and route a polished brief through scheduled applications and policy-controlled CRM updates."
+  short_description: "Execute signal-first GTM enrichment"
+  default_prompt: "Use $opulent-gtm-intelligence to discover in natural language, execute Context.dev enrichment with an exact API contract, detect what changed since the last touch, map truthful relationship paths, and route a polished brief through scheduled applications and policy-controlled CRM updates."
