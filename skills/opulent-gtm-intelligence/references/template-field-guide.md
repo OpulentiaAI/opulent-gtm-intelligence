@@ -29,6 +29,8 @@ Expected output includes `index.html`, `_next/` assets, and one `dossiers/<slug>
 | `discovery_scope` | Intake and Context budget section |
 | `context_operations[]` | Natural-language and exact API execution ledger |
 | `system_updates[]` | Governed field-diff ledger |
+| packet scope, targets, operations, evidence, signals, relationships, scores, applications, updates | Agent execution timeline with packet-derived stage state |
+| the same existing fields and explicit browser evidence | Workflow timeline for `resolve -> search/discover -> extract -> corroborate -> browser fallback -> analyze -> activate -> verify/deliver` |
 | all nested `evidence[]` | Original record plus recursively derived source appendix |
 | unrecognized/additional nested fields | Generic complete-record rendering; never silently dropped |
 
@@ -39,6 +41,10 @@ Every account and person dossier repeats the complete target record and target-s
 - Preserve Nim's narrow reading measure, zinc-neutral light/dark palette, Geist-like system stack, large vertical rhythm, restrained motion, and rounded inset-ring cards.
 - Let analytics and dense records expand to the responsive wide grid.
 - Put the executive interpretation first, followed by `Analysis & Statistics`.
+- Put the mandatory agent execution and workflow timelines directly after analytics and before detailed targets/ledgers.
+- Render timelines as reusable responsive Nim cards on a restrained zinc rail. At 390px, stack status and content without horizontal overflow.
+- Every timeline step uses only `complete`, `proposed`, `blocked`, or `not applicable`. Executed Context requires its receipt; verified writes require result, identifier, and read-after-write verification; browser fallback remains `not applicable` without explicit browser evidence.
+- Call the agent view packet-derived execution provenance or observable workflow steps. Never expose or imply hidden chain-of-thought.
 - Use real committed Dither Kit bar, radar, pie, or area components for key ratings, analysis, statistics, and health. Hand-built bars, faux CSS charts, canvas substitutes, and decorative chart-shaped markup are prohibited.
 - Keep confidence, source URLs, route, policy, statuses, receipts, and before/after values visible.
 - Never style `proposed`, `blocked`, or failed operations as active or verified.
@@ -62,6 +68,7 @@ npx @dither-kit/cli add area-chart bar-chart pie-chart radar-chart --yes --no-in
 3. Run the renderer's full production static export.
 4. Confirm `index.html`, `_next/` assets, and the exact account/person dossier count.
 5. Search source and docs for legacy template names or token-substitution instructions.
-6. Inspect overview desktop, overview mobile, and at least one dossier in a browser.
+6. Inspect overview desktop, overview at exactly 390px, both timelines, and at least one dossier in a browser.
 7. Confirm charts render from Dither Kit canvases and explain their deterministic packet inputs.
 8. Confirm source links, Context contracts, application states, policy labels, field diffs, and receipts remain intact.
+9. Confirm timeline status derivation is deterministic, proposed operations do not look complete, and absence does not become browser or delivery work.

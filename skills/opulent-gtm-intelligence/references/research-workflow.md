@@ -225,6 +225,8 @@ Produce both:
 1. a structured JSON packet that passes `validate_intelligence_packet.py`; and
 2. the complete static export produced by the mandatory Nim-derived Next.js report app, including `_next` assets and every account/person dossier.
 
-Before reporting completion, run validator then renderer, run available typecheck/lint checks, inspect the overview at desktop and mobile widths and at least one dossier, verify all relationship labels and source links, and confirm every exported route and asset loads. Dither Kit is mandatory for key ratings, analysis, statistics, signal composition, and data health; faux or hand-built charts are invalid.
+The overview must place two packet-derived timelines after analytics and before detailed ledgers: agent execution provenance and the enforced `resolve -> search/discover -> extract -> corroborate -> browser fallback -> analyze -> activate -> verify/deliver` workflow. Use only `complete`, `proposed`, `blocked`, or `not applicable`. Require receipts for executed Context and verified writes, leave browser fallback not applicable without explicit evidence, and never present these timelines as hidden chain-of-thought.
+
+Before reporting completion, run validator then renderer, run available typecheck/lint checks, inspect the overview at desktop and exactly 390px plus at least one dossier, visually verify both timeline rails/cards and honest states, verify all relationship labels and source links, and confirm every exported route and asset loads. Dither Kit is mandatory for key ratings, analysis, statistics, signal composition, and data health; faux or hand-built charts are invalid.
 
 If the packet includes a GTM application or CRM updates, also inspect the application contract, protected-field policy, idempotency key, stop conditions, and verification receipt. Do not call a proposal active or a draft verified.
