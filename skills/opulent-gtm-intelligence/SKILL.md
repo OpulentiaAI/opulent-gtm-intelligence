@@ -40,7 +40,7 @@ Inspect installed command help and connector state before choosing commands. Nev
 | Page is dynamic, authenticated, protected, or visually material | Browser fallback after cheaper routes fail |
 | Mutation is requested | Enforce the write policy and confirmation boundary; verify by returned ID and read-after-write receipt |
 
-The mandatory routing sequence is `resolve -> search/discover -> extract -> corroborate -> browser fallback`. Skip a stage only when it is not applicable and record why.
+The mandatory routing sequence is `resolve -> search/discover -> extract -> corroborate -> browser fallback -> analyze -> activate -> verify/deliver`. Skip a stage only when it is not applicable and record why.
 
 ## Operating procedure
 
@@ -57,15 +57,17 @@ The mandatory routing sequence is `resolve -> search/discover -> extract -> corr
 11. Define recurring applications with version, trigger, cursor, idempotency, budget, review gate, metric, stop conditions, and policy.
 12. Map every packet field into the report. The mandatory client artifact is `assets/report-app`, a Nim-derived Next.js 15/React 19/Tailwind v4 static export.
 13. Use committed official-source Dither Kit components for key ratings, target distribution, signal analysis, confidence/statistical composition, and data-health analytics. Deterministically derive analytics from existing packet fields.
-14. Run, in order:
+14. Render both mandatory timelines immediately after analytics: an agent execution timeline and the enforced workflow route. Derive statuses only from packet fields, explicit operation status, evidence, and receipts. Use only `complete`, `proposed`, `blocked`, or `not applicable`; never infer browser work, executed Context, verified writes, build validation, or delivery from absence.
+15. Describe the agent timeline as packet-derived execution provenance or observable workflow steps, never hidden chain-of-thought.
+16. Run, in order:
 
    ```bash
    python3 scripts/validate_intelligence_packet.py <packet.json>
    python3 scripts/render_intelligence_report.py <packet.json> --output <directory>
    ```
 
-15. Inspect the exported overview at desktop and mobile widths and inspect at least one account or person dossier. Check assets, links, charts, source URLs, application states, Context contracts, and update receipts.
-16. Perform authorized writes only inside policy. Verify each mutation by identifier and read-after-write evidence.
+17. Inspect the exported overview at desktop and mobile widths and inspect at least one account or person dossier. Check both timelines, statuses, responsive rails/cards, assets, links, charts, source URLs, application states, Context contracts, and update receipts.
+18. Perform authorized writes only inside policy. Verify each mutation by identifier and read-after-write evidence.
 
 ## Evidence and scoring constraints
 
@@ -91,10 +93,12 @@ The mandatory routing sequence is `resolve -> search/discover -> extract -> corr
 - The structured packet must pass the validator without weakened checks.
 - Every packet field must be visible in the overview, its appropriate ledger, the source appendix, or the complete account/person dossier.
 - Every account and person must have a static dossier route.
+- The agent execution and workflow timelines are mandatory, packet-derived, and status-honest. Executed Context requires an execution identifier plus verification receipt; verified writes require their existing result, identifier, and read-after-write verification. Browser fallback is `not applicable` without explicit browser evidence.
+- Timeline derivation must remain pure, deterministic, and independent of current time. It must not expose or imply chain-of-thought.
 - The renderer must use `npm ci` and a production Next.js static export, fail on install/build errors, and leave no `node_modules`, `.next`, or other transient build directories in the repository or output.
-- Static token substitution, legacy standalone templates, unresolved template tokens, hand-built CSS charts, and faux chart markup are prohibited.
+- Report artifacts must be produced only by the Nim-derived Next.js application with committed Dither Kit components; alternate standalone report templates and hand-built or faux chart markup are prohibited.
 - Dither Kit source components and `dither-kit.json` must remain committed and must be installed/updated through `@dither-kit/cli` source mode.
 
 ## Completion gate
 
-Finish only when the decision is answered; targets have evidence, confidence, fit, timing, relationship path, and next action; unknowns are explicit; Context contracts and mutation receipts are intact; validator, typecheck, lint, and full production export pass; no old template references remain; exported routes/assets resolve; and desktop, mobile, and at least one dossier have been visually inspected.
+Finish only when the decision is answered; targets have evidence, confidence, fit, timing, relationship path, and next action; unknowns are explicit; Context contracts and mutation receipts are intact; both packet-derived timelines use honest states; validator, typecheck, lint, and full production export pass; no old template references remain; exported routes/assets resolve; and desktop, mobile, both timelines, and at least one dossier have been visually inspected.

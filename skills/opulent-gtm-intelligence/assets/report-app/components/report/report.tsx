@@ -1,7 +1,9 @@
 import Link from "next/link"
 import { Analytics } from "./analytics"
 import { JsonGrid, JsonValue, RecordCards, Section } from "./primitives"
+import { Timeline } from "./timeline"
 import { evidenceItems, numberValue, packet, records, slugify, strings, targets } from "@/lib/report"
+import { deriveAgentExecutionTimeline, deriveWorkflowTimeline } from "@/lib/timelines"
 
 const reportTargets = targets()
 const signals = records(packet.signals)
@@ -38,11 +40,13 @@ function TargetCards() {
 
 export function Report() {
   const sources = evidenceItems(packet)
+  const executionTimeline = deriveAgentExecutionTimeline(packet)
+  const workflowTimeline = deriveWorkflowTimeline(packet)
   return (
     <main className="shell">
-      <nav className="mb-16 flex items-center justify-between border-b pb-4 text-xs text-muted-foreground">
+      <nav className="mb-16 flex flex-wrap items-center justify-between gap-4 border-b pb-4 text-xs text-muted-foreground">
         <span className="eyebrow">Opulent intelligence</span>
-        <div className="flex gap-4"><a href="#analysis">Analysis</a><a href="#targets">Targets</a><a href="#sources">Sources</a></div>
+        <div className="flex flex-wrap gap-x-4 gap-y-2"><a href="#analysis">Analysis</a><a href="#execution">Execution</a><a href="#workflow">Workflow</a><a href="#targets">Targets</a><a href="#sources">Sources</a></div>
       </nav>
       <header className="measure">
         <div className="mb-6 flex flex-wrap gap-2"><span className="pill">{packet.mode}</span><span className="pill">{packet.generated_at}</span></div>
@@ -60,37 +64,45 @@ export function Report() {
         <Analytics targets={reportTargets} signals={signals} dataHealth={dataHealth} />
       </Section>
 
-      <Section id="health" label="03 · Foundation" title="Data health">
+      <Section id="execution" label="03 · Execution provenance" title="Agent execution timeline" description="Observable stages derived only from packet records and receipts. This is execution provenance, not hidden chain-of-thought.">
+        <Timeline steps={executionTimeline} />
+      </Section>
+
+      <Section id="workflow" label="04 · Enforced route" title="Workflow timeline" description="The required resolve-to-delivery route, with each gate satisfied, proposed, blocked, or left not applicable according to packet evidence.">
+        <Timeline steps={workflowTimeline} />
+      </Section>
+
+      <Section id="health" label="05 · Foundation" title="Data health">
         <div className="card p-5"><JsonGrid value={dataHealth} /></div>
       </Section>
 
-      <Section id="targets" label="04 · Priority queue" title="Accounts & people" description="Every target links to its statically exported enrichment dossier.">
+      <Section id="targets" label="06 · Priority queue" title="Accounts & people" description="Every target links to its statically exported enrichment dossier.">
         <TargetCards />
       </Section>
 
-      <Section id="relationships" label="05 · Routes" title="Relationship intelligence"><RecordCards items={relationships} empty="No verified relationship edges recorded." /></Section>
-      <Section id="signals" label="06 · Change ledger" title="Signals"><RecordCards items={signals} empty="No signals recorded." /></Section>
-      <Section id="examples" label="07 · Public proof" title="Public examples"><RecordCards items={records(packet.public_examples)} empty="No public examples recorded." /></Section>
-      <Section id="conversations" label="08 · Activation" title="Conversation kits"><RecordCards items={records(packet.conversation_kits)} empty="No conversation kits recorded." /></Section>
-      <Section id="competitors" label="09 · Market" title="Competitors"><RecordCards items={records(packet.competitors)} empty="No competitors recorded." /></Section>
+      <Section id="relationships" label="07 · Routes" title="Relationship intelligence"><RecordCards items={relationships} empty="No verified relationship edges recorded." /></Section>
+      <Section id="signals" label="08 · Change ledger" title="Signals"><RecordCards items={signals} empty="No signals recorded." /></Section>
+      <Section id="examples" label="09 · Public proof" title="Public examples"><RecordCards items={records(packet.public_examples)} empty="No public examples recorded." /></Section>
+      <Section id="conversations" label="10 · Activation" title="Conversation kits"><RecordCards items={records(packet.conversation_kits)} empty="No conversation kits recorded." /></Section>
+      <Section id="competitors" label="11 · Market" title="Competitors"><RecordCards items={records(packet.competitors)} empty="No competitors recorded." /></Section>
 
-      <Section id="unknowns" label="10 · Open questions" title="Unknowns">
+      <Section id="unknowns" label="12 · Open questions" title="Unknowns">
         <div className="card p-5"><JsonValue value={packet.unknowns || []} /></div>
       </Section>
 
-      <Section id="applications" label="11 · Operating system" title="Scheduled GTM applications"><RecordCards items={records(packet.applications)} empty="No applications recorded." /></Section>
+      <Section id="applications" label="13 · Operating system" title="Scheduled GTM applications"><RecordCards items={records(packet.applications)} empty="No applications recorded." /></Section>
 
-      <Section id="discovery" label="12 · Intake" title="Discovery scope">
+      <Section id="discovery" label="14 · Intake" title="Discovery scope">
         <div className="card p-5"><JsonValue value={packet.discovery_scope || {}} /></div>
       </Section>
 
-      <Section id="context" label="13 · Execution contract" title="Context operations" description="Natural-language job and exact API contract remain visible together.">
+      <Section id="context" label="15 · Execution contract" title="Context operations" description="Natural-language job and exact API contract remain visible together.">
         <RecordCards items={records(packet.context_operations)} empty="No Context operations recorded." />
       </Section>
 
-      <Section id="updates" label="14 · Governed mutations" title="System updates"><RecordCards items={records(packet.system_updates)} empty="No system updates recorded." /></Section>
+      <Section id="updates" label="16 · Governed mutations" title="System updates"><RecordCards items={records(packet.system_updates)} empty="No system updates recorded." /></Section>
 
-      <Section id="sources" label="15 · Audit" title="Source appendix" description={`${sources.length} evidence references collected without changing packet provenance.`}>
+      <Section id="sources" label="17 · Audit" title="Source appendix" description={`${sources.length} evidence references collected without changing packet provenance.`}>
         <div className="card divide-y">
           {sources.map((source, index) => (
             <div className="grid gap-2 p-4 text-sm md:grid-cols-[3rem_1fr_1fr]" key={index}>

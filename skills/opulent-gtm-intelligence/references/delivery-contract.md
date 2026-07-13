@@ -16,12 +16,16 @@ Lead with the recent change, then the decision and its evidence.
 10. **Scheduled GTM applications**: versioned trigger, cursor, budget, review gate, metric, stop condition, and run state.
 11. **Context execution ledger**: every Context-backed capability in natural language plus method, full endpoint, params/body, expected response, Opulent route, request tags, write policy, status, evidence, and receipt.
 12. **Discovery scope**: single-person, user-list, or calendar-derived source; funnel counts; identity keys; exclusions; calendar privacy settings when relevant; and a Context call budget based on unique eligible people and companies.
-11. **CRM update ledger**: proposed or executed field diffs, policy, identifiers, and read-after-write verification.
-12. **Monday-morning actions**: the smallest set of actions that moves the pipeline.
-13. **Verification appendix**: sources, confidence, freshness, blocked sources, and system-write receipts.
-14. **Analysis & Statistics**: Dither Kit views of target ratings, additive signal components, confidence composition, and data health, derived deterministically from the packet.
+13. **CRM update ledger**: proposed or executed field diffs, policy, identifiers, and read-after-write verification.
+14. **Monday-morning actions**: the smallest set of actions that moves the pipeline.
+15. **Verification appendix**: sources, confidence, freshness, blocked sources, and system-write receipts.
+16. **Analysis & Statistics**: Dither Kit views of target ratings, additive signal components, confidence composition, and data health, derived deterministically from the packet.
+17. **Agent execution timeline**: packet-derived execution provenance across intake, identity/research, Context, corroboration, signal/relationship analysis, scoring, activation/updates, and artifact validation.
+18. **Workflow timeline**: the enforced `resolve -> search/discover -> extract -> corroborate -> browser fallback -> analyze -> activate -> verify/deliver` route and the observable packet gate for each stage.
 
 All packet fields must map to the report. Sections without records may use an explicit empty state, but the template cannot silently discard a supported field.
+
+Both timelines are mandatory and use only `complete`, `proposed`, `blocked`, or `not applicable`. They must not invent completed work: executed Context requires an execution identifier and verification receipt; verified writes require result, identifier, and read-after-write verification; browser fallback requires explicit browser evidence; and artifact validation/delivery cannot be marked complete without packet proof. Describe observable execution provenance, never chain-of-thought.
 
 ## Priority queue columns
 
