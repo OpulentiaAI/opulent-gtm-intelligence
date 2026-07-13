@@ -39,7 +39,7 @@ Inspect the system of record before discovery. Measure duplicates, unmatched peo
 
 Load `people-scope-routing.md` and declare whether the input is one person, a user-supplied list/group, or a calendar-derived cohort. Record the funnel counts and Context ceilings before enrichment. For calendars, bound the calendar and timezone, preserve event provenance privately, and exclude ineligible attendee types before any public-web call.
 
-When Context is available, load `contextdev-execution.md`. Prefetch and resolve known companies before broad enrichment. For every Context-backed step, state the natural-language job followed by the exact method, endpoint, params/body, expected response, request tags, Opulent route, and write policy.
+Context.dev is assumed installed, authenticated, and accessible through the runtime CLI. Load `contextdev-execution.md`, inspect the actual CLI and relevant subcommand help, then prefetch and resolve known companies before broad enrichment. For every Context-backed step, state the natural-language job followed by the exact method, endpoint, params/body, expected response, request tags, Opulent route, write policy, status, and receipt. If the CLI is missing, unauthenticated, or cannot preserve the contract, mark that step blocked and continue only with valid fallback evidence.
 
 Research the client with the same rigor as targets. A competitive matrix is invalid when the client row comes from memory.
 
@@ -223,8 +223,8 @@ For executive-search and talent clients, connect both sides of the market:
 Produce both:
 
 1. a structured JSON packet that passes `validate_intelligence_packet.py`; and
-2. the polished HTML overview plus dossiers rendered from the bundled templates.
+2. the complete static export produced by the mandatory Nim-derived Next.js report app, including `_next` assets and every account/person dossier.
 
-Before reporting completion, inspect the overview and one dossier, verify all relationship labels, and confirm that the rendered HTML contains no unresolved template tokens.
+Before reporting completion, run validator then renderer, run available typecheck/lint checks, inspect the overview at desktop and mobile widths and at least one dossier, verify all relationship labels and source links, and confirm every exported route and asset loads. Dither Kit is mandatory for key ratings, analysis, statistics, signal composition, and data health; faux or hand-built charts are invalid.
 
 If the packet includes a GTM application or CRM updates, also inspect the application contract, protected-field policy, idempotency key, stop conditions, and verification receipt. Do not call a proposal active or a draft verified.

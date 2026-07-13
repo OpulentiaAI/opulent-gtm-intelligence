@@ -1,0 +1,300 @@
+{
+  "client": "Northstar Advisory",
+  "objective": "Prioritize expansion conversations and preserve an auditable activation plan",
+  "mode": "deep",
+  "generated_at": "2026-07-13T12:00:00Z",
+  "executive_brief": [
+    "A newly announced regional expansion creates a time-bound operating-leadership conversation.",
+    "Acme Health is the highest-rated account at 88/100 with verified first-party evidence.",
+    "Jordan Lee is the strongest person route, but event coattendance must not be described as a personal relationship.",
+    "The competitive opening is Northstar's implementation model rather than generic strategy positioning.",
+    "Request an account-owner review this week before drafting outreach."
+  ],
+  "data_health": {
+    "records_reviewed": 24,
+    "verified_field_coverage": 84,
+    "duplicate_rate": 4,
+    "stale_rate": 8,
+    "conflicts": 1,
+    "protected_field_policy": "Human-owned opportunity and suppression fields are review-only."
+  },
+  "accounts": [
+    {
+      "name": "Acme Health",
+      "website": "https://example.com",
+      "sector": "Healthcare",
+      "geography": "United States",
+      "fit_score": 88,
+      "fit_components": {
+        "icp_fit": 28,
+        "trigger": 23,
+        "access": 12,
+        "timing": 13,
+        "personalization": 12
+      },
+      "confidence": "Verified",
+      "why_now": "Announced a regional operating expansion on 2026-07-01.",
+      "angle": "Test whether leadership capacity is keeping pace with the operating footprint.",
+      "risks": ["Expansion scope may change before implementation."],
+      "unknowns": ["Budget owner is not public."],
+      "next_action": {
+        "owner": "Account lead",
+        "action": "Review the expansion thesis and approve a discovery draft",
+        "when": "2026-07-16"
+      },
+      "evidence": [
+        {
+          "url": "https://example.com/expansion",
+          "date": "2026-07-01",
+          "note": "Representative first-party fixture source"
+        }
+      ]
+    }
+  ],
+  "people": [
+    {
+      "name": "Jordan Lee",
+      "role": "Chief Operating Officer",
+      "company": "Acme Health",
+      "fit_score": 82,
+      "confidence": "Verified",
+      "why_now": "Public leadership page assigns the regional operating remit to Jordan.",
+      "angle": "Ask which constraint must change first as the region launches.",
+      "contact_route": "Company contact form; no direct email inferred.",
+      "next_action": {
+        "owner": "Research lead",
+        "action": "Verify remit and prepare a review-only conversation draft",
+        "when": "2026-07-15"
+      },
+      "evidence": [
+        {
+          "url": "https://example.com/leadership",
+          "date": "2026-07-10"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Northstar principal",
+      "to": "Jordan Lee",
+      "type": "event_coattendance",
+      "via": "2026 Operations Forum",
+      "strength": 62,
+      "confidence": "Verified",
+      "last_verified": "2026-07-12",
+      "activation_path": "Reference the published forum theme without implying that the two people met.",
+      "risk": "Coattendance does not prove interaction.",
+      "evidence": [
+        {
+          "url": "https://example.com/forum",
+          "date": "2026-06-20"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "type": "expansion",
+      "title": "Regional operating footprint announced",
+      "target": "Acme Health",
+      "observed_at": "2026-07-13T10:00:00Z",
+      "effective_at": "2026-07-01",
+      "expires_at": "2026-09-30",
+      "previous_state": "No regional launch disclosed",
+      "current_state": "Regional launch publicly scheduled",
+      "delta": "Undisclosed footprint -> dated regional launch",
+      "source_kind": "first_party",
+      "confidence": "Verified",
+      "freshness_days": 12,
+      "novelty": 18,
+      "magnitude": 17,
+      "relevance": 19,
+      "actionability": 14,
+      "evidence_quality": 15,
+      "relationship_leverage": 5,
+      "score": 88,
+      "affected_people": ["Jordan Lee"],
+      "relationship_context": "One verified event-coattendance edge with explicit limitations.",
+      "why_it_changes_the_call": "The call can test a dated operating mandate rather than generic transformation interest.",
+      "conversation_angle": "Ask which operating bottleneck has become critical because of the regional launch.",
+      "verification_task": "Recheck the launch page before any outreach.",
+      "route": "Account-owner review",
+      "evidence": [
+        {
+          "url": "https://example.com/expansion",
+          "date": "2026-07-01"
+        }
+      ]
+    }
+  ],
+  "public_examples": [
+    {
+      "organization": "Example Regional Network",
+      "relationship_label": "Publicly documented engagement",
+      "demonstration_value": "Shows an implementation-led expansion model without claiming a private result.",
+      "evidence": [
+        {
+          "url": "https://example.com/case-study",
+          "date": "2026-05-10"
+        }
+      ]
+    }
+  ],
+  "conversation_kits": [
+    {
+      "target": "Jordan Lee",
+      "context": "Acme Health announced a dated regional launch.",
+      "hypothesis": "The launch may create a leadership-capacity constraint.",
+      "proof": "Northstar's public case material describes implementation support for regional operating changes.",
+      "questions": [
+        "Which operating constraint must change before launch?",
+        "Where is leadership capacity most exposed?"
+      ],
+      "objection_response": "A short diagnostic can determine whether outside support is useful before any larger commitment.",
+      "cta": "Agree to a 20-minute diagnostic after account-owner review."
+    }
+  ],
+  "competitors": [
+    {
+      "name": "Status quo / internal team",
+      "category": "substitute",
+      "where_client_wins": "Adds implementation capacity during a time-bound launch.",
+      "where_client_loses": "Requires outside budget and onboarding.",
+      "reframe": "Compare time-to-operating-readiness rather than advisory day rates.",
+      "evidence": [
+        {
+          "url": "https://example.com/services",
+          "date": "2026-06-01"
+        }
+      ]
+    }
+  ],
+  "unknowns": [
+    {
+      "question": "Who owns the expansion budget?",
+      "impact": "Blocks a confident buying-committee map.",
+      "verification_task": "Confirm through account-owner review or a public filing."
+    }
+  ],
+  "applications": [
+    {
+      "name": "Weekly expansion radar",
+      "version": "1.0.0",
+      "objective": "Surface newly qualified expansion signals",
+      "owner": "GTM Operations",
+      "status": "proposed",
+      "trigger": {
+        "type": "schedule",
+        "value": "0 7 * * 1",
+        "timezone": "America/Chicago"
+      },
+      "input_scope": "ICP-fit accounts with changed public operating signals",
+      "cursor": "last_verified_signal_at",
+      "idempotency_key": "account_id:signal_id:application_version",
+      "steps": ["source", "resolve", "extract", "corroborate", "route", "verify"],
+      "write_policy": "review_required",
+      "review_gate": "Account owner approves the target and angle.",
+      "metric": {
+        "name": "accepted_opportunities",
+        "baseline": 0,
+        "target": 3
+      },
+      "budget": {
+        "max_records": 25,
+        "max_tool_calls": 100,
+        "max_runtime_minutes": 15
+      },
+      "stop_conditions": ["Precision below 80%", "Three authentication failures"],
+      "evidence": [
+        {
+          "url": "https://example.com/expansion",
+          "date": "2026-07-13"
+        }
+      ]
+    }
+  ],
+  "discovery_scope": {
+    "mode": "user_list",
+    "source": "user_identified",
+    "source_ref": "Representative fixture target list",
+    "objective": "Prioritize supplied people while reusing company results.",
+    "requested_count": 3,
+    "candidate_count": 3,
+    "deduplicated_count": 2,
+    "eligible_count": 2,
+    "unique_company_count": 1,
+    "excluded_count": 0,
+    "recurring": false,
+    "identity_keys": ["linkedin_url", "name_and_company"],
+    "exclusions": ["suppressed", "unresolved identity"],
+    "context_budget": {
+      "max_people_retrievals": 1,
+      "max_brand_retrievals": 1,
+      "max_prefetches": 1,
+      "max_extracts": 1,
+      "max_monitor_creates": 0,
+      "company_result_reuse": true,
+      "skip_if_fresh": true,
+      "cache_policy": "Reuse fresh identities and refresh only volatile decision fields."
+    }
+  },
+  "context_operations": [
+    {
+      "natural_language_job": "Extract the expansion date, operating scope, and named leaders from the first-party announcement with claim-level evidence.",
+      "method": "POST",
+      "endpoint": "https://api.context.dev/v1/web/extract",
+      "params": {},
+      "body": {
+        "url": "https://example.com/expansion",
+        "instructions": "Return only expansion date, scope, and named leaders.",
+        "factCheck": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "expansion_date": {"type": "string"},
+            "scope": {"type": "string"},
+            "leaders": {"type": "array"}
+          }
+        },
+        "tags": ["client:northstar", "app:expansion-radar", "run:fixture"]
+      },
+      "expected_response": "Schema-conforming fields with claim-level source evidence.",
+      "opulent_route": "Corroborate the extracted delta, add relationship context, score, and route to account-owner review.",
+      "write_policy": "review_required",
+      "status": "proposed",
+      "evidence": [
+        {
+          "url": "https://docs.context.dev",
+          "date": "2026-07-13"
+        }
+      ]
+    }
+  ],
+  "system_updates": [
+    {
+      "system": "CRM",
+      "action": "update",
+      "target": "Acme Health",
+      "identifier": "crm-acme-001",
+      "idempotency_key": "crm-acme-001:expansion-date:2026-07-13",
+      "policy": "autonomous_safe_field",
+      "fields": [
+        {
+          "field": "verified_expansion_date",
+          "before": null,
+          "after": "2026-07-01",
+          "confidence": "Verified",
+          "evidence": [
+            {
+              "url": "https://example.com/expansion",
+              "date": "2026-07-01"
+            }
+          ]
+        }
+      ],
+      "result": "verified",
+      "verification": "Read back crm-acme-001 after update."
+    }
+  ]
+}

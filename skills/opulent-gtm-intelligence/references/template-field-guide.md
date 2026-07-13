@@ -1,82 +1,67 @@
-# Intelligence Template Field Guide
+# Next.js Intelligence Report Field Guide
 
-Use the bundled templates to deliver a polished executive brief and detailed dossiers without rebuilding layout on every run.
-
-## Templates
-
-- `assets/templates/intelligence-brief.html`: executive overview, priorities, relationship paths, public examples, signals, conversation kits, and source appendix.
-- `assets/templates/enrichment-dossier.html`: one detailed account or person dossier with fit, timing, relationship intelligence, evidence, risks, and next action.
-
-Render both with:
+Client artifacts must use `assets/report-app`, the bundled Nim-derived Next.js 15/React 19/Tailwind v4 application. The renderer copies it to a temporary directory, injects the packet, runs `npm ci` and `next build` with `output: "export"`, and copies only the static export to the destination.
 
 ```bash
+python3 scripts/validate_intelligence_packet.py packet.json
 python3 scripts/render_intelligence_report.py packet.json --output output/client-intelligence
 ```
 
-The command writes:
+Expected output includes `index.html`, `_next/` assets, and one `dossiers/<slug>/index.html` route for every account and person. No package installation or transient Next.js files may remain in the repository or output.
 
-- `output/client-intelligence/index.html`
-- `output/client-intelligence/dossiers/<slug>.html`
+## Mandatory field map
 
-## Packet sections
+| Packet field | Report surface |
+| --- | --- |
+| `client`, `objective`, `mode`, `generated_at` | Report masthead and metadata |
+| `executive_brief[]` | First decision section |
+| `data_health` | Data-health card and Dither Kit health analysis |
+| `accounts[]`, `people[]` | Ranked key-rating cards and complete static dossiers |
+| target `fit_score`, evidence, confidence, signals, relationships | Explainable rating card and Dither Kit rating distribution |
+| `relationships[]` | Relationship ledger and relevant dossiers |
+| `signals[]` and six score components | Signal ledger and Dither Kit component radar |
+| confidence on targets/signals | Dither Kit statistical composition |
+| `public_examples[]` | Public proof section |
+| `conversation_kits[]` | Activation section |
+| `competitors[]` | Competitive view |
+| `unknowns[]` | Open-questions section |
+| `applications[]` | Scheduled GTM application section |
+| `discovery_scope` | Intake and Context budget section |
+| `context_operations[]` | Natural-language and exact API execution ledger |
+| `system_updates[]` | Governed field-diff ledger |
+| all nested `evidence[]` | Original record plus recursively derived source appendix |
+| unrecognized/additional nested fields | Generic complete-record rendering; never silently dropped |
 
-| Section | Required fields | Purpose |
-| --- | --- | --- |
-| Executive brief | `executive_brief[]` | Put the decision and recommended move above the fold |
-| Data health | records, coverage, duplicates, staleness, conflicts | Show whether automation has a trustworthy foundation |
-| Accounts | name, score, confidence, why-now, evidence, angle, next action | Rank business-development or market targets |
-| People | name, score, confidence, why-now, evidence, angle, next action | Rank decision makers or candidates |
-| Relationships | from, to, type, strength, confidence, evidence, activation path, risk | Show the shortest truthful route to action |
-| Signals | type, target, observed/effective/expiry dates, previous/current/delta, score components, confidence, call implication, angle, verification, route, evidence | Explain what changed, prove the delta, and change the next conversation |
-| Public examples | organization, relationship label, evidence, demonstration value | Add proven client-relevant context without overstating it |
-| Conversation kits | target, context, hypothesis, proof, questions, CTA | Turn intelligence into a usable conversation |
-| Context operations | natural-language job, method, endpoint, params/body, expected response, route, tags, write policy, status, receipt | Make public-web enrichment and monitoring executable and auditable |
-| Discovery scope | source mode, funnel counts, identity keys, exclusions, calendar controls, Context call ceilings | Show who entered the workflow and why the enrichment budget is efficient |
-| Applications | name, version, trigger, scope, cursor, budget, policy, metric, stop conditions | Show the recurring operating system, not only the current snapshot |
-| System updates | system, action, target, field diff, policy, idempotency, result, verification | Make autonomous CRM behavior auditable |
-| Sources | derived automatically from evidence | Make every important claim auditable |
+Every account and person dossier repeats the complete target record and target-specific signals, relationship paths, action, evidence, risks, and unknowns.
 
-## Enrichment detail
+## Visual and interaction standard
 
-For accounts, include when known:
+- Preserve Nim's narrow reading measure, zinc-neutral light/dark palette, Geist-like system stack, large vertical rhythm, restrained motion, and rounded inset-ring cards.
+- Let analytics and dense records expand to the responsive wide grid.
+- Put the executive interpretation first, followed by `Analysis & Statistics`.
+- Use real committed Dither Kit bar, radar, pie, or area components for key ratings, analysis, statistics, and health. Hand-built bars, faux CSS charts, canvas substitutes, and decorative chart-shaped markup are prohibited.
+- Keep confidence, source URLs, route, policy, statuses, receipts, and before/after values visible.
+- Never style `proposed`, `blocked`, or failed operations as active or verified.
+- Preserve responsive, keyboard-accessible, light/dark, and print behavior.
 
-- canonical identity, website, sector, geography, size or stage;
-- operating model, services, customers, leadership, and ownership;
-- current triggers, hiring signals, transformation priorities, and risk;
-- target roles, likely mandate, relationship paths, and contact provenance;
-- fit component scores, confidence, evidence, angle, and next action.
+## Dither Kit source contract
 
-For people or candidates, include when known:
+The app is a shadcn/Tailwind project with `components.json`. Dither Kit components live in `components/dither-kit/` and are owned source installed with:
 
-- current role, remit, reporting line, tenure, and geography;
-- prior relevant roles, domain depth, measurable impact, and public work;
-- relationship paths, shared contexts, lawful contact route, and freshness;
-- candidate thesis, likely motivations as hypotheses, risks, and verification tasks.
+```bash
+npx @dither-kit/cli init --mode source --yes --no-input
+npx @dither-kit/cli add area-chart bar-chart pie-chart radar-chart --yes --no-input
+```
 
-## Visual standard
+`dither-kit.json` is the mandatory lockfile. Update or diff through the official CLI; do not replace generated source with a local imitation.
 
-- Follow the Nim-derived visual system: narrow reading measure, zinc-neutral light/dark themes, Geist-like sans typography, large vertical rhythm, rounded inset-ring cards, and restrained accent color.
-- Keep `What changed since last touch` within the first viewport and place the executive interpretation immediately after it.
-- Use compact score bars and confidence pills rather than dense prose.
-- Render every material signal as a clear `previous state -> current state` delta with recency, expiry, score, and conversation angle.
-- Show relationship paths as explicit `from -> via -> to` cards.
-- Keep source links visible in dossiers and compact in the overview.
-- Render the Context execution ledger as operator language first and API contract second; proposed calls must not look active.
-- Render application status, cadence, review policy, metric, and stop conditions as operating cards.
-- Render CRM writes as field-level diffs with result and verification, never as an unqualified success count.
-- Preserve responsive and print layouts.
-- Do not replace the template with an unstyled Markdown dump.
+## Delivery verification
 
-## Verification
-
-Before delivery:
-
-1. Run `validate_intelligence_packet.py`.
-2. Render the report.
-3. Search the HTML output for unresolved `{{...}}` tokens.
-4. Open `index.html` and at least one dossier.
-5. Confirm the examples and relationship labels match their sources.
-6. Confirm proposed applications are not styled or described as active.
-7. Confirm every verified CRM update has an identifier, idempotency key, and read-after-write receipt.
-8. Confirm the layout works at desktop and narrow widths.
-9. Confirm every act-now signal has a verified delta, additive score components, and a non-expired route.
+1. Validate the packet.
+2. Run template `typecheck` and `lint`.
+3. Run the renderer's full production static export.
+4. Confirm `index.html`, `_next/` assets, and the exact account/person dossier count.
+5. Search source and docs for legacy template names or token-substitution instructions.
+6. Inspect overview desktop, overview mobile, and at least one dossier in a browser.
+7. Confirm charts render from Dither Kit canvases and explain their deterministic packet inputs.
+8. Confirm source links, Context contracts, application states, policy labels, field diffs, and receipts remain intact.

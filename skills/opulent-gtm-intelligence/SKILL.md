@@ -1,83 +1,100 @@
 ---
 name: opulent-gtm-intelligence
-description: Builds executable, evidence-backed top-of-funnel and GTM intelligence for one named person, user-supplied lists or groups, and people extracted from bounded calendar windows. Uses Context.dev efficiently with identity deduplication, shared-company enrichment, explicit call budgets, Opulent search and fetch, Browserbase, computer, scheduler, connectors, and Clodo-style natural-language discovery. Use for company or person enrichment, target-account or candidate discovery, calendar-attendee intelligence, relationship mapping, recent-signal extraction, change monitors, competitive intelligence, pre-call briefs, scheduled GTM applications, polished dossiers, and policy-controlled CRM updates.
+description: Builds executable, evidence-backed GTM intelligence for named people, supplied lists, and bounded calendar cohorts. Uses the authenticated Context.dev runtime CLI, Opulent research/browser surfaces, relationship and signal analysis, a mandatory Nim-derived Next.js report, Dither Kit analytics, and policy-controlled system updates.
 ---
 
 # Opulent GTM Intelligence
 
-Turn research into an operator-ready decision packet. Optimize for the next conversation or action, not for a large pile of links.
+Produce a decision packet and a buildable client artifact. Context.dev is assumed installed, authenticated, and accessible through its runtime CLI. Do not replace Context with an invented tool surface, and do not ask the user to install it before inspecting the actual CLI.
 
-## Reference loading contract
+## Reference-loading and routing matrix
 
-Load the smallest complete reference set for the requested branch:
+Load the smallest complete set before acting.
 
-- Always read `references/runtime-tools.md`, `references/research-workflow.md`, and `references/delivery-contract.md`.
-- Read `references/contextdev-execution.md` for every company or person enrichment, public-web extraction, lead-scoring, Context monitor, or top-of-funnel application. Every Context capability must include its natural-language job and exact API method, endpoint, and parameters.
-- Read `references/people-scope-routing.md` whenever the request concerns one person, several named people, an uploaded/CRM list, or people derived from calendar events. Choose the intake mode and Context call budget before enrichment.
-- Read `references/gtm-engineering-system.md` for enrichment design, signals, scheduled applications, evaluation, or CRM automation.
-- Read `references/signal-intelligence.md` for every signal, pre-call, account-prioritization, monitor, or recurring-enrichment run. A signal must prove a recent delta, not merely repeat static context.
-- Read `references/relationship-intelligence.md` for every company, person, candidate, account, event, or outreach run. Relationship paths are a core enrichment lane, not an optional appendix.
-- Read `references/template-field-guide.md` before creating client-facing HTML, JSON, CSV, or CRM-ready output.
-- Read `references/system-actions.md` only before CRM, email, calendar, or file-storage writes.
-- Read `references/merraine-client-context.md` for Merraine Group or Jeremy Sanchez work.
-- Also read `references/merraine-public-examples.md` when a Merraine deliverable needs client examples, proof, demonstration data, or relationship seeds.
+| Trigger or decision | Mandatory references |
+| --- | --- |
+| Any run | `runtime-tools.md`, `research-workflow.md`, `delivery-contract.md` |
+| Context-backed resolve, retrieval, extraction, monitoring, or scoring | `contextdev-execution.md` |
+| One person, named people, a supplied/CRM list, or calendar-derived people | `people-scope-routing.md` |
+| Signals, pre-call prep, prioritization, monitors, or recurring enrichment | `signal-intelligence.md` |
+| Any company, person, candidate, account, event, or outreach decision | `relationship-intelligence.md` |
+| Enrichment design, scheduled applications, evaluation, or CRM automation | `gtm-engineering-system.md` |
+| Any client artifact or structured packet | `template-field-guide.md` |
+| CRM, email, calendar, or storage mutation | `system-actions.md` |
+| Merraine Group or Jeremy Sanchez | `merraine-client-context.md` |
+| Merraine proof, examples, demonstrations, or relationship seeds | `merraine-public-examples.md` |
 
-## Core operating loop
+## Runtime decision table
 
-1. Inspect existing workspace artifacts, prior research, CRM exports, email threads, client files, and saved packets. Reconcile before creating duplicate work.
-2. State the decision and bottleneck the workflow must support, then select `single_person`, `user_list`, or `calendar_derived`. Normalize and deduplicate the people before any Context call.
-3. Build or confirm a compact client profile: offer, ICP, geography, exclusions, proof points, known competitors, desired output, system of record, and protected fields.
-4. Audit the data foundation. Resolve identities, deduplicate, measure coverage and staleness, and define field ownership before activation.
-5. Select `quick`, `deep`, or `deeper` mode from `references/research-workflow.md`. Set record, tool-call, time, and spend budgets plus completion criteria.
-6. Establish a dated baseline, then run diverse discovery waves across volatile first-party surfaces, current signals, people, ecosystem adjacency, and comparisons. Use Context's fact-checked extraction and monitors when available; express each call in natural language plus an API contract. Detect and normalize deltas before expensive enrichment.
-7. Enrich records whose change or durable strategic reason passes the gate. Keep baseline facts, observed changes, provider attempts, relationship edges, and analyst judgment separate.
-8. Build the relationship graph and bundle recent changes at the account level. Score novelty, magnitude, client relevance, persona actionability, evidence quality, relationship leverage, and expiry.
-9. Score fit and timing from cited evidence. Use `Unknown` when evidence is missing; never turn an inference into a fact.
-10. When recurring or event-driven work is useful, define a versioned GTM application with trigger, cursor, idempotency key, budget, review gate, metric, stop condition, and write policy.
-11. Synthesize the client deliverable using `references/delivery-contract.md` and `assets/templates/`.
-12. Validate with `python3 scripts/validate_intelligence_packet.py <packet.json>`, then render with `python3 scripts/render_intelligence_report.py <packet.json> --output <directory>`.
-13. Inspect the overview and one dossier; when present, also inspect scheduled-application cards and the CRM update ledger before delivery.
-14. Perform authorized writes only inside the declared policy. Verify each write by record ID and read-after-write evidence; learn from outcomes and corrections.
+Inspect installed command help and connector state before choosing commands. Never fabricate a subcommand.
 
-## Evidence rules
+| Condition | Decision |
+| --- | --- |
+| Context CLI is available and authenticated | Inspect `--help` and relevant subcommand help, then execute the exact Context API contract through the supported runtime command |
+| Context CLI exists but is unauthenticated | Mark the Context step `blocked`; continue with non-Context discovery and corroboration; do not claim Context execution |
+| Context CLI command surface differs from the reference | Use the installed surface only when it can preserve method, endpoint, params/body, tags, expected response, route, policy, and receipt; otherwise mark blocked |
+| Context CLI is unavailable at runtime | Record the missing runtime dependency, use Opulent search/fetch/browser for evidence that does not require Context, and keep proposed Context operations unexecuted |
+| Known person has a verified LinkedIn URL | Context people retrieval; this is enrichment, not discovery |
+| Person must be discovered from criteria | Connected people-discovery/Clodo surface, then verify and resolve the selected identity |
+| Static public URL is sufficient | Fetch/extract before browser escalation |
+| Page is dynamic, authenticated, protected, or visually material | Browser fallback after cheaper routes fail |
+| Mutation is requested | Enforce the write policy and confirmation boundary; verify by returned ID and read-after-write receipt |
 
-- Attach a URL, app/thread identifier, or local file path to every material claim.
-- Record source date and research date for time-sensitive facts.
-- Label each field `Verified`, `Estimated`, or `Unknown`.
-- Prefer first-party pages, filings, direct communications, and primary documents. Use directories and aggregators for discovery, then corroborate.
-- Treat search snippets as leads, not final proof, unless the source page is inaccessible and the limitation is explicit.
-- Never infer a company's product, industry, customer, or traction from design, framework, fonts, or generic marketing language.
-- Never guess an email address, phone number, revenue, funding, hiring intent, or candidate interest.
-- Never claim a warm introduction, mutual relationship, client status, or placement without relationship-specific evidence.
-- Never accept an enrichment provider's rank or value without preserving field-level provenance, freshness, and conflict status.
-- Never write `use Context to enrich` without the operator's natural-language job, method, full endpoint, params/body, expected response, Opulent route, request tags, write policy, execution status, and receipt when executed.
-- Never spend Context calls by input row. Retrieve each verified LinkedIn identity once, each canonical company once, and extract a decision schema once per passing unique company. Do not send calendar titles, bodies, notes, links, attendee lists, event IDs, or calendar IDs to Context.
-- Never describe a proposed schedule or CRM update as active or verified without an installation/run identifier or read-after-write receipt.
-- Never call a static fact a signal. Require a previous state, current state, dated delta, or mark the previous state `Unknown` and keep it out of the act-now band.
-- Cap company fit at 30/100 when the product or service cannot be verified.
-- Cap person fit at 40/100 when current role or company cannot be verified.
-- Give `false` and `not found` different meanings. Absence of evidence is `Unknown`.
+The mandatory routing sequence is `resolve -> search/discover -> extract -> corroborate -> browser fallback`. Skip a stage only when it is not applicable and record why.
 
-## Human and external-action boundary
+## Operating procedure
 
-- Draft before sending unless the user explicitly authorized the external communication.
-- Keep outreach claims traceable to the packet; do not invent familiarity or mutual connections.
-- Require human review before bulk outreach, stage advancement based on judgment, or publishing competitive claims.
-- Preserve opt-outs, suppressions, and do-not-contact status.
-- Verify CRM, email, calendar, and file operations with returned IDs or read-after-write evidence.
+1. Inspect workspace artifacts, system-of-record exports, saved packets, available connectors, and the actual Context CLI command surface.
+2. State the decision and select `single_person`, `user_list`, or `calendar_derived`. Normalize identities, group shared companies, set budgets, and enforce calendar privacy before any public-web call.
+3. Confirm client offer, ICP, exclusions, geography, proof, competitors, desired output, protected fields, and system of record.
+4. Audit data health: canonical identities, duplicates, coverage, conflicts, staleness, provenance, suppressions, and field ownership.
+5. Choose `quick`, `deep`, or `deeper`; define evidence, call, time, and spend limits.
+6. Establish a dated baseline. Use the routing sequence to detect recent deltas across first-party, people, ecosystem, and comparison surfaces.
+7. For every Context capability, preserve the natural-language job and exact method, full endpoint, params, body, expected response, Opulent route, request tags, write policy, status, evidence, and execution receipt.
+8. Gate before enrichment. Retrieve each verified person identity once, each canonical company once, and reuse extraction results. Never send private calendar payloads to Context.
+9. Build typed relationship paths and account-level signal bundles. Keep baseline facts, observed changes, provider attempts, relationship edges, and analyst judgment distinct.
+10. Score fit and timing from cited evidence. Preserve each score component and use `Unknown` when evidence is missing.
+11. Define recurring applications with version, trigger, cursor, idempotency, budget, review gate, metric, stop conditions, and policy.
+12. Map every packet field into the report. The mandatory client artifact is `assets/report-app`, a Nim-derived Next.js 15/React 19/Tailwind v4 static export.
+13. Use committed official-source Dither Kit components for key ratings, target distribution, signal analysis, confidence/statistical composition, and data-health analytics. Deterministically derive analytics from existing packet fields.
+14. Run, in order:
 
-## Completion criteria
+   ```bash
+   python3 scripts/validate_intelligence_packet.py <packet.json>
+   python3 scripts/render_intelligence_report.py <packet.json> --output <directory>
+   ```
 
-Finish only when:
+15. Inspect the exported overview at desktop and mobile widths and inspect at least one account or person dossier. Check assets, links, charts, source URLs, application states, Context contracts, and update receipts.
+16. Perform authorized writes only inside policy. Verify each mutation by identifier and read-after-write evidence.
 
-- the decision question is answered;
-- every prioritized company and person has evidence, confidence, fit, timing, and a next action;
-- competitor claims that drive positioning are spot-checked against primary sources;
-- relationship paths include type, strength, confidence, evidence, freshness, and a truthful activation plan;
-- enrichment coverage, conflicts, freshness, and field provenance are visible;
-- the discovery scope shows source mode, funnel counts, exclusions, identity keys, and a Context budget whose people, company, extraction, and monitor ceilings are based on unique eligible identities;
-- every included scheduled application has an incremental cursor, idempotency, budget, review gate, metric, and stop condition;
-- every executed CRM mutation has a policy level, field diff, returned identifier, and verification result;
-- unknowns and blocked sources are visible;
-- requested artifacts exist, pass validation, and render without unresolved template tokens; and
-- requested system writes are verified or explicitly marked `drafted`, `blocked`, or `skipped`.
+## Evidence and scoring constraints
+
+- Attach a URL, app/thread ID, or local file path to every material claim. Date volatile sources.
+- Label confidence `Verified`, `Estimated`, or `Unknown`; absence is not `false`.
+- Prefer primary sources. Search snippets are leads until corroborated.
+- Never infer products, traction, contact details, intent, relationships, client status, or placements.
+- Never call a static fact a signal. Require previous state, current state, dated delta, expiry, score components, implication, verification task, and route.
+- Cap unverified company and person scores according to the validator. Do not exceed confidence bands for signals.
+- Preserve relationship type, strength, confidence, evidence, freshness, activation plan, and risk.
+- Preserve Context and system-action policy, status, tags, route, receipts, source links, and verification exactly.
+
+## People and mutation boundaries
+
+- Discovery and retrieval are different: use people discovery for criteria-based search; use Context people retrieval only after a LinkedIn identity is known.
+- Deduplicate supplied lists and reuse company results. For calendar cohorts, bound calendar/timezone, exclude self/internal/declined/resource identities as configured, and never transmit event bodies, notes, links, IDs, or attendee lists to Context.
+- Draft outreach unless external sending was explicitly authorized. Preserve opt-outs and do-not-contact state.
+- Human review is mandatory for bulk outreach, judgment-based stage changes, protected fields, and published competitive claims.
+- Do not describe a proposed operation as active, an attempted write as verified, or a baseline monitor run as a detected signal.
+
+## Artifact requirements
+
+- The structured packet must pass the validator without weakened checks.
+- Every packet field must be visible in the overview, its appropriate ledger, the source appendix, or the complete account/person dossier.
+- Every account and person must have a static dossier route.
+- The renderer must use `npm ci` and a production Next.js static export, fail on install/build errors, and leave no `node_modules`, `.next`, or other transient build directories in the repository or output.
+- Static token substitution, legacy standalone templates, unresolved template tokens, hand-built CSS charts, and faux chart markup are prohibited.
+- Dither Kit source components and `dither-kit.json` must remain committed and must be installed/updated through `@dither-kit/cli` source mode.
+
+## Completion gate
+
+Finish only when the decision is answered; targets have evidence, confidence, fit, timing, relationship path, and next action; unknowns are explicit; Context contracts and mutation receipts are intact; validator, typecheck, lint, and full production export pass; no old template references remain; exported routes/assets resolve; and desktop, mobile, and at least one dossier have been visually inspected.

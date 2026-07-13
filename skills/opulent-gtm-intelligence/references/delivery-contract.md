@@ -19,8 +19,9 @@ Lead with the recent change, then the decision and its evidence.
 11. **CRM update ledger**: proposed or executed field diffs, policy, identifiers, and read-after-write verification.
 12. **Monday-morning actions**: the smallest set of actions that moves the pipeline.
 13. **Verification appendix**: sources, confidence, freshness, blocked sources, and system-write receipts.
+14. **Analysis & Statistics**: Dither Kit views of target ratings, additive signal components, confidence composition, and data health, derived deterministically from the packet.
 
-Omit sections that do not support the decision.
+All packet fields must map to the report. Sections without records may use an explicit empty state, but the template cannot silently discard a supported field.
 
 ## Priority queue columns
 
@@ -228,7 +229,7 @@ This map should demonstrate background work compounding into an edge for both bu
 
 Validate this JSON with `scripts/validate_intelligence_packet.py`.
 
-Render it with `scripts/render_intelligence_report.py`. Deliver the rendered overview and dossiers, not only the JSON.
+Render it with `scripts/render_intelligence_report.py`. The renderer validates, injects the packet into the Nim-derived Next.js application, installs from the lockfile, runs a production static export, and emits the overview, `_next` assets, and all account/person dossier routes. Deliver the complete export, not only JSON or a standalone HTML file.
 
 ## Quality bar
 
@@ -244,4 +245,6 @@ Render it with `scripts/render_intelligence_report.py`. Deliver the rendered ove
 - Distinguish `proposed`, `active`, `paused`, and `blocked` applications.
 - Never render a Context operation as executed without a receipt containing a request or monitor/run/change identifier and verification result.
 - Treat autonomous CRM writes as policy-controlled diffs with idempotency and read-after-write receipts.
-- Use the bundled visual templates and inspect the output before delivery.
+- Use the mandatory Nim-derived Next.js report application and official-source Dither Kit charts.
+- Validate first, render second, then visually inspect overview desktop, overview mobile, and at least one dossier.
+- Static token templates, direct substitution, unresolved placeholders, and hand-built or faux charts are prohibited.
