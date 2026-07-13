@@ -1,13 +1,13 @@
 # Opulent Runtime Tool Routing
 
-Use the cheapest tool that can produce reliable evidence. Escalate only when the source requires it.
+Use the cheapest tool that can produce reliable evidence. Context.dev is assumed installed, authenticated, and accessible through the runtime CLI; inspect its actual `--help` and relevant subcommand help before execution. Escalate only when the source requires it.
 
 ## Routing ladder
 
 | Need | Preferred tool | Escalate when |
 | --- | --- | --- |
-| Resolve an inbound company, known domain, or work email | Context `POST /utility/prefetch` then `POST /brand/retrieve` | Identity conflicts with CRM or the provider returns sparse data |
-| Extract fact-checked ICP, initiative, buyer, or signal fields from public pages | Context `POST /web/extract` with a client-specific JSON Schema and `factCheck: true` | A high-consequence claim needs corroboration or the page is authenticated/interaction-heavy |
+| Resolve an inbound company, known domain, or work email | Runtime Context CLI executing `POST /utility/prefetch` then `POST /brand/retrieve` | Identity conflicts with CRM or the provider returns sparse data |
+| Extract fact-checked ICP, initiative, buyer, or signal fields from public pages | Runtime Context CLI executing `POST /web/extract` with a client-specific JSON Schema and `factCheck: true` | A high-consequence claim needs corroboration or the page is authenticated/interaction-heavy |
 | Maintain a before/after public-web baseline | Context `POST /monitors` with a supported target/detection pair | The source requires authentication, a browser action, or non-web system context |
 | Enrich a known person with a verified LinkedIn URL | Context `POST /people/retrieve` | The person still needs discovery or current-role corroboration |
 | Discover current sources, companies, people, events, or comparisons | `web_search` | The result needs page-level verification or an authenticated session |
@@ -24,7 +24,9 @@ Use the routing shape `resolve -> search/discover -> extract -> corroborate -> b
 
 ## Context.dev
 
-Load `contextdev-execution.md` before using Context. Every Context operation must expose the operator's natural-language job and the exact API method, full endpoint, params/body, expected response, route, tags, write policy, status, and execution receipt. Use `POST /people/retrieve` only for a person whose LinkedIn URL is already known; use Clodo-style natural-language discovery to find people. Prefer `POST /web/extract` with `factCheck: true` for fields that affect scoring, outreach, or CRM. Use Context monitors for public before/after evidence and the Opulent scheduler for orchestration, bundling, relationship enrichment, notification, and governed writes.
+Load `contextdev-execution.md` before using Context. Inspect the installed CLI command surface rather than assuming command names. Every Context operation must expose the operator's natural-language job and exact API method, full endpoint, params/body, expected response, route, tags, write policy, status, and execution receipt. Use `POST /people/retrieve` only for a person whose LinkedIn URL is already known; use Clodo-style natural-language discovery to find people. Prefer `POST /web/extract` with `factCheck: true` for fields that affect scoring, outreach, or CRM. Use Context monitors for public before/after evidence and the Opulent scheduler for orchestration, bundling, relationship enrichment, notification, and governed writes.
+
+If the Context CLI is unavailable or unauthenticated, mark the operation `blocked`, preserve the proposed exact contract, and continue through search/fetch/corroboration/browser only where those routes can produce truthful evidence. Never report fallback research as Context execution. The fixed escalation shape is `resolve -> search/discover -> extract -> corroborate -> browser fallback`.
 
 ## People discovery
 
