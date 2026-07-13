@@ -96,7 +96,7 @@ The mandatory routing sequence is `resolve -> search/discover -> extract -> corr
 - The agent execution and workflow timelines are mandatory, packet-derived, and status-honest. Executed Context requires an execution identifier plus verification receipt; verified writes require their existing result, identifier, and read-after-write verification. Browser fallback is `not applicable` without explicit browser evidence.
 - Timeline derivation must remain pure, deterministic, and independent of current time. It must not expose or imply chain-of-thought.
 - The renderer must use `npm ci` and a production Next.js static export, fail on install/build errors, and leave no `node_modules`, `.next`, or other transient build directories in the repository or output.
-- Static token substitution, legacy standalone templates, unresolved template tokens, hand-built CSS charts, and faux chart markup are prohibited.
+- Report artifacts must be produced only by the Nim-derived Next.js application with committed Dither Kit components; alternate standalone report templates and hand-built or faux chart markup are prohibited.
 - Dither Kit source components and `dither-kit.json` must remain committed and must be installed/updated through `@dither-kit/cli` source mode.
 
 ## Completion gate
