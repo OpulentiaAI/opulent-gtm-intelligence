@@ -82,6 +82,8 @@ Do not spend expensive enrichment calls on records that fail the gate. Test new 
 
 ## 4. People discovery and Clodo routing
 
+Load `people-scope-routing.md` first. Route a named individual as `single_person`, supplied names/files/CRM views as `user_list`, and meeting attendees from an explicit calendar window as `calendar_derived`. Deduplicate before providers, share company results, and define the Context ceiling from eligible unique identities.
+
 When Clodo or an equivalent people-discovery connector is available, use it for criteria that title filters cannot express:
 
 - exact persona described in natural language;
@@ -94,6 +96,8 @@ Treat the returned rank as a discovery hypothesis. Preserve the search query, ma
 Use the four-stage operating motion `Search -> Understand -> Enrich -> Reach`: preserve the plain-English ICP, rank with explainable fit and timing, enrich only passing identities, and activate through the existing system of record. Context makes the middle stages executable: `/brand/retrieve` resolves companies, `/people/retrieve` enriches known LinkedIn identities, `/web/extract` builds a fact-checked record, and `/monitors` keeps volatile evidence fresh. Every Context step must include the natural-language job and its exact API contract from `contextdev-execution.md`.
 
 Use people discovery to feed and grade the CRM, not to create a second system of record. Deduplicate returned people before insert. Keep list membership and search rationale separate from durable person fields.
+
+For calendar-derived people, keep the event and attendee provenance inside Opulent. Exclude self, internal participants, declined attendees, rooms, resources, distribution lists, and service accounts by default. Context receives only the minimum public identity input required for an approved lookup, never the calendar event payload.
 
 ## 5. Signal and relationship intelligence
 

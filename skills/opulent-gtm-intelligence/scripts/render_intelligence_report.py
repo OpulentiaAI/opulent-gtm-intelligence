@@ -241,6 +241,56 @@ def data_health_cards(data: Any) -> str:
     return "".join(cards) or '<div class="panel empty">No data-health metrics included.</div>'
 
 
+def discovery_scope_card(scope: Any) -> str:
+    if not isinstance(scope, dict) or not scope:
+        return '<div class="panel empty">No discovery-scope contract included.</div>'
+    mode = str(scope.get("mode") or "unspecified").replace("_", " ")
+    counts = [
+        ("requested_count", "requested"),
+        ("candidate_count", "candidates"),
+        ("deduplicated_count", "deduplicated"),
+        ("eligible_count", "eligible"),
+        ("unique_company_count", "companies"),
+        ("excluded_count", "excluded"),
+    ]
+    count_html = "".join(
+        f'<div class="scope-count"><strong>{esc(scope.get(key, 0))}</strong><span>{esc(label)}</span></div>'
+        for key, label in counts
+    )
+    budget = scope.get("context_budget") if isinstance(scope.get("context_budget"), dict) else {}
+    budget_text = " · ".join(
+        [
+            f"people ≤ {budget.get('max_people_retrievals', 0)}",
+            f"brands ≤ {budget.get('max_brand_retrievals', 0)}",
+            f"prefetches ≤ {budget.get('max_prefetches', 0)}",
+            f"extracts ≤ {budget.get('max_extracts', 0)}",
+            f"monitors ≤ {budget.get('max_monitor_creates', 0)}",
+        ]
+    )
+    identities = ", ".join(str(value).replace("_", " ") for value in scope.get("identity_keys", []))
+    exclusions = ", ".join(str(value) for value in scope.get("exclusions", [])) or "None recorded"
+    calendar = scope.get("calendar") if isinstance(scope.get("calendar"), dict) else None
+    calendar_html = ""
+    if calendar:
+        privacy = "private calendar payload retained in Opulent" if calendar.get("calendar_payload_sent_to_context") is False else "calendar privacy not verified"
+        calendar_html = (
+            f'<dt>Calendar window</dt><dd>{esc(calendar.get("window_start"))} → {esc(calendar.get("window_end"))} · {esc(calendar.get("timezone"))}</dd>'
+            f'<dt>Calendar policy</dt><dd>{esc(privacy)} · {esc(calendar.get("event_count", 0))} events inspected</dd>'
+        )
+    return (
+        '<article class="panel scope-card">'
+        f'<div class="scope-head"><div><div class="eyebrow">{esc(mode)}</div><h3>{esc(scope.get("objective") or "Discovery scope")}</h3></div>'
+        f'<span class="status proposed">{esc(scope.get("source") or "source")}</span></div>'
+        f'<div class="scope-counts">{count_html}</div>'
+        f'<dl class="app-spec"><dt>Source</dt><dd>{esc(scope.get("source_ref") or "Not recorded")}</dd>'
+        f'<dt>Identity keys</dt><dd>{esc(identities or "Not recorded")}</dd>'
+        f'<dt>Excluded</dt><dd>{esc(exclusions)}</dd>'
+        f'<dt>Context ceiling</dt><dd>{esc(budget_text)}</dd>'
+        f'<dt>Cache</dt><dd>{esc(budget.get("cache_policy") or "Not recorded")}</dd>{calendar_html}</dl>'
+        '</article>'
+    )
+
+
 def application_cards(applications: Any) -> str:
     if not isinstance(applications, list) or not applications:
         return '<div class="panel empty">No scheduled or event-driven applications proposed.</div>'
@@ -542,6 +592,7 @@ def render_report(packet: dict[str, Any], output_dir: Path) -> None:
         "EXECUTIVE_BRIEF": brief_html,
         "KPI_CARDS": kpi_html,
         "DATA_HEALTH_CARDS": data_health_cards(packet.get("data_health")),
+        "DISCOVERY_SCOPE": discovery_scope_card(packet.get("discovery_scope")),
         "PRIORITY_ROWS": priority_rows(targets, edges),
         "RELATIONSHIP_CARDS": relationship_cards(edges),
         "SIGNAL_CARDS": signal_cards(packet.get("signals"), packet.get("generated_at")),

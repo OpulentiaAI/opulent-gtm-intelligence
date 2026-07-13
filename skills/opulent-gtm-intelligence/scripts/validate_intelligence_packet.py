@@ -12,6 +12,7 @@ from typing import Any
 
 
 MODES = {"quick", "deep", "deeper"}
+DISCOVERY_MODES = {"single_person", "user_list", "calendar_derived"}
 CONFIDENCE = {"Verified", "Estimated", "Unknown"}
 FINAL_RESULTS = {"verified", "drafted", "blocked", "skipped", "needs review"}
 APPLICATION_STATUS = {"proposed", "active", "paused", "blocked"}
@@ -403,6 +404,164 @@ def validate_data_health(item: Any, issues: list[str]) -> None:
         issues.append("data_health.conflicts must be a non-negative integer.")
 
 
+def validate_discovery_scope(
+    item: Any, issues: list[str], warnings: list[str]
+) -> None:
+    location = "discovery_scope"
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+
+    for key in ("mode", "source", "source_ref", "objective"):
+        if not item.get(key):
+            issues.append(f"{location} is missing {key}.")
+
+    mode = item.get("mode")
+    if mode not in DISCOVERY_MODES:
+        issues.append(
+            f"{location}.mode must be one of: " + ", ".join(sorted(DISCOVERY_MODES))
+        )
+
+    count_keys = (
+        "requested_count",
+        "candidate_count",
+        "deduplicated_count",
+        "eligible_count",
+        "unique_company_count",
+        "excluded_count",
+    )
+    counts: dict[str, int] = {}
+    for key in count_keys:
+        value = item.get(key)
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            issues.append(f"{location}.{key} must be a non-negative integer.")
+        else:
+            counts[key] = value
+
+    if all(key in counts for key in count_keys):
+        if not (
+            counts["requested_count"]
+            >= counts["candidate_count"]
+            >= counts["deduplicated_count"]
+            >= counts["eligible_count"]
+        ):
+            issues.append(
+                f"{location} counts must descend requested -> candidate -> deduplicated -> eligible."
+            )
+        if counts["unique_company_count"] > counts["eligible_count"]:
+            issues.append(f"{location}.unique_company_count cannot exceed eligible_count.")
+        if counts["excluded_count"] != counts["deduplicated_count"] - counts["eligible_count"]:
+            issues.append(
+                f"{location}.excluded_count must equal deduplicated_count minus eligible_count."
+            )
+        if mode == "single_person" and any(
+            counts[key] > 1
+            for key in ("requested_count", "candidate_count", "deduplicated_count", "eligible_count")
+        ):
+            issues.append(f"{location} single_person counts cannot exceed one person.")
+
+    if not isinstance(item.get("recurring"), bool):
+        issues.append(f"{location}.recurring must be true or false.")
+
+    identity_keys = item.get("identity_keys")
+    if not isinstance(identity_keys, list) or not identity_keys or not all(
+        isinstance(value, str) and value for value in identity_keys
+    ):
+        issues.append(f"{location}.identity_keys must contain at least one identity key.")
+
+    exclusions = item.get("exclusions")
+    if not isinstance(exclusions, list):
+        issues.append(f"{location}.exclusions must be a list.")
+
+    budget = item.get("context_budget")
+    if not isinstance(budget, dict):
+        issues.append(f"{location}.context_budget must be an object.")
+        budget = {}
+    budget_keys = (
+        "max_people_retrievals",
+        "max_brand_retrievals",
+        "max_prefetches",
+        "max_extracts",
+        "max_monitor_creates",
+    )
+    budget_values: dict[str, int] = {}
+    for key in budget_keys:
+        value = budget.get(key)
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            issues.append(f"{location}.context_budget.{key} must be a non-negative integer.")
+        else:
+            budget_values[key] = value
+    for key in ("company_result_reuse", "skip_if_fresh"):
+        if budget.get(key) is not True:
+            issues.append(f"{location}.context_budget.{key} must be true.")
+    if not budget.get("cache_policy"):
+        issues.append(f"{location}.context_budget.cache_policy is required.")
+
+    if "eligible_count" in counts and "max_people_retrievals" in budget_values:
+        if budget_values["max_people_retrievals"] > counts["eligible_count"]:
+            issues.append(
+                f"{location}.context_budget.max_people_retrievals cannot exceed eligible_count."
+            )
+    if "unique_company_count" in counts:
+        for key in ("max_brand_retrievals", "max_prefetches", "max_extracts"):
+            if key in budget_values and budget_values[key] > counts["unique_company_count"]:
+                issues.append(
+                    f"{location}.context_budget.{key} cannot exceed unique_company_count."
+                )
+    if mode == "single_person":
+        for key in ("max_people_retrievals", "max_brand_retrievals", "max_prefetches", "max_extracts"):
+            if budget_values.get(key, 0) > 1:
+                issues.append(f"{location}.context_budget.{key} cannot exceed one in single_person mode.")
+    if item.get("recurring") is False and budget_values.get("max_monitor_creates", 0) != 0:
+        issues.append(
+            f"{location}.context_budget.max_monitor_creates must be zero for non-recurring work."
+        )
+
+    calendar = item.get("calendar")
+    if mode == "calendar_derived":
+        if not isinstance(calendar, dict):
+            issues.append(f"{location}.calendar is required for calendar_derived mode.")
+            return
+        for key in ("window_start", "window_end"):
+            if not validate_iso_date(calendar.get(key)):
+                issues.append(f"{location}.calendar.{key} must be an ISO 8601 timestamp.")
+        if not calendar.get("timezone"):
+            issues.append(f"{location}.calendar.timezone is required.")
+        calendar_ids = calendar.get("calendar_ids")
+        if not isinstance(calendar_ids, list) or not calendar_ids:
+            issues.append(f"{location}.calendar.calendar_ids must be a non-empty list.")
+        event_count = calendar.get("event_count")
+        if not isinstance(event_count, int) or isinstance(event_count, bool) or event_count < 0:
+            issues.append(f"{location}.calendar.event_count must be a non-negative integer.")
+        for key in (
+            "include_organizers",
+            "include_required_attendees",
+            "include_optional_attendees",
+            "include_declined",
+            "include_internal",
+        ):
+            if not isinstance(calendar.get(key), bool):
+                issues.append(f"{location}.calendar.{key} must be true or false.")
+        if not isinstance(calendar.get("internal_domains"), list):
+            issues.append(f"{location}.calendar.internal_domains must be a list.")
+        excluded_types = calendar.get("excluded_attendee_types")
+        if not isinstance(excluded_types, list) or not {
+            "room",
+            "resource",
+            "distribution_list",
+            "service_account",
+        }.issubset(set(excluded_types)):
+            issues.append(
+                f"{location}.calendar.excluded_attendee_types must include room, resource, distribution_list, and service_account."
+            )
+        if calendar.get("calendar_payload_sent_to_context") is not False:
+            issues.append(
+                f"{location}.calendar.calendar_payload_sent_to_context must be false."
+            )
+    elif calendar not in (None, {}):
+        warnings.append(f"{location}.calendar is ignored outside calendar_derived mode.")
+
+
 def validate_application(
     item: Any, index: int, issues: list[str], warnings: list[str]
 ) -> None:
@@ -627,6 +786,79 @@ def validate_context_operation(
     validate_evidence(item.get("evidence"), location, issues, warnings)
 
 
+def validate_context_usage_against_scope(
+    operations: list[Any], scope: Any, issues: list[str]
+) -> None:
+    if not isinstance(scope, dict):
+        return
+    budget = scope.get("context_budget")
+    if not isinstance(budget, dict):
+        return
+
+    endpoint_budgets = {
+        "/people/retrieve": "max_people_retrievals",
+        "/brand/retrieve": "max_brand_retrievals",
+        "/utility/prefetch": "max_prefetches",
+        "/web/extract": "max_extracts",
+        "/monitors": "max_monitor_creates",
+    }
+    counts = {key: 0 for key in endpoint_budgets.values()}
+    seen: dict[tuple[str, str], int] = {}
+    prefix = "https://api.context.dev/v1"
+
+    for index, operation in enumerate(operations):
+        if not isinstance(operation, dict) or operation.get("status") in {"failed", "blocked"}:
+            continue
+        endpoint = operation.get("endpoint")
+        if not isinstance(endpoint, str) or not endpoint.startswith(prefix):
+            continue
+        path = endpoint[len(prefix):]
+        budget_key = endpoint_budgets.get(path)
+        if not budget_key:
+            continue
+        counts[budget_key] += 1
+
+        body = operation.get("body") if isinstance(operation.get("body"), dict) else {}
+        if path == "/people/retrieve":
+            identity = (body.get("identifiers") or {}).get("linkedinUrl") if isinstance(body.get("identifiers"), dict) else None
+        elif path == "/brand/retrieve":
+            identity = json.dumps(
+                {key: body.get(key) for key in ("type", "domain", "email", "name", "ticker", "url") if body.get(key)},
+                sort_keys=True,
+            )
+        elif path == "/utility/prefetch":
+            identity = json.dumps(body.get("identifier", {}), sort_keys=True)
+        elif path == "/web/extract":
+            identity = json.dumps(
+                {"url": body.get("url"), "schema": body.get("schema")}, sort_keys=True
+            )
+        else:
+            identity = json.dumps(
+                {
+                    "target": body.get("target"),
+                    "change_detection": body.get("change_detection"),
+                    "schedule": body.get("schedule"),
+                },
+                sort_keys=True,
+            )
+
+        if identity:
+            signature = (path, str(identity).lower())
+            if signature in seen:
+                issues.append(
+                    f"context_operations[{index}] duplicates context_operations[{seen[signature]}] for the same canonical Context target/configuration."
+                )
+            else:
+                seen[signature] = index
+
+    for budget_key, used in counts.items():
+        limit = budget.get(budget_key)
+        if isinstance(limit, int) and not isinstance(limit, bool) and used > limit:
+            issues.append(
+                f"Context operation ledger uses {used} {budget_key} calls but discovery_scope allows {limit}."
+            )
+
+
 def validate(packet: Any) -> tuple[list[str], list[str]]:
     issues: list[str] = []
     warnings: list[str] = []
@@ -649,6 +881,10 @@ def validate(packet: Any) -> tuple[list[str], list[str]]:
         issues.append("executive_brief must be a non-empty list.")
 
     validate_data_health(packet.get("data_health"), issues)
+
+    discovery_scope = packet.get("discovery_scope")
+    if discovery_scope is not None:
+        validate_discovery_scope(discovery_scope, issues, warnings)
 
     accounts = packet.get("accounts", [])
     people = packet.get("people", [])
@@ -718,6 +954,11 @@ def validate(packet: Any) -> tuple[list[str], list[str]]:
         context_operations = []
     for index, item in enumerate(context_operations):
         validate_context_operation(item, index, issues, warnings)
+    if context_operations and discovery_scope is None:
+        issues.append(
+            "Context-backed person or company work requires discovery_scope with intake counts and a unique-identity call budget."
+        )
+    validate_context_usage_against_scope(context_operations, discovery_scope, issues)
 
     updates = packet.get("system_updates", [])
     if not isinstance(updates, list):

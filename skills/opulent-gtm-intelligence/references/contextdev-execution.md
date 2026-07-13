@@ -39,6 +39,8 @@ The corresponding packet field is `context_operations[]`. It must preserve:
 
 Use natural language for the operator. Use the API contract for the runtime. Always provide both.
 
+Load `people-scope-routing.md` before a person or cohort run. Context usage must be planned from unique eligible identities, not list rows or calendar invitations. A non-recurring single-person run normally uses no more than one known-person retrieval, one company retrieval, one decision extraction, and zero monitors. Cohorts reuse one company result per canonical domain and run deep extraction only for passing companies.
+
 ## Runtime and authentication
 
 - Base URL: `https://api.context.dev/v1`
@@ -143,6 +145,8 @@ Content-Type: application/json
 ```
 
 Expected response surfaces include profile, education, experience, skills, URLs analyzed, source-attempt status, and metadata. This endpoint enriches a known person. Use a connected Clodo-style service for natural-language discovery such as `health-system CFOs who led a turnaround and recently changed jobs`.
+
+For a list or calendar-derived cohort, deduplicate LinkedIn URLs before calling this endpoint. Never send a full attendee list in one natural-language query. Call only for eligible public identities and keep calendar provenance inside Opulent.
 
 ### Company identity and cache warmup
 
@@ -280,6 +284,7 @@ These plays take inspiration from Clodo's public `Search -> Understand -> Enrich
 - A `200` can still be sparse. Preserve `Unknown`; never manufacture missing facts.
 - Management calls for monitors are free; monitor runs and extraction/crawl work consume credits according to the current plan and endpoint. Query `GET /monitors/credit-usage` and `GET /monitors/limits` rather than hard-coding a volatile allowance.
 - Budget credits per stage and stop expensive enrichment when the gate fails.
+- Report Context calls per eligible person and credits per prioritized person. A cache hit or gated skip is a successful efficiency outcome, not missing work.
 
 ## Legal and fair-use boundary
 

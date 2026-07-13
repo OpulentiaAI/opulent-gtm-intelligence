@@ -1,6 +1,6 @@
 ---
 name: opulent-gtm-intelligence
-description: Builds executable, evidence-backed top-of-funnel and GTM intelligence with Context.dev, Opulent search and fetch, Browserbase, computer, scheduler, connectors, and Clodo-style natural-language discovery. Use for company and person enrichment, target-account or candidate discovery, relationship mapping, recent-signal extraction, change monitors, competitive intelligence, pre-call briefs, scheduled GTM applications, polished dossiers, and policy-controlled CRM updates.
+description: Builds executable, evidence-backed top-of-funnel and GTM intelligence for one named person, user-supplied lists or groups, and people extracted from bounded calendar windows. Uses Context.dev efficiently with identity deduplication, shared-company enrichment, explicit call budgets, Opulent search and fetch, Browserbase, computer, scheduler, connectors, and Clodo-style natural-language discovery. Use for company or person enrichment, target-account or candidate discovery, calendar-attendee intelligence, relationship mapping, recent-signal extraction, change monitors, competitive intelligence, pre-call briefs, scheduled GTM applications, polished dossiers, and policy-controlled CRM updates.
 ---
 
 # Opulent GTM Intelligence
@@ -13,6 +13,7 @@ Load the smallest complete reference set for the requested branch:
 
 - Always read `references/runtime-tools.md`, `references/research-workflow.md`, and `references/delivery-contract.md`.
 - Read `references/contextdev-execution.md` for every company or person enrichment, public-web extraction, lead-scoring, Context monitor, or top-of-funnel application. Every Context capability must include its natural-language job and exact API method, endpoint, and parameters.
+- Read `references/people-scope-routing.md` whenever the request concerns one person, several named people, an uploaded/CRM list, or people derived from calendar events. Choose the intake mode and Context call budget before enrichment.
 - Read `references/gtm-engineering-system.md` for enrichment design, signals, scheduled applications, evaluation, or CRM automation.
 - Read `references/signal-intelligence.md` for every signal, pre-call, account-prioritization, monitor, or recurring-enrichment run. A signal must prove a recent delta, not merely repeat static context.
 - Read `references/relationship-intelligence.md` for every company, person, candidate, account, event, or outreach run. Relationship paths are a core enrichment lane, not an optional appendix.
@@ -24,7 +25,7 @@ Load the smallest complete reference set for the requested branch:
 ## Core operating loop
 
 1. Inspect existing workspace artifacts, prior research, CRM exports, email threads, client files, and saved packets. Reconcile before creating duplicate work.
-2. State the decision and bottleneck the workflow must support: whom to target or recruit, why now, how to differentiate, what to update, or what should run repeatedly.
+2. State the decision and bottleneck the workflow must support, then select `single_person`, `user_list`, or `calendar_derived`. Normalize and deduplicate the people before any Context call.
 3. Build or confirm a compact client profile: offer, ICP, geography, exclusions, proof points, known competitors, desired output, system of record, and protected fields.
 4. Audit the data foundation. Resolve identities, deduplicate, measure coverage and staleness, and define field ownership before activation.
 5. Select `quick`, `deep`, or `deeper` mode from `references/research-workflow.md`. Set record, tool-call, time, and spend budgets plus completion criteria.
@@ -50,6 +51,7 @@ Load the smallest complete reference set for the requested branch:
 - Never claim a warm introduction, mutual relationship, client status, or placement without relationship-specific evidence.
 - Never accept an enrichment provider's rank or value without preserving field-level provenance, freshness, and conflict status.
 - Never write `use Context to enrich` without the operator's natural-language job, method, full endpoint, params/body, expected response, Opulent route, request tags, write policy, execution status, and receipt when executed.
+- Never spend Context calls by input row. Retrieve each verified LinkedIn identity once, each canonical company once, and extract a decision schema once per passing unique company. Do not send calendar titles, bodies, notes, links, attendee lists, event IDs, or calendar IDs to Context.
 - Never describe a proposed schedule or CRM update as active or verified without an installation/run identifier or read-after-write receipt.
 - Never call a static fact a signal. Require a previous state, current state, dated delta, or mark the previous state `Unknown` and keep it out of the act-now band.
 - Cap company fit at 30/100 when the product or service cannot be verified.
@@ -73,6 +75,7 @@ Finish only when:
 - competitor claims that drive positioning are spot-checked against primary sources;
 - relationship paths include type, strength, confidence, evidence, freshness, and a truthful activation plan;
 - enrichment coverage, conflicts, freshness, and field provenance are visible;
+- the discovery scope shows source mode, funnel counts, exclusions, identity keys, and a Context budget whose people, company, extraction, and monitor ceilings are based on unique eligible identities;
 - every included scheduled application has an incremental cursor, idempotency, budget, review gate, metric, and stop condition;
 - every executed CRM mutation has a policy level, field diff, returned identifier, and verification result;
 - unknowns and blocked sources are visible;

@@ -15,6 +15,7 @@ Lead with the recent change, then the decision and its evidence.
 9. **Conversation kit**: opening line, three discovery questions, proof to use, objection response, and a safe call to action.
 10. **Scheduled GTM applications**: versioned trigger, cursor, budget, review gate, metric, stop condition, and run state.
 11. **Context execution ledger**: every Context-backed capability in natural language plus method, full endpoint, params/body, expected response, Opulent route, request tags, write policy, status, evidence, and receipt.
+12. **Discovery scope**: single-person, user-list, or calendar-derived source; funnel counts; identity keys; exclusions; calendar privacy settings when relevant; and a Context call budget based on unique eligible people and companies.
 11. **CRM update ledger**: proposed or executed field diffs, policy, identifiers, and read-after-write verification.
 12. **Monday-morning actions**: the smallest set of actions that moves the pipeline.
 13. **Verification appendix**: sources, confidence, freshness, blocked sources, and system-write receipts.
@@ -156,6 +157,31 @@ This map should demonstrate background work compounding into an edge for both bu
       "evidence": [{"url": "https://example.org/source", "date": "2026-07-09"}]
     }
   ],
+  "discovery_scope": {
+    "mode": "user_list",
+    "source": "user_identified",
+    "source_ref": "Named target group in the request",
+    "objective": "Prioritize the supplied people without re-enriching shared companies.",
+    "requested_count": 12,
+    "candidate_count": 12,
+    "deduplicated_count": 10,
+    "eligible_count": 7,
+    "unique_company_count": 4,
+    "excluded_count": 3,
+    "recurring": false,
+    "identity_keys": ["linkedin_url", "work_email", "name_and_company"],
+    "exclusions": ["duplicate", "suppressed", "unresolved identity"],
+    "context_budget": {
+      "max_people_retrievals": 7,
+      "max_brand_retrievals": 4,
+      "max_prefetches": 4,
+      "max_extracts": 2,
+      "max_monitor_creates": 0,
+      "company_result_reuse": true,
+      "skip_if_fresh": true,
+      "cache_policy": "Reuse fresh people and companies; refresh only volatile decision fields."
+    }
+  },
   "context_operations": [
     {
       "natural_language_job": "Watch the target's public leadership and careers surfaces for a new executive, vacancy, or retained-search mandate and return before/after evidence.",

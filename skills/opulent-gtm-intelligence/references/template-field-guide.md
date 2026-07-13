@@ -31,6 +31,7 @@ The command writes:
 | Public examples | organization, relationship label, evidence, demonstration value | Add proven client-relevant context without overstating it |
 | Conversation kits | target, context, hypothesis, proof, questions, CTA | Turn intelligence into a usable conversation |
 | Context operations | natural-language job, method, endpoint, params/body, expected response, route, tags, write policy, status, receipt | Make public-web enrichment and monitoring executable and auditable |
+| Discovery scope | source mode, funnel counts, identity keys, exclusions, calendar controls, Context call ceilings | Show who entered the workflow and why the enrichment budget is efficient |
 | Applications | name, version, trigger, scope, cursor, budget, policy, metric, stop conditions | Show the recurring operating system, not only the current snapshot |
 | System updates | system, action, target, field diff, policy, idempotency, result, verification | Make autonomous CRM behavior auditable |
 | Sources | derived automatically from evidence | Make every important claim auditable |

@@ -37,6 +37,8 @@ Confirm:
 
 Inspect the system of record before discovery. Measure duplicates, unmatched people or companies, required-field coverage, staleness, suppressions, and protected human-owned fields. Define canonical identity keys and field ownership before proposing CRM updates.
 
+Load `people-scope-routing.md` and declare whether the input is one person, a user-supplied list/group, or a calendar-derived cohort. Record the funnel counts and Context ceilings before enrichment. For calendars, bound the calendar and timezone, preserve event provenance privately, and exclude ineligible attendee types before any public-web call.
+
 When Context is available, load `contextdev-execution.md`. Prefetch and resolve known companies before broad enrichment. For every Context-backed step, state the natural-language job followed by the exact method, endpoint, params/body, expected response, request tags, Opulent route, and write policy.
 
 Research the client with the same rigor as targets. A competitive matrix is invalid when the client row comes from memory.

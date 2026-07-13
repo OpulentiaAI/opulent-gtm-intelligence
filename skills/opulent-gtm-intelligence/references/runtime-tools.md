@@ -30,6 +30,8 @@ Load `contextdev-execution.md` before using Context. Every Context operation mus
 
 Use Clodo or an equivalent connector for natural-language persona search, niche experts, former employees, champions who moved, decision makers, and candidates whose fit depends on messy multi-source criteria. Save the original query, result rationale, source set, freshness, and returned contact provenance. Treat rank as a hypothesis until the evidence that drives action is verified. Resolve known LinkedIn results through Context `/people/retrieve`, resolve their companies through `/brand/retrieve`, and fact-check action-driving fields before activation.
 
+Before routing, load `people-scope-routing.md` and choose `single_person`, `user_list`, or `calendar_derived`. A named person gets a precision path. A list is deduplicated and grouped by company. A calendar cohort comes from an explicit time window and excludes self, internal attendees, declined attendees, rooms, resources, distribution lists, and service accounts by default. Never send private calendar content to a public-web provider.
+
 ## Search and fetch
 
 Use `web_search` for breadth. Run independent query waves concurrently when the runtime supports it. Preserve title, URL, snippet, provider, and published date.
