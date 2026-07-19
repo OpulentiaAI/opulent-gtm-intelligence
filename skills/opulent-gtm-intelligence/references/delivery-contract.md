@@ -2,6 +2,15 @@
 
 Lead with the recent change, then the decision and its evidence.
 
+## Two-layer rendering standard
+
+Every packet field remains visible somewhere — that rule is unchanged — but the report renders in two layers with different audiences:
+
+- **Decision layer (top, always expanded):** what a client reads and acts on. Prose executive brief, the action queue, connections and warm paths written as plain sentences, priority targets, signals as "what changed" narrative, and the analytics dashboards. Plain-language headings and labels only — no raw field names, API contracts, cursors, idempotency keys, funnel arithmetic, or receipt identifiers in this layer. Status honesty stays visible here in concise form (for example, "introduction drafted — awaiting Dana's approval; not sent").
+- **Audit layer (bottom, grouped and collapsed by default):** the complete provenance record — execution and workflow timelines, data health, discovery scope and budgets, Context operation contracts, system-update ledgers, intro stage receipts, store manifest details, and the source appendix. Collapsed sections must expand on interaction and in print. Nothing is deleted or abbreviated to the point of changing meaning; it is demoted, not removed.
+
+Chat deliverables follow the same rule: answer in prose with actions and connections first; put the evidence trail after, not interleaved.
+
 ## Default packet
 
 1. **Change brief**: the three to five highest-leverage changes since the last touch, each with before/after state, score, and conversation implication.

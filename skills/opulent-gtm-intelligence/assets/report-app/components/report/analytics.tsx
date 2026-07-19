@@ -44,7 +44,7 @@ export function Analytics({ targets, signals, dataHealth }: { targets: RecordVal
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <ChartCard title="Target rating distribution" note="Existing fit_score values, ranked by target.">
+      <ChartCard title="Target rating distribution" note="Recorded fit scores, ranked by target.">
         <BarChart className="chart" data={ratings.length ? ratings : [{ name: "No targets", rating: 0 }]} config={targetConfig} bloom="low" animate={false}>
           <XAxis dataKey="name" /><YAxis /><Tooltip labelKey="name" /><Bar dataKey="rating" variant="hatched" />
         </BarChart>
@@ -56,7 +56,7 @@ export function Analytics({ targets, signals, dataHealth }: { targets: RecordVal
       </ChartCard>
       <ChartCard title="Confidence composition" note="Composition across targets and signals; no synthetic confidence is introduced.">
         <PieChart className="chart" data={counts} config={confidenceConfig} dataKey="count" nameKey="confidence" innerRadius={0.52} bloom="low" animate={false}>
-          <Pie variant="dotted" /><Legend isClickable align="center" /><Tooltip labelKey="confidence" />
+          <Pie variant="dotted" /><Legend align="center" /><Tooltip labelKey="confidence" />
         </PieChart>
       </ChartCard>
       <ChartCard title="Data-health composition" note="Coverage, inverse duplicate/stale rates, and conflicts normalized by reviewed records.">

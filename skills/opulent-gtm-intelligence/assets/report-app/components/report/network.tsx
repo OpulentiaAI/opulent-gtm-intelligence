@@ -8,7 +8,6 @@ import {
   type InteractionRollup,
   type RecordValue,
   type RelationshipEdge,
-  type WarmPath,
 } from "@/lib/report"
 
 const bandStyles: Record<string, string> = {
@@ -73,7 +72,7 @@ export function RelationshipLedger({ edges }: { edges: RelationshipEdge[] }) {
   )
 }
 
-function HopCard({ edge, index }: { edge: RelationshipEdge; index: number }) {
+export function HopCard({ edge, index }: { edge: RelationshipEdge; index: number }) {
   return (
     <article className="rounded-xl border bg-muted/30 p-4">
       <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -96,107 +95,8 @@ function HopCard({ edge, index }: { edge: RelationshipEdge; index: number }) {
   )
 }
 
-const warmPathKeys = [
-  "target",
-  "target_company",
-  "objective",
-  "status",
-  "requester",
-  "connector",
-  "hops",
-  "band",
-  "min_edge_strength",
-  "evidence_tier",
-  "activation_mode",
-  "edges",
-  "risk",
-  "next_action",
-]
-
-function Connector() {
+export function HopConnector() {
   return <div aria-hidden="true" className="ml-6 h-4 w-px bg-border" />
-}
-
-export function WarmPaths({ paths }: { paths: WarmPath[] }) {
-  if (!paths.length) {
-    return <div className="card p-5 text-sm text-muted-foreground">No warm-path computations are recorded in this packet.</div>
-  }
-  return (
-    <div className="grid gap-4">
-      {paths.map((path, index) => {
-        const found = path.status === "path_found"
-        const edges = records(path.edges) as RelationshipEdge[]
-        const nextAction = objectValue(path.next_action)
-        const extras = Object.keys(path).filter((key) => !warmPathKeys.includes(key))
-        return (
-          <article className="card p-5" id={`warm-path-${index}`} key={index}>
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="eyebrow mb-2">
-                  warm_paths[{index}]{path.target_company ? ` · ${String(path.target_company)}` : ""}
-                </p>
-                <h3 className="text-lg font-medium tracking-tight">{String(path.target || "Unnamed target")}</h3>
-              </div>
-              <span className={cn("pill", !found && "border-dashed text-muted-foreground")}>{found ? "Path found" : "No verified path"}</span>
-            </div>
-            {path.objective != null && path.objective !== "" && <p className="prose-copy mt-3 text-sm">{String(path.objective)}</p>}
-
-            {found ? (
-              <>
-                <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-                  <span>Hops <strong className="tabular-nums text-foreground">{numberValue(path.hops)}</strong></span>
-                  <span className="inline-flex items-center gap-1.5">Band <BandPill band={typeof path.band === "string" ? path.band : undefined} /></span>
-                  <span>Min edge strength <strong className="tabular-nums text-foreground">{numberValue(path.min_edge_strength)}</strong></span>
-                  <span>Evidence tier <strong className="text-foreground">{String(path.evidence_tier || "—")}</strong></span>
-                  <span>Activation <strong className="text-foreground">{String(path.activation_mode || "—").replaceAll("_", " ")}</strong></span>
-                </div>
-                <ol className="mt-5 grid gap-0" aria-label={`Hop chain from ${String(path.requester || "requester")} to ${String(path.target || "target")}`}>
-                  <li><span className="pill">Requester · {String(path.requester || "Unknown")}</span></li>
-                  {edges.map((edge, edgeIndex) => (
-                    <li key={edgeIndex}>
-                      <Connector />
-                      <HopCard edge={edge} index={edgeIndex} />
-                    </li>
-                  ))}
-                  <li>
-                    <Connector />
-                    <span className="pill">Target · {String(path.target || "Unknown")}</span>
-                  </li>
-                </ol>
-              </>
-            ) : (
-              <>
-                <p className="mt-4 text-sm">
-                  No verified first-party path to this target exists in the pooled network. This entry is preserved so the absence stays auditable; no familiarity is implied.
-                </p>
-                <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-                  <span>Activation fallback <strong className="text-foreground">{String(path.activation_mode || "—").replaceAll("_", " ")}</strong></span>
-                </div>
-              </>
-            )}
-
-            {path.risk != null && path.risk !== "" && (
-              <p className="mt-4 text-sm">
-                <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Path risk · </span>
-                {String(path.risk)}
-              </p>
-            )}
-            {nextAction && (
-              <div className="mt-4 rounded-xl bg-muted/45 p-4">
-                <p className="eyebrow mb-2">Next action</p>
-                <JsonGrid value={nextAction} />
-              </div>
-            )}
-            {extras.length > 0 && (
-              <div className="mt-4">
-                <JsonGrid value={path} omit={warmPathKeys} />
-              </div>
-            )}
-          </article>
-        )
-      })}
-    </div>
-  )
 }
 
 const introStatusStyle: Record<string, string> = {

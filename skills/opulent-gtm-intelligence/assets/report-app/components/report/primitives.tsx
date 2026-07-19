@@ -29,6 +29,33 @@ function label(value: string) {
   return value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())
 }
 
+export function plainLabel(value: string) {
+  const text = value.replaceAll("_", " ")
+  return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
+export function Fold({
+  summary,
+  hint,
+  tone = "block",
+  children,
+}: {
+  summary: string
+  hint?: string
+  tone?: "block" | "inline"
+  children: React.ReactNode
+}) {
+  return (
+    <details className={tone === "block" ? "fold card" : "fold-inline"}>
+      <summary>
+        <span className="fold-title">{summary}</span>
+        {hint && <span className="fold-hint">{hint}</span>}
+      </summary>
+      <div className="fold-body">{children}</div>
+    </details>
+  )
+}
+
 export function JsonValue({ value }: { value: Json }) {
   if (value === null || value === "") return <span className="text-muted-foreground">Not recorded</span>
   if (typeof value === "boolean") return <span>{value ? "Yes" : "No"}</span>
@@ -56,6 +83,60 @@ export function JsonGrid({ value, omit = [] }: { value: RecordValue; omit?: stri
         </div>
       ))}
     </dl>
+  )
+}
+
+const narrativeTitleKeys = ["name", "title", "target", "organization", "question", "system"]
+const narrativePillKeys = ["status", "confidence", "category", "relationship_label"]
+
+/**
+ * Decision-layer card list: named prose fields render expanded with plain
+ * labels; every remaining field stays available inside a collapsed details
+ * block, so nothing recorded is dropped.
+ */
+export function NarrativeCards({
+  items,
+  lead,
+  labels = {},
+  empty = "None recorded.",
+  detailsSummary = "Full record",
+}: {
+  items: RecordValue[]
+  lead: string[]
+  labels?: Record<string, string>
+  empty?: string
+  detailsSummary?: string
+}) {
+  if (!items.length) return <div className="card p-5 text-sm text-muted-foreground">{empty}</div>
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      {items.map((item, index) => {
+        const titleKey = narrativeTitleKeys.find((key) => typeof item[key] === "string" && item[key])
+        const pillKey = narrativePillKeys.find((key) => key !== titleKey && typeof item[key] === "string" && item[key])
+        const leadKeys = lead.filter((key) => key !== titleKey && key !== pillKey && item[key] != null && item[key] !== "")
+        const omitted = [titleKey, pillKey, ...leadKeys].filter((key): key is string => Boolean(key))
+        const rest = Object.keys(item).filter((key) => !omitted.includes(key))
+        return (
+          <article className="card p-5" key={index}>
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="font-medium tracking-tight">{titleKey ? String(item[titleKey]) : `Record ${index + 1}`}</h3>
+              {pillKey && <span className="pill">{plainLabel(String(item[pillKey]))}</span>}
+            </div>
+            {leadKeys.map((key) => (
+              <div className="mt-3" key={key}>
+                <p className="eyebrow mb-1">{labels[key] ?? plainLabel(key)}</p>
+                <div className="text-sm leading-relaxed"><JsonValue value={item[key]} /></div>
+              </div>
+            ))}
+            {rest.length > 0 && (
+              <Fold summary={detailsSummary} tone="inline">
+                <JsonGrid value={item} omit={omitted} />
+              </Fold>
+            )}
+          </article>
+        )
+      })}
+    </div>
   )
 }
 

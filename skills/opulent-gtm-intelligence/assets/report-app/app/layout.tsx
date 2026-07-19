@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import "./globals.css"
+import { PrintDetails } from "@/components/report/print-details"
 import { packet } from "@/lib/report"
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         <div className="page-grid" aria-hidden="true" />
+        <PrintDetails />
         {children}
       </body>
     </html>

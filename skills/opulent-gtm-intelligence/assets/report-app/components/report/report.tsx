@@ -1,11 +1,12 @@
 import Link from "next/link"
 import { Analytics } from "./analytics"
-import { NetworkHealthSection } from "./network-health"
-import { IntroLedger, RelationshipLedger, WarmPaths } from "./network"
-import { JsonGrid, JsonValue, RecordCards, Section } from "./primitives"
-import { Timeline } from "./timeline"
+import { AuditLayer } from "./audit"
+import { Connections } from "./connections"
+import { NetworkDashboards } from "./network-health"
+import { JsonValue, NarrativeCards, Section } from "./primitives"
+import { WhatChanged } from "./signals"
+import { actionQueue, type ActionItem } from "@/lib/actions"
 import {
-  evidenceItems,
   interactionRollup,
   introLedger,
   networkHealth,
@@ -18,12 +19,34 @@ import {
   targets,
   warmPaths,
 } from "@/lib/report"
-import { deriveAgentExecutionTimeline, deriveWorkflowTimeline } from "@/lib/timelines"
 
 const reportTargets = targets()
 const signals = records(packet.signals)
 const relationships = relationshipEdges()
 const dataHealth = (packet.data_health && typeof packet.data_health === "object" && !Array.isArray(packet.data_health) ? packet.data_health : {})
+
+function ActionQueue({ items }: { items: ActionItem[] }) {
+  if (!items.length) {
+    return <div className="card p-5 text-sm text-muted-foreground">No next actions are recorded in this packet.</div>
+  }
+  return (
+    <ol className="grid gap-3">
+      {items.map((item, index) => (
+        <li className="card flex gap-5 p-5" key={index}>
+          <span className="font-mono text-xs text-muted-foreground">{String(index + 1).padStart(2, "0")}</span>
+          <div className="min-w-0">
+            <p className="leading-relaxed">
+              <strong className="font-medium">{item.action}.</strong>{" "}
+              {item.owner} owns this{item.when ? `, due ${item.when}` : "; timing not recorded"}
+              {item.why ? ` — ${item.why}` : "."}
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">{item.context}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  )
+}
 
 function TargetCards() {
   return (
@@ -62,14 +85,13 @@ function TargetCards() {
 }
 
 export function Report() {
-  const sources = evidenceItems(packet)
-  const executionTimeline = deriveAgentExecutionTimeline(packet)
-  const workflowTimeline = deriveWorkflowTimeline(packet)
+  const unknownList = Array.isArray(packet.unknowns) ? packet.unknowns : []
+  const unknownRecords = records(packet.unknowns)
   return (
     <main className="shell">
       <nav className="mb-16 flex flex-wrap items-center justify-between gap-4 border-b pb-4 text-xs text-muted-foreground">
         <span className="eyebrow">Opulent intelligence</span>
-        <div className="flex flex-wrap gap-x-4 gap-y-2"><a href="#analysis">Analysis</a><a href="#execution">Execution</a><a href="#workflow">Workflow</a><a href="#network">Network</a><a href="#warm-paths">Warm paths</a><a href="#intro-ledger">Intros</a><a href="#targets">Targets</a><a href="#sources">Sources</a></div>
+        <div className="flex flex-wrap gap-x-4 gap-y-2"><a href="#actions">Actions</a><a href="#connections">Connections</a><a href="#targets">Targets</a><a href="#changes">Changes</a><a href="#dashboards">Dashboards</a><a href="#audit">Audit</a></div>
       </nav>
       <header className="measure">
         <div className="mb-6 flex flex-wrap gap-2"><span className="pill">{packet.mode}</span><span className="pill">{packet.generated_at}</span></div>
@@ -77,78 +99,78 @@ export function Report() {
         <p className="lede mt-8">{packet.objective}</p>
       </header>
 
-      <Section id="changes" label="01 · Decision brief" title="What matters now" description="Executive interpretation preserved directly from the validated packet.">
+      <Section id="brief" label="01 · Decision brief" title="What matters now" description="Executive interpretation preserved directly from the validated packet.">
         <ol className="grid gap-3">
           {strings(packet.executive_brief).map((item, index) => <li className="card flex gap-5 p-5" key={index}><span className="font-mono text-xs text-muted-foreground">0{index + 1}</span><p className="leading-relaxed">{item}</p></li>)}
         </ol>
       </Section>
 
-      <Section id="analysis" label="02 · Dither Kit" title="Analysis & Statistics" description="Deterministic views of packet ratings, signal components, confidence, and data health. Charts use committed Dither Kit source components.">
-        <Analytics targets={reportTargets} signals={signals} dataHealth={dataHealth} />
+      <Section id="actions" label="02 · Action queue" title="Do this next" description="Every recorded next step, in date order, with its owner and a one-clause why. Composed only from the packet's recorded actions and pending introductions.">
+        <ActionQueue items={actionQueue()} />
       </Section>
 
-      <Section id="execution" label="03 · Execution provenance" title="Agent execution timeline" description="Observable stages derived only from packet records and receipts. This is execution provenance, not hidden chain-of-thought.">
-        <Timeline steps={executionTimeline} />
+      <Section id="connections" label="03 · Warm access" title="Connections" description="Who can open each door, in plain sentences. Targets without a verified path are stated outright; per-hop evidence and scoring sit one click deeper.">
+        <Connections intros={introLedger()} paths={warmPaths()} />
       </Section>
 
-      <Section id="workflow" label="04 · Enforced route" title="Workflow timeline" description="The required resolve-to-delivery route, with each gate satisfied, proposed, blocked, or left not applicable according to packet evidence.">
-        <Timeline steps={workflowTimeline} />
-      </Section>
-
-      <Section id="network" label="05 · Pooled graph" title="Network health" description="Coverage of the consented first-party network and per-source discovery. Missing or unauthenticated sources are reported as-is; no ingestion is implied for them.">
-        <NetworkHealthSection health={networkHealth()} />
-      </Section>
-
-      <Section id="warm-paths" label="06 · Verified access" title="Warm paths" description="Activation routes computed only from verified pooled-network edges. Targets without a verified path are reported explicitly rather than hidden.">
-        <WarmPaths paths={warmPaths()} />
-      </Section>
-
-      <Section id="intro-ledger" label="07 · Consent ledger" title="Intro ledger" description="Consent-gated introduction workflow with stage receipts. A proposed or connector-approved entry is not a sent introduction; only sent or completed reads as done.">
-        <IntroLedger entries={introLedger()} />
-      </Section>
-
-      <Section id="health" label="08 · Foundation" title="Data health">
-        <div className="card p-5"><JsonGrid value={dataHealth} /></div>
-      </Section>
-
-      <Section id="targets" label="09 · Priority queue" title="Accounts & people" description="Every target links to its statically exported enrichment dossier.">
+      <Section id="targets" label="04 · Priority queue" title="Priority targets" description="Ranked accounts and people. Every target links to its statically exported dossier.">
         <TargetCards />
       </Section>
 
-      <Section id="relationships" label="10 · Routes" title="Relationship intelligence" description="Edge bands and strength components are shown exactly as scored in the packet."><RelationshipLedger edges={relationships} /></Section>
-      <Section id="signals" label="11 · Change ledger" title="Signals"><RecordCards items={signals} empty="No signals recorded." /></Section>
-      <Section id="examples" label="12 · Public proof" title="Public examples"><RecordCards items={records(packet.public_examples)} empty="No public examples recorded." /></Section>
-      <Section id="conversations" label="13 · Activation" title="Conversation kits"><RecordCards items={records(packet.conversation_kits)} empty="No conversation kits recorded." /></Section>
-      <Section id="competitors" label="14 · Market" title="Competitors"><RecordCards items={records(packet.competitors)} empty="No competitors recorded." /></Section>
-
-      <Section id="unknowns" label="15 · Open questions" title="Unknowns">
-        <div className="card p-5"><JsonValue value={packet.unknowns || []} /></div>
+      <Section id="changes" label="05 · Change ledger" title="What changed" description="Each routed signal as a before-and-after story with its conversation implication. Score components, dates, and expiry sit in per-signal details.">
+        <WhatChanged signals={signals} />
       </Section>
 
-      <Section id="applications" label="16 · Operating system" title="Scheduled GTM applications"><RecordCards items={records(packet.applications)} empty="No applications recorded." /></Section>
-
-      <Section id="discovery" label="17 · Intake" title="Discovery scope">
-        <div className="card p-5"><JsonValue value={packet.discovery_scope || {}} /></div>
+      <Section id="proof" label="06 · Public proof" title="Proof you can use">
+        <NarrativeCards
+          detailsSummary="Evidence"
+          empty="No public examples recorded."
+          items={records(packet.public_examples)}
+          labels={{ demonstration_value: "What it demonstrates" }}
+          lead={["demonstration_value"]}
+        />
       </Section>
 
-      <Section id="context" label="18 · Execution contract" title="Context operations" description="Natural-language job and exact API contract remain visible together.">
-        <RecordCards items={records(packet.context_operations)} empty="No Context operations recorded." />
+      <Section id="conversations" label="07 · Activation" title="Conversation kits">
+        <NarrativeCards
+          empty="No conversation kits recorded."
+          items={records(packet.conversation_kits)}
+          labels={{ cta: "Call to action", objection_response: "If they push back" }}
+          lead={["context", "hypothesis", "proof", "questions", "objection_response", "cta"]}
+        />
       </Section>
 
-      <Section id="updates" label="19 · Governed mutations" title="System updates"><RecordCards items={records(packet.system_updates)} empty="No system updates recorded." /></Section>
+      <Section id="competitors" label="08 · Market" title="Competitive view">
+        <NarrativeCards
+          detailsSummary="Evidence"
+          empty="No competitors recorded."
+          items={records(packet.competitors)}
+          labels={{ where_client_wins: "Where we win", where_client_loses: "Where we lose", reframe: "Reframe the comparison" }}
+          lead={["where_client_wins", "where_client_loses", "reframe"]}
+        />
+      </Section>
 
-      <Section id="sources" label="20 · Audit" title="Source appendix" description={`${sources.length} evidence references collected without changing packet provenance.`}>
-        <div className="card divide-y">
-          {sources.map((source, index) => (
-            <div className="grid gap-2 p-4 text-sm md:grid-cols-[3rem_1fr_1fr]" key={index}>
-              <span className="font-mono text-xs text-muted-foreground">{String(index + 1).padStart(2, "0")}</span>
-              <JsonValue value={source.url || source.file_path || source.thread_id || source.app_id || "Evidence"} />
-              <span className="text-xs text-muted-foreground">{source.packet_path}{source.date ? ` · ${source.date}` : ""}</span>
-            </div>
-          ))}
-          {!sources.length && <p className="p-5 text-sm text-muted-foreground">No sources recorded.</p>}
+      <Section id="unknowns" label="09 · Open questions" title="Open questions" description="Unknowns stated without apology; each carries its impact and how to resolve it.">
+        {unknownRecords.length === unknownList.length ? (
+          <NarrativeCards
+            empty="No open questions recorded."
+            items={unknownRecords}
+            labels={{ verification_task: "How to resolve" }}
+            lead={["impact", "verification_task"]}
+          />
+        ) : (
+          <div className="card p-5"><JsonValue value={packet.unknowns || []} /></div>
+        )}
+      </Section>
+
+      <Section id="dashboards" label="10 · Analysis & statistics" title="Dashboards" description="Deterministic Dither Kit views of ratings, signal components, confidence, data health, and the pooled first-party network.">
+        <div className="grid gap-4">
+          <Analytics dataHealth={dataHealth} signals={signals} targets={reportTargets} />
+          <NetworkDashboards health={networkHealth()} />
         </div>
       </Section>
+
+      <AuditLayer label="11 · Provenance" />
     </main>
   )
 }

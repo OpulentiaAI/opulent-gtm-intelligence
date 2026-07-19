@@ -44,8 +44,9 @@ Every account and person dossier repeats the complete target record and target-s
 
 - Preserve Nim's narrow reading measure, zinc-neutral light/dark palette, Geist-like system stack, large vertical rhythm, restrained motion, and rounded inset-ring cards.
 - Let analytics and dense records expand to the responsive wide grid.
-- Put the executive interpretation first, followed by `Analysis & Statistics`.
-- Put the mandatory agent execution and workflow timelines directly after analytics and before detailed targets/ledgers.
+- Render the two layers from `delivery-contract.md`. Decision layer order: executive interpretation, action queue, connections/warm paths in plain sentences, priority targets, signal narrative, `Analysis & Statistics` and network dashboards. Audit layer: one grouped, collapsed-by-default `Audit & provenance` region containing the agent execution timeline, workflow timeline, data health, discovery scope, Context operations, system updates, intro receipts, store manifest, and source appendix; sections expand on interaction and are forced open in print CSS.
+- Decision-layer cards use plain-language labels ("Who can open the door", "Why now", "What to do next"); technical chips (hops, tiers, strengths, thread IDs) appear small or inside per-card collapsed evidence details. Raw generic field grids (unrecognized-field rendering) live inside collapsed details, never open by default in the decision layer.
+- The mandatory timelines remain mandatory — they live in the audit layer.
 - Render timelines as reusable responsive Nim cards on a restrained zinc rail. At 390px, stack status and content without horizontal overflow.
 - Every timeline step uses only `complete`, `proposed`, `blocked`, or `not applicable`. Executed Context requires its receipt; verified writes require result, identifier, and read-after-write verification; browser fallback remains `not applicable` without explicit browser evidence.
 - Call the agent view packet-derived execution provenance or observable workflow steps. Never expose or imply hidden chain-of-thought.
