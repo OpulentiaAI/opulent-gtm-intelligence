@@ -3,3 +3,6 @@ dist/
 *.js.map
 .DS_Store
 .scratch/
+.next/
+out/
+*.tsbuildinfo
