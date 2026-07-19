@@ -22,6 +22,7 @@ Run over the persisted graph store, per priority target:
 5. Rank remaining paths by minimum edge strength, breaking ties by evidence tier, then recency.
 6. Choose the activation mode per `relationship-intelligence.md`: `direct_history`, `warm_introduction`, `shared_context`, `value_first_cold`, or `monitor`.
 7. When nothing survives the gate, emit an explicit `no_verified_path` entry with a fallback mode of `value_first_cold` or `monitor`. Silence is not an acceptable output; the absence of a path is a finding.
+8. When the target itself is an unresolved persona (for example, "the CFO" with no verified identity), pair the `no_verified_path` entry with an `unknowns[]` item naming the identity gap and its verification task, so the packet distinguishes "no route to a known person" from "person not yet identified".
 
 Constraints:
 

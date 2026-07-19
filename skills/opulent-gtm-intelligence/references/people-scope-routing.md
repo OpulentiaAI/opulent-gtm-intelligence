@@ -144,7 +144,7 @@ After eligibility and deduplication, use the same shared-company plan as a user 
 
 Use `network_history` when the user asks to build, refresh, or query the pooled first-party network. Load `network-graph-build.md` and `network-graph-store.md` first.
 
-- Set `source` to `connected_accounts` and `source_ref` to the named member sources (for example, "Jeremy's connected Gmail, calendar, and LinkedIn export").
+- Set `source` to match the actual ingestion route: `connected_accounts` when live connectors supplied the data, `uploaded_list` for an export-file-only drop (email metadata export, calendar export, LinkedIn CSV, CRM export), or `other` with an explanation for a mix. Set `source_ref` to the named member sources (for example, "Jeremy's connected Gmail, calendar, and LinkedIn export").
 - Bound the run by an explicit ingestion window; the default is 24 months. Never scan unbounded history.
 - Name each pooled member and record consent before their sources contribute. Start with one member and expand deliberately.
 - Funnel counts describe unique network contacts after the exclusions: the signed-in member, internal domains, bulk and list senders, rooms, resources, distribution lists, service accounts, and suppressed records.

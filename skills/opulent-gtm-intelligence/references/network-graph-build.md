@@ -31,6 +31,7 @@ Before any ingestion, enumerate the runtime's available connected apps and recor
 - Bound the run by an explicit ingestion window. Default: 24 months.
 - Name the pooled members explicitly. Each member requires recorded consent before their sources contribute edges. The pilot default is a single member; expand membership deliberately, not implicitly.
 - Funnel counts describe network contacts: `requested -> candidates -> deduplicated -> eligible`. Exclusions include internal attendees, bulk senders, suppressed records, rooms, and resources; preserve exclusion reasons by category.
+- Exclusions operate at two levels and both must stay visible: person-level exclusions (suppression, internal identity) reduce the funnel's `eligible_count`, while interaction-level exclusions (bulk_sender, internal, declined_attendee, room_or_resource) gate ledger rows without removing the person. Record the per-category interaction-exclusion counts in the store manifest and surface them in `network_health` (for example as an `exclusion_categories` object) so the funnel arithmetic and the ledger gate can each be audited on their own terms.
 - The Context budget is keyed to eligible unique identities exactly as in `people-scope-routing.md`. Building the graph is a local operation; Context calls are reserved for priority people and companies that pass a gate.
 - A `network_history` packet must include `network_health` with member consent, the window, source statuses, resolution rates, and edge coverage. The validator enforces this.
 
