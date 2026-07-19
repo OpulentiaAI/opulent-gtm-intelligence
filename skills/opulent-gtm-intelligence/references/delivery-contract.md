@@ -9,8 +9,11 @@ Lead with the recent change, then the decision and its evidence.
 3. **Data health**: identity resolution, coverage, duplicates, conflicts, staleness, and protected-field policy.
 4. **Priority queue**: ranked companies and people with score, trigger, relationship path, evidence, angle, owner, and next action.
 5. **Relationship intelligence**: typed one-hop and two-hop paths, evidence strength, activation plan, and risk.
+5a. **Network health**: connector discovery statuses for every candidate source (available, missing, unauthenticated, not required) with blocked reads stated verbatim; pooled members and consent; ingestion window; identity-resolution rate; interaction totals and two-way share; edge coverage by evidence tier and band; and the graph-store manifest reference. `metadata_only` is always shown.
+5b. **Warm paths**: per priority target, the ranked truthful path with requester, connector, per-hop edges, band, weakest-edge strength, activation mode, risk, and next action — or an explicit `no_verified_path` entry with its fallback. Silence about a missing path is prohibited.
+5c. **Introduction ledger**: every proposed introduction with connector consent, draft location and identifier, stage receipts, policy, and risk. A proposed or approved introduction is never rendered as sent.
 6. **Signal ledger**: dated, scored, and expiring before/after changes that altered prioritization or conversation, bundled by account.
-7. **Company and person dossiers**: detailed enrichment, provider provenance, unknowns, relationship context, and source links.
+7. **Company and person dossiers**: detailed enrichment, provider provenance, unknowns, relationship context, interaction rollups when a graph store exists (counts, first/last touch, owners, sources, reciprocity — a zero rollup renders honestly), and source links.
 8. **Competitive view**: atomic matrix plus where the client wins, loses, and should reframe.
 9. **Conversation kit**: opening line, three discovery questions, proof to use, objection response, and a safe call to action.
 10. **Scheduled GTM applications**: versioned trigger, cursor, budget, review gate, metric, stop condition, and run state.

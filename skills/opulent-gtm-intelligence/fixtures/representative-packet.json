@@ -6,7 +6,8 @@
   "executive_brief": [
     "A newly announced regional expansion creates a time-bound operating-leadership conversation.",
     "Acme Health is the highest-rated account at 88/100 with verified first-party evidence.",
-    "Jordan Lee is the strongest person route, but event coattendance must not be described as a personal relationship.",
+    "The pooled first-party network reaches Jordan Lee through one verified two-hop path, and the connector has approved an introduction draft.",
+    "CRM history is a blocked ingestion source; connecting it would upgrade engagement evidence for 208 companies.",
     "The competitive opening is Northstar's implementation model rather than generic strategy positioning.",
     "Request an account-owner review this week before drafting outreach."
   ],
@@ -17,6 +18,64 @@
     "stale_rate": 8,
     "conflicts": 1,
     "protected_field_policy": "Human-owned opportunity and suppression fields are review-only."
+  },
+  "network_health": {
+    "metadata_only": true,
+    "window_start": "2024-07-01",
+    "window_end": "2026-07-13",
+    "members": [
+      {
+        "name": "Northstar principal",
+        "role": "Principal",
+        "consent": true,
+        "sources_connected": ["gmail", "calendar", "linkedin_export"]
+      }
+    ],
+    "sources": [
+      {
+        "source": "gmail",
+        "status": "available",
+        "ingested": true,
+        "interactions_ingested": 4210,
+        "cursor": "history-812",
+        "note": "Headers only; bodies and subjects are never ingested."
+      },
+      {
+        "source": "calendar",
+        "status": "available",
+        "ingested": true,
+        "interactions_ingested": 312,
+        "cursor": "2026-07-12T00:00:00Z",
+        "note": "Attendees and timestamps only under the calendar minimization rules."
+      },
+      {
+        "source": "linkedin_export",
+        "status": "available",
+        "ingested": true,
+        "interactions_ingested": 0,
+        "note": "986 connections imported as Tier C linkedin_connection edges."
+      },
+      {
+        "source": "crm",
+        "status": "missing",
+        "ingested": false,
+        "blocked_read": "No CRM connector discovered and no export supplied; engagement history is unavailable."
+      }
+    ],
+    "people_resolved": 512,
+    "companies_resolved": 208,
+    "identity_resolution_rate": 91,
+    "interactions_total": 4522,
+    "two_way_share": 46,
+    "edges_total": 640,
+    "edge_tier_coverage": {"A": 310, "B": 124, "C": 201, "D": 5},
+    "band_distribution": {"strong": 42, "familiar": 130, "weak": 260, "unknown": 208},
+    "store_manifest": {
+      "schema_version": "1.0.0",
+      "path": "graph/store-manifest.json",
+      "last_run_at": "2026-07-13T11:45:00Z",
+      "runs": 1
+    }
   },
   "accounts": [
     {
@@ -61,6 +120,17 @@
       "why_now": "Public leadership page assigns the regional operating remit to Jordan.",
       "angle": "Ask which constraint must change first as the region launches.",
       "contact_route": "Company contact form; no direct email inferred.",
+      "interaction_rollup": {
+        "interactions_12mo": 0,
+        "two_way_threads": 0,
+        "meetings": 0,
+        "first_interaction_at": null,
+        "last_interaction_at": null,
+        "owners": [],
+        "sources": [],
+        "reciprocity_score": 0,
+        "note": "No direct first-party interaction; access runs through the pooled network path."
+      },
       "next_action": {
         "owner": "Research lead",
         "action": "Verify remit and prepare a review-only conversation draft",
@@ -77,10 +147,75 @@
   "relationships": [
     {
       "from": "Northstar principal",
+      "to": "Dana Whitfield",
+      "type": "email_thread",
+      "via": "Q2 2026 advisory thread",
+      "strength": 84,
+      "strength_components": {
+        "evidence_quality": 28,
+        "recency": 18,
+        "relevance": 17,
+        "access": 13,
+        "reciprocity": 8
+      },
+      "band": "strong",
+      "evidence_tier": "A",
+      "owner": "Northstar principal",
+      "confidence": "Verified",
+      "last_verified": "2026-07-12",
+      "activation_path": "Direct history: reference the Q2 advisory thread and ask Dana directly.",
+      "risk": "Thread topic was advisory scoping, not Acme Health; do not overstate context.",
+      "evidence": [
+        {
+          "thread_id": "thread-4471",
+          "date": "2026-06-28",
+          "note": "Two-way email thread metadata in the interaction ledger"
+        }
+      ]
+    },
+    {
+      "from": "Dana Whitfield",
+      "to": "Jordan Lee",
+      "type": "colleague_overlap",
+      "via": "Acme Health operations team 2023-2025",
+      "strength": 66,
+      "strength_components": {
+        "evidence_quality": 20,
+        "recency": 10,
+        "relevance": 18,
+        "access": 12,
+        "reciprocity": 6
+      },
+      "band": "familiar",
+      "evidence_tier": "B",
+      "owner": "Northstar principal",
+      "confidence": "Verified",
+      "last_verified": "2026-07-12",
+      "activation_path": "Ask Dana to confirm the working relationship before any introduction request.",
+      "risk": "Team overlap does not prove Dana and Jordan worked together directly.",
+      "evidence": [
+        {
+          "url": "https://example.com/leadership",
+          "date": "2026-07-10"
+        }
+      ]
+    },
+    {
+      "from": "Northstar principal",
       "to": "Jordan Lee",
       "type": "event_coattendance",
       "via": "2026 Operations Forum",
       "strength": 62,
+      "strength_components": {
+        "evidence_quality": 18,
+        "recency": 12,
+        "relevance": 16,
+        "access": 10,
+        "reciprocity": 6
+      },
+      "band": "familiar",
+      "evidence_tier": "B",
+      "owner": "Northstar principal",
       "confidence": "Verified",
       "last_verified": "2026-07-12",
       "activation_path": "Reference the published forum theme without implying that the two people met.",
@@ -91,6 +226,109 @@
           "date": "2026-06-20"
         }
       ]
+    }
+  ],
+  "warm_paths": [
+    {
+      "target": "Jordan Lee",
+      "target_company": "Acme Health",
+      "objective": "Open the regional operating-leadership conversation through the most credible route.",
+      "status": "path_found",
+      "requester": "Northstar principal",
+      "connector": "Dana Whitfield",
+      "hops": 2,
+      "band": "familiar",
+      "min_edge_strength": 66,
+      "evidence_tier": "B",
+      "activation_mode": "warm_introduction",
+      "edges": [
+        {
+          "from": "Northstar principal",
+          "to": "Dana Whitfield",
+          "type": "email_thread",
+          "via": "Q2 2026 advisory thread",
+          "strength": 84,
+          "band": "strong",
+          "evidence_tier": "A",
+          "confidence": "Verified",
+          "last_verified": "2026-07-12",
+          "activation_path": "Direct history: reference the Q2 advisory thread and ask Dana directly.",
+          "risk": "Thread topic was advisory scoping, not Acme Health; do not overstate context.",
+          "evidence": [
+            {
+              "thread_id": "thread-4471",
+              "date": "2026-06-28"
+            }
+          ]
+        },
+        {
+          "from": "Dana Whitfield",
+          "to": "Jordan Lee",
+          "type": "colleague_overlap",
+          "via": "Acme Health operations team 2023-2025",
+          "strength": 66,
+          "band": "familiar",
+          "evidence_tier": "B",
+          "confidence": "Verified",
+          "last_verified": "2026-07-12",
+          "activation_path": "Ask Dana to confirm the working relationship before any introduction request.",
+          "risk": "Team overlap does not prove Dana and Jordan worked together directly.",
+          "evidence": [
+            {
+              "url": "https://example.com/leadership",
+              "date": "2026-07-10"
+            }
+          ]
+        }
+      ],
+      "risk": "Dana's overlap with Jordan is organizational; confirm they worked together directly before requesting the introduction.",
+      "next_action": {
+        "owner": "Northstar principal",
+        "action": "Ask Dana to confirm the working relationship and consent to an introduction",
+        "when": "2026-07-15"
+      }
+    },
+    {
+      "target": "Acme Health finance leadership",
+      "target_company": "Acme Health",
+      "objective": "Identify the expansion budget owner.",
+      "status": "no_verified_path",
+      "activation_mode": "value_first_cold",
+      "risk": "No usable edge exists; any implied familiarity would be fabricated.",
+      "next_action": {
+        "owner": "Account lead",
+        "action": "Draft a value-first opener tied to the dated expansion trigger, pending account-owner review",
+        "when": "2026-07-17"
+      }
+    }
+  ],
+  "intro_ledger": [
+    {
+      "target": "Jordan Lee",
+      "requester": "Northstar principal",
+      "connector": "Dana Whitfield",
+      "warm_path_ref": 0,
+      "status": "connector_approved",
+      "policy": "draft_only",
+      "consent": {
+        "connector_consented": true,
+        "date": "2026-07-14"
+      },
+      "draft_location": "Draft prepared in the connector's mailbox; connector sends from their own account.",
+      "draft_id": "draft-2201",
+      "receipts": [
+        {
+          "stage": "proposed",
+          "date": "2026-07-13",
+          "evidence": "warm_paths[0] with connector permission request"
+        },
+        {
+          "stage": "connector_approved",
+          "date": "2026-07-14",
+          "evidence": "thread_id intro-approval-118"
+        }
+      ],
+      "risk": "Introduction language must not imply Northstar has worked with Acme Health."
     }
   ],
   "signals": [
@@ -115,7 +353,7 @@
       "relationship_leverage": 5,
       "score": 88,
       "affected_people": ["Jordan Lee"],
-      "relationship_context": "One verified event-coattendance edge with explicit limitations.",
+      "relationship_context": "One verified two-hop pooled-network path with explicit limitations.",
       "why_it_changes_the_call": "The call can test a dated operating mandate rather than generic transformation interest.",
       "conversation_angle": "Ask which operating bottleneck has become critical because of the regional launch.",
       "verification_task": "Recheck the launch page before any outreach.",
@@ -175,6 +413,11 @@
       "question": "Who owns the expansion budget?",
       "impact": "Blocks a confident buying-committee map.",
       "verification_task": "Confirm through account-owner review or a public filing."
+    },
+    {
+      "question": "Did Dana Whitfield and Jordan Lee work together directly?",
+      "impact": "Determines whether the two-hop path supports an honest introduction request.",
+      "verification_task": "Dana confirms the working relationship before the introduction is requested."
     }
   ],
   "applications": [
@@ -212,31 +455,78 @@
           "date": "2026-07-13"
         }
       ]
+    },
+    {
+      "name": "Weekly network refresh",
+      "version": "1.0.0",
+      "objective": "Ingest interaction deltas from available sources and rescore the pooled graph",
+      "owner": "GTM Operations",
+      "status": "proposed",
+      "trigger": {
+        "type": "schedule",
+        "value": "0 6 * * 1",
+        "timezone": "America/Chicago"
+      },
+      "input_scope": "Connected member sources since the per-source cursor",
+      "cursor": "graph/cursors.json per-source cursor",
+      "idempotency_key": "member:source:cursor:application_version",
+      "steps": [
+        "discover_connectors",
+        "ingest_available_sources",
+        "resolve_identities",
+        "derive_edges",
+        "rescore",
+        "persist_store",
+        "verify"
+      ],
+      "write_policy": "draft_only",
+      "review_gate": "Rescored bands are review-only until a human accepts the refresh summary.",
+      "metric": {
+        "name": "identity_resolution_rate",
+        "baseline": 91,
+        "target": 93
+      },
+      "budget": {
+        "max_records": 5000,
+        "max_tool_calls": 200,
+        "max_runtime_minutes": 30
+      },
+      "stop_conditions": [
+        "A previously available source becomes unauthenticated",
+        "Identity resolution rate drops below 85%",
+        "Budget cap reached"
+      ],
+      "evidence": [
+        {
+          "file_path": "graph/store-manifest.json",
+          "date": "2026-07-13"
+        }
+      ]
     }
   ],
   "discovery_scope": {
-    "mode": "user_list",
-    "source": "user_identified",
-    "source_ref": "Representative fixture target list",
-    "objective": "Prioritize supplied people while reusing company results.",
-    "requested_count": 3,
-    "candidate_count": 3,
-    "deduplicated_count": 2,
-    "eligible_count": 2,
-    "unique_company_count": 1,
-    "excluded_count": 0,
+    "mode": "network_history",
+    "source": "connected_accounts",
+    "source_ref": "Northstar principal's connected Gmail, calendar, and LinkedIn export",
+    "objective": "Build the pooled first-party network and route the strongest truthful paths into Acme Health.",
+    "requested_count": 520,
+    "candidate_count": 512,
+    "deduplicated_count": 486,
+    "eligible_count": 402,
+    "unique_company_count": 180,
+    "excluded_count": 84,
     "recurring": false,
-    "identity_keys": ["linkedin_url", "name_and_company"],
-    "exclusions": ["suppressed", "unresolved identity"],
+    "identity_keys": ["work_email", "linkedin_url", "name_and_company"],
+    "exclusions": ["internal attendee", "bulk sender", "suppressed", "room or resource"],
     "context_budget": {
-      "max_people_retrievals": 1,
-      "max_brand_retrievals": 1,
-      "max_prefetches": 1,
-      "max_extracts": 1,
+      "max_people_retrievals": 12,
+      "max_brand_retrievals": 8,
+      "max_prefetches": 8,
+      "max_extracts": 4,
       "max_monitor_creates": 0,
       "company_result_reuse": true,
       "skip_if_fresh": true,
-      "cache_policy": "Reuse fresh identities and refresh only volatile decision fields."
+      "cache_policy": "Reuse fresh identities; retrieve only priority people with verified LinkedIn URLs."
     }
   },
   "context_operations": [

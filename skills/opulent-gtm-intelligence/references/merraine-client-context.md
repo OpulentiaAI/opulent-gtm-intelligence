@@ -22,6 +22,15 @@ Treat the client outcome as a two-sided intelligence system:
 
 Make relationship intelligence visible in every demonstration. Jeremy should be able to see not only who matters, but why the account is relevant, how Merraine may be connected, what is verified, and the shortest truthful path to a conversation.
 
+## First-party network pilot
+
+The network pilot pools **Jeremy first**. Expand to other Merraine members only after Jeremy's graph proves value and each new member records consent.
+
+- Sources: Jeremy's connected email and calendar plus a LinkedIn connections export, through the connector discovery gate in `network-graph-build.md`. Default ingestion window: 24 months. A missing CRM or storage connector is a recorded blocked read, never a setup demand.
+- Placements are Merraine's structural advantage: every completed search yields durable Tier A `placed_at` and `engaged_by` edges from whatever engagement records are available. A placed executive who changes jobs routes twice through the job-change radar — as a business-development trigger at the new employer and as a vacancy hypothesis at the old seat.
+- Build both directions of the two-sided map from the same store: client-side paths to hiring decision makers and candidate-side paths to people who can credibly vouch for or reach a candidate.
+- Scheduled applications for the pilot: `network-refresh` weekly, `job-change-radar` on the placement and client watchlist, `dormant-reheat` monthly. All review-gated per `gtm-engineering-system.md`.
+
 ## Public company baseline
 
 Verify before each client-facing run because positioning can change.
@@ -46,10 +55,10 @@ Show the client a compact end-to-end run:
 1. Start from one market thesis or open mandate.
 2. Discover and rank 10-20 organizations.
 3. Show three dated triggers and the people attached to them.
-4. Reveal a candidate-company map with explicit relationship edges, strength, evidence, and risk.
+4. Reveal a candidate-company map with explicit relationship edges, strength, evidence, and risk — including the pooled-network view: connector discovery statuses, band distribution, and the ranked warm paths with per-hop evidence.
 5. Open one detailed enrichment dossier and trace every important claim to its source.
 6. Compare the likely incumbent search options and Merraine's angle.
-7. Produce a five-action queue with truthful warm paths, draft openers, and CRM-ready fields.
+7. Produce a five-action queue with truthful warm paths, draft openers, and CRM-ready fields, including one introduction drafted for a consenting connector and visibly pending their approval — never shown as sent.
 8. Open the Browserbase live view for one difficult source to make the verification visible.
 
 The client should leave with a usable target list and a clear mental model of how the system compounds, not a generic research report.

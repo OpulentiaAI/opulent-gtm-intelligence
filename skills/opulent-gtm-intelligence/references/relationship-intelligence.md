@@ -34,6 +34,14 @@ Use explicit edge types:
 - `public_interaction`
 - `introduced_by`
 
+Interaction-derived edge types from the first-party network build (`network-graph-build.md`):
+
+- `email_thread`
+- `meeting`
+- `linkedin_connection`
+- `linkedin_message`
+- `crm_activity`
+
 Do not collapse different edge types into `knows`. Each edge must preserve what is actually known.
 
 Use this shape:
@@ -74,18 +82,25 @@ Score every usable edge from 0-100:
 - Access potential: 0-15
 - Reciprocity or demonstrated interaction: 0-10
 
-Bands:
+Bands, with the client-facing labels used in reports and pooled-network views:
 
-- `80-100`: direct and actionable
-- `60-79`: credible context; validate before asking for an introduction
-- `40-59`: useful personalization or monitoring signal
-- `0-39`: background only
+- `80-100` — `strong`: direct and actionable
+- `60-79` — `familiar`: credible context; validate before asking for an introduction
+- `40-59` — `weak`: useful personalization or monitoring signal
+- `0-39` — `unknown`: background only
 
 Keep the component scores in the audit data. A relationship does not become strong because the target is strategically attractive.
 
+For interaction-derived edges, compute recency and reciprocity deterministically from the interaction ledger rather than by judgment:
+
+- **Reciprocity (0-10)**: two-way thread count and meeting count with exponential recency decay; meetings weigh more than email threads; one-way sends contribute zero. Zero recorded interactions means reciprocity 0.
+- **Recency (0-20)**: age of `last_interaction_at` against the ingestion window.
+
+The formula version is recorded in the graph store manifest and recomputed on every refresh. A model never assigns these two components directly. Confidence caps bind the total: `Estimated` edges cannot exceed 79 and `Unknown` edges cannot exceed 39, so an inferred overlap can never present as `strong`. Tier D evidence is never a usable relationship regardless of score.
+
 ## 4. Discovery workflow
 
-1. Seed the graph with the client team, current accounts, verified public engagements, candidates, partners, and known competitors.
+1. Seed the graph with the existing graph store when one exists (`network-graph-store.md`), then the client team, current accounts, verified public engagements, candidates, partners, and known competitors.
 2. Resolve each person to a current role and canonical organization.
 3. Search first-party bios, public job listings, board minutes, event rosters, press releases, association pages, CRM history, and direct communications.
 4. Generate one-hop paths first: client person -> target person or organization.

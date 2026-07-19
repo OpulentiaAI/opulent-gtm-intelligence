@@ -1,6 +1,6 @@
 ---
 name: opulent-gtm-intelligence
-description: Builds executable, evidence-backed GTM intelligence for named people, supplied lists, and bounded calendar cohorts. Uses the authenticated Context.dev runtime CLI, Opulent research/browser surfaces, relationship and signal analysis, a mandatory Nim-derived Next.js report, Dither Kit analytics, and policy-controlled system updates.
+description: Builds executable, evidence-backed GTM intelligence for named people, supplied lists, bounded calendar cohorts, and pooled first-party networks. Uses the authenticated Context.dev runtime CLI, Opulent research/browser surfaces, runtime-discovered connectors, a self-contained network graph store, relationship and signal analysis, warm-path and introduction orchestration, a mandatory Nim-derived Next.js report, Dither Kit analytics, and policy-controlled system updates.
 ---
 
 # Opulent GTM Intelligence
@@ -16,6 +16,9 @@ Load the smallest complete set before acting.
 | Any run | `runtime-tools.md`, `research-workflow.md`, `delivery-contract.md` |
 | Context-backed resolve, retrieval, extraction, monitoring, or scoring | `contextdev-execution.md` |
 | One person, named people, a supplied/CRM list, or calendar-derived people | `people-scope-routing.md` |
+| Building or refreshing the first-party network graph from member sources | `network-graph-build.md`, `network-graph-store.md` |
+| Reading, persisting, or mirroring the graph store | `network-graph-store.md` |
+| Warm paths, introduction requests, or "how do I know X" | `warm-path-activation.md`, `relationship-intelligence.md` |
 | Signals, pre-call prep, prioritization, monitors, or recurring enrichment | `signal-intelligence.md` |
 | Any company, person, candidate, account, event, or outreach decision | `relationship-intelligence.md` |
 | Enrichment design, scheduled applications, evaluation, or CRM automation | `gtm-engineering-system.md` |
@@ -38,6 +41,10 @@ Inspect installed command help and connector state before choosing commands. Nev
 | Person must be discovered from criteria | Connected people-discovery/Clodo surface, then verify and resolve the selected identity |
 | Static public URL is sufficient | Fetch/extract before browser escalation |
 | Page is dynamic, authenticated, protected, or visually material | Browser fallback after cheaper routes fail |
+| Network build or refresh is requested | Enumerate connected apps first; ingest every `available` source, record `missing`/`unauthenticated` sources as blocked reads, and never block on an absent source |
+| An email, calendar, or CRM connector is absent | Continue with the remaining sources plus user-supplied export files; the thinner graph is truthful and the gap is reported in `network_health` |
+| A LinkedIn connections export file is supplied | Import connections as Tier C `linkedin_connection` edges; never scrape LinkedIn |
+| An introduction is requested | Draft-only in the connector's own mailbox after recorded consent; sending is always the connector's human action |
 | Mutation is requested | Enforce the write policy and confirmation boundary; verify by returned ID and read-after-write receipt |
 
 The mandatory routing sequence is `resolve -> search/discover -> extract -> corroborate -> browser fallback -> analyze -> activate -> verify/deliver`. Skip a stage only when it is not applicable and record why.
@@ -45,7 +52,7 @@ The mandatory routing sequence is `resolve -> search/discover -> extract -> corr
 ## Operating procedure
 
 1. Inspect workspace artifacts, system-of-record exports, saved packets, available connectors, and the actual Context CLI command surface.
-2. State the decision and select `single_person`, `user_list`, or `calendar_derived`. Normalize identities, group shared companies, set budgets, and enforce calendar privacy before any public-web call.
+2. State the decision and select `single_person`, `user_list`, `calendar_derived`, or `network_history`. Normalize identities, group shared companies, set budgets, and enforce calendar privacy before any public-web call. For `network_history`, load or initialize the graph store and run the connector discovery gate before any ingestion.
 3. Confirm client offer, ICP, exclusions, geography, proof, competitors, desired output, protected fields, and system of record.
 4. Audit data health: canonical identities, duplicates, coverage, conflicts, staleness, provenance, suppressions, and field ownership.
 5. Choose `quick`, `deep`, or `deeper`; define evidence, call, time, and spend limits.
@@ -62,6 +69,7 @@ The mandatory routing sequence is `resolve -> search/discover -> extract -> corr
 16. Run, in order:
 
    ```bash
+   python3 scripts/validate_graph_store.py <workspace>/graph  # when a graph store exists
    python3 scripts/validate_intelligence_packet.py <packet.json>
    python3 scripts/render_intelligence_report.py <packet.json> --output <directory>
    ```

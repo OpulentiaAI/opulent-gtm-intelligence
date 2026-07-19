@@ -18,7 +18,11 @@ Expected output includes `index.html`, `_next/` assets, and one `dossiers/<slug>
 | `data_health` | Data-health card and Dither Kit health analysis |
 | `accounts[]`, `people[]` | Ranked key-rating cards and complete static dossiers |
 | target `fit_score`, evidence, confidence, signals, relationships | Explainable rating card and Dither Kit rating distribution |
-| `relationships[]` | Relationship ledger and relevant dossiers |
+| `relationships[]` | Relationship ledger and relevant dossiers, with strength-component breakdowns, bands, and evidence tiers when present |
+| `network_health` | Network-health section: member/consent list, source-discovery table with blocked reads verbatim, resolution and interaction stats, Dither Kit tier-coverage and band-distribution charts, store manifest line |
+| `warm_paths[]` | Warm-path cards with per-hop edge chains; `no_verified_path` entries render explicitly and are never hidden |
+| `intro_ledger[]` | Introduction ledger with consent, stage receipts, and policy; proposed or approved entries never styled as sent |
+| `people[].interaction_rollup` | Person dossier interaction rollup; a zero rollup renders as the honest no-interaction state |
 | `signals[]` and six score components | Signal ledger and Dither Kit component radar |
 | confidence on targets/signals | Dither Kit statistical composition |
 | `public_examples[]` | Public proof section |
@@ -48,6 +52,7 @@ Every account and person dossier repeats the complete target record and target-s
 - Use real committed Dither Kit bar, radar, pie, or area components for key ratings, analysis, statistics, and health. Hand-built bars, faux CSS charts, canvas substitutes, and decorative chart-shaped markup are prohibited.
 - Keep confidence, source URLs, route, policy, statuses, receipts, and before/after values visible.
 - Never style `proposed`, `blocked`, or failed operations as active or verified.
+- Render `missing` and `unauthenticated` ingestion sources distinctly with their blocked reads; never imply a source was ingested when it was not, and never style a proposed or approved introduction as sent.
 - Preserve responsive, keyboard-accessible, light/dark, and print behavior.
 
 ## Dither Kit source contract

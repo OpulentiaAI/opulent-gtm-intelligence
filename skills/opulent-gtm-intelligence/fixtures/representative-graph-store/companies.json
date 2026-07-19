@@ -1,0 +1,16 @@
+[
+  {
+    "id": "company-northstar-advisory",
+    "name": "Northstar Advisory",
+    "domains": ["northstar.example"],
+    "dedup_keys": ["domain:northstar.example"],
+    "provenance": [{"source": "member", "date": "2026-07-10"}]
+  },
+  {
+    "id": "company-acme-health",
+    "name": "Acme Health",
+    "domains": ["example.com"],
+    "dedup_keys": ["domain:example.com"],
+    "provenance": [{"source": "gmail", "date": "2026-06-28"}]
+  }
+]

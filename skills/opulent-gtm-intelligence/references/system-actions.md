@@ -41,6 +41,20 @@ Default to a draft unless sending is explicitly authorized. Ground every claim i
 
 After creating or sending, capture draft ID or message ID, account, recipients, subject, and verification method.
 
+### Introductions
+
+Follow `warm-path-activation.md`. Additional boundaries:
+
+- Record the connector's consent, with a date, before drafting language that names them or before placing anything in their mailbox.
+- Place the draft in the connector's own mailbox when their email connector is available; otherwise deliver ready-to-paste draft text. Either way the entry is `draft_only`.
+- Sending an introduction is always the connector's human action from their own account. The skill never sends one, and an intro entry under `draft_only` can never be recorded as `sent`.
+- Track the intro lifecycle in `intro_ledger` with a receipt per stage. A proposed or approved introduction is never described as sent.
+- Honor suppression and do-not-contact state for the target and the connector at every stage.
+
+## Graph store
+
+Writes to the skill-owned graph store (`network-graph-store.md`) are internal workspace writes: always allowed within the run's scope, always with provenance, dates, and dedup keys, and validated with `validate_graph_store.py` on persist. The store never receives message bodies or subjects. Mirroring store-derived fields outward to a discovered CRM is an ordinary CRM write under the policy levels above and is never required for the run to complete.
+
 ## Calendar
 
 Confirm timezone, attendees, duration, and meeting purpose. Do not create or modify an event without the required authorization. Verify by reading back the event ID and final attendee list.

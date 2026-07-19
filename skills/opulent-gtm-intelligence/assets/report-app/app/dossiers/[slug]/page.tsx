@@ -1,7 +1,8 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { InteractionRollupCard, RelationshipLedger } from "@/components/report/network"
 import { JsonGrid, RecordCards, Section } from "@/components/report/primitives"
-import { packet, records, slugify, targets } from "@/lib/report"
+import { interactionRollup, packet, records, relationshipEdges, slugify, targets } from "@/lib/report"
 
 export const dynamicParams = false
 
@@ -24,7 +25,10 @@ export default async function DossierPage({ params }: { params: Promise<{ slug: 
             : Boolean(person && typeof person === "object" && !Array.isArray(person) && person.name === name)
         ))
   )
-  const relevantRelationships = records(packet.relationships).filter((edge) => edge.from === name || edge.to === name)
+  const relevantRelationships = relationshipEdges().filter((edge) => edge.from === name || edge.to === name)
+  const rollup = interactionRollup(target)
+  let sectionNumber = 0
+  const label = (text: string) => `${String(++sectionNumber).padStart(2, "0")} · ${text}`
 
   return (
     <main className="shell">
@@ -36,15 +40,20 @@ export default async function DossierPage({ params }: { params: Promise<{ slug: 
         <div className="mt-8 flex items-end gap-3"><strong className="metric">{String(target.fit_score || 0)}</strong><span className="pb-2 text-xs text-muted-foreground">FIT / 100</span></div>
       </header>
 
-      <Section id="enrichment" label="01 · Complete record" title="Enrichment">
+      <Section id="enrichment" label={label("Complete record")} title="Enrichment">
         <div className="card p-5"><JsonGrid value={target} omit={["target_kind"]} /></div>
       </Section>
-      <Section id="signals" label="02 · Timing" title="Relevant signals"><RecordCards items={relevantSignals} empty="No target-specific signals recorded." /></Section>
-      <Section id="relationships" label="03 · Access" title="Relationship paths"><RecordCards items={relevantRelationships} empty="No verified relationship path recorded." /></Section>
-      <Section id="action" label="04 · Activation" title="Next action">
+      {rollup && (
+        <Section id="interactions" label={label("First-party contact")} title="Interaction rollup" description="Pooled-network interaction metadata for this person. A zero rollup is a valid, honest state; access then depends on network paths, not direct history.">
+          <InteractionRollupCard rollup={rollup} />
+        </Section>
+      )}
+      <Section id="signals" label={label("Timing")} title="Relevant signals"><RecordCards items={relevantSignals} empty="No target-specific signals recorded." /></Section>
+      <Section id="relationships" label={label("Access")} title="Relationship paths"><RelationshipLedger edges={relevantRelationships} /></Section>
+      <Section id="action" label={label("Activation")} title="Next action">
         <div className="card p-5"><JsonGrid value={(target.next_action && typeof target.next_action === "object" && !Array.isArray(target.next_action) ? target.next_action : {})} /></div>
       </Section>
-      <Section id="evidence" label="05 · Audit" title="Evidence">
+      <Section id="evidence" label={label("Audit")} title="Evidence">
         <div className="card p-5"><JsonGrid value={{ evidence: target.evidence || [], risks: target.risks || [], unknowns: target.unknowns || [] }} /></div>
       </Section>
     </main>

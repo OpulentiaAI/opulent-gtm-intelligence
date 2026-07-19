@@ -153,4 +153,14 @@ Define each signal monitor as a versioned GTM application with:
 
 Safe autonomous CRM fields include the dated signal object, evidence URL, observed time, expiry, and last-enriched timestamp when identity and confidence are verified. Strategic interpretation, relationship strength, opportunity stage, owner, forecast, and outbound remain review-controlled or authorization-controlled.
 
+### Job-change radar
+
+The highest-leverage people signal over a pooled first-party network is a tracked contact changing roles. Define it as a versioned scheduled application over the graph store:
+
+- **Watchlist**: placed candidates, past and current client contacts, champions, and every contact on a `strong` or `familiar` edge. The watchlist derives from the graph store, not from a manual list.
+- **Detection route**: Context monitors on leadership and team pages for watchlist companies, plus scheduled `people/retrieve` re-verification for watchlist people with verified LinkedIn URLs, plus Clodo-style "former employees of X" sweeps when a departure is suspected. Respect the planner ceilings; the watchlist gates who is worth a provider call.
+- **Delta contract**: `previous_state` is the stored role with its `last_verified` date; `current_state` is the newly observed role. Emit a `champion_move`, `leadership_hire`, or `leadership_departure` signal with expiry 45-90 days. The relationship-leverage component comes from the existing edge band.
+- **Dual routing**: a job change on a warm edge routes twice — as a conversation opportunity at the new company (the relationship travels with the person) and as a vacancy or mandate hypothesis at the old company. Both routes carry the shortest truthful path and the verification task.
+- **Honesty**: a stale profile is not a departure. Require first-party or provider corroboration before scoring above 60, and never mark the radar's baseline pass as detected change.
+
 Use Jamie Reach's July 1, 2026 observation as the operating thesis: static data is context; recent changes are conversation. Source: `https://x.com/jamiejreach/status/2072274862962606268`.

@@ -1,6 +1,6 @@
 # People Scope and Context Efficiency
 
-Choose the intake mode before discovery or enrichment. The same workflow must handle one named person, a user-supplied cohort, or people derived from a bounded calendar window without turning every request into an expensive crawl.
+Choose the intake mode before discovery or enrichment. The same workflow must handle one named person, a user-supplied cohort, people derived from a bounded calendar window, or a pooled first-party network history without turning every request into an expensive crawl.
 
 ## Contents
 
@@ -8,8 +8,9 @@ Choose the intake mode before discovery or enrichment. The same workflow must ha
 2. Single-person precision
 3. User-supplied cohorts
 4. Calendar-derived cohorts
-5. Context call planner
-6. Identity, privacy, and failure policy
+5. Network-history cohorts
+6. Context call planner
+7. Identity, privacy, and failure policy
 
 ## 1. Scope contract
 
@@ -17,7 +18,7 @@ Add `discovery_scope` to the intelligence packet:
 
 ```json
 {
-  "mode": "single_person | user_list | calendar_derived",
+  "mode": "single_person | user_list | calendar_derived | network_history",
   "source": "user_identified | uploaded_list | crm_view | outlook_calendar | other",
   "source_ref": "human-readable source or artifact/event handle",
   "objective": "The decision this cohort should support",
@@ -139,7 +140,19 @@ Never send the event title, body, notes, full attendee list, Teams URL, calendar
 
 After eligibility and deduplication, use the same shared-company plan as a user list. For pre-call work, prioritize the next external meeting and stop when the meeting brief is complete. For network mining, apply a fit or relationship gate before any deep extraction.
 
-## 5. Context call planner
+## 5. Network-history cohorts
+
+Use `network_history` when the user asks to build, refresh, or query the pooled first-party network. Load `network-graph-build.md` and `network-graph-store.md` first.
+
+- Set `source` to `connected_accounts` and `source_ref` to the named member sources (for example, "Jeremy's connected Gmail, calendar, and LinkedIn export").
+- Bound the run by an explicit ingestion window; the default is 24 months. Never scan unbounded history.
+- Name each pooled member and record consent before their sources contribute. Start with one member and expand deliberately.
+- Funnel counts describe unique network contacts after the exclusions: the signed-in member, internal domains, bulk and list senders, rooms, resources, distribution lists, service accounts, and suppressed records.
+- Graph building is local work. The Context budget covers only priority identities that pass a gate — not the network at large. Retrieving every network contact through a provider is never justified.
+- Calendar-derived interactions inside the window inherit every rule in section 4, including the data-minimization contract.
+- A `network_history` packet requires `network_health` with the connector discovery statuses. A `missing` source is recorded and reported, never silently skipped or silently claimed.
+
+## 6. Context call planner
 
 Plan calls from unique identities, not input rows.
 
@@ -173,7 +186,7 @@ For a cohort with `P` eligible unique people, `C` eligible unique companies, and
 - fact-checked extracts `<= G <= C`; and
 - monitor creates `0` unless the workflow is explicitly recurring, then `<=` priority unique targets without an equivalent monitor.
 
-## 6. Identity, privacy, and failure policy
+## 7. Identity, privacy, and failure policy
 
 - Preserve the user's supplied identity rather than replacing it with a provider guess.
 - Mark ambiguous identity matches `needs_review`; do not enrich or merge them automatically.

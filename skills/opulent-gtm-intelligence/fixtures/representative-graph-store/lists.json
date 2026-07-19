@@ -1,0 +1,10 @@
+[
+  {
+    "id": "list-acme-expansion-targets",
+    "name": "Acme Health expansion targets",
+    "kind": "people",
+    "members": ["person-jordan-lee"],
+    "shared": true,
+    "notes": "Targets attached to the 2026-07 regional expansion trigger."
+  }
+]

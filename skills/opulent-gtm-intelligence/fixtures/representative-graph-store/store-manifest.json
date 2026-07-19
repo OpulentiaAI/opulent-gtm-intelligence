@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "client": "Northstar Advisory",
+  "metadata_only": true,
+  "window_start": "2024-07-01",
+  "window_end": "2026-07-13",
+  "members": [
+    {
+      "id": "person-northstar-principal",
+      "name": "Northstar principal",
+      "consent": true,
+      "consent_date": "2026-07-10",
+      "sources_connected": ["gmail", "calendar", "linkedin_export"]
+    }
+  ],
+  "sources": [
+    {
+      "source": "gmail",
+      "status": "available",
+      "ingested": true,
+      "interactions_ingested": 4,
+      "note": "Headers only; bodies and subjects are never ingested."
+    },
+    {
+      "source": "calendar",
+      "status": "available",
+      "ingested": true,
+      "interactions_ingested": 2,
+      "note": "Attendees and timestamps only under the calendar minimization rules."
+    },
+    {
+      "source": "linkedin_export",
+      "status": "available",
+      "ingested": true,
+      "interactions_ingested": 0,
+      "note": "Connections imported as Tier C linkedin_connection edges."
+    },
+    {
+      "source": "crm",
+      "status": "missing",
+      "ingested": false,
+      "blocked_read": "No CRM connector discovered and no export supplied; engagement history is unavailable."
+    }
+  ],
+  "counts": {
+    "people": 3,
+    "companies": 2,
+    "edges": 3,
+    "interactions": 6,
+    "lists": 1
+  },
+  "last_run_at": "2026-07-13T11:45:00Z",
+  "runs": 1
+}

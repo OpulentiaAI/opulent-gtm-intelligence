@@ -1,0 +1,74 @@
+[
+  {
+    "from": "person-northstar-principal",
+    "to": "person-dana-whitfield",
+    "type": "email_thread",
+    "via": "Q2 2026 advisory thread",
+    "strength": 84,
+    "strength_components": {
+      "evidence_quality": 28,
+      "recency": 18,
+      "relevance": 17,
+      "access": 13,
+      "reciprocity": 8
+    },
+    "band": "strong",
+    "evidence_tier": "A",
+    "owner": "person-northstar-principal",
+    "confidence": "Verified",
+    "last_verified": "2026-07-12",
+    "activation_path": "Direct history: reference the Q2 advisory thread and ask Dana directly.",
+    "risk": "Thread topic was advisory scoping, not Acme Health; do not overstate context.",
+    "evidence": [
+      {"thread_id": "thread-4471", "date": "2026-06-28"}
+    ]
+  },
+  {
+    "from": "person-dana-whitfield",
+    "to": "person-jordan-lee",
+    "type": "colleague_overlap",
+    "via": "Acme Health operations team 2023-2025",
+    "strength": 66,
+    "strength_components": {
+      "evidence_quality": 20,
+      "recency": 10,
+      "relevance": 18,
+      "access": 12,
+      "reciprocity": 6
+    },
+    "band": "familiar",
+    "evidence_tier": "B",
+    "owner": "person-northstar-principal",
+    "confidence": "Verified",
+    "last_verified": "2026-07-12",
+    "activation_path": "Ask Dana to confirm the working relationship before any introduction request.",
+    "risk": "Team overlap does not prove Dana and Jordan worked together directly.",
+    "evidence": [
+      {"url": "https://example.com/leadership", "date": "2026-07-10"}
+    ]
+  },
+  {
+    "from": "person-northstar-principal",
+    "to": "person-jordan-lee",
+    "type": "event_coattendance",
+    "via": "2026 Operations Forum",
+    "strength": 62,
+    "strength_components": {
+      "evidence_quality": 18,
+      "recency": 12,
+      "relevance": 16,
+      "access": 10,
+      "reciprocity": 6
+    },
+    "band": "familiar",
+    "evidence_tier": "B",
+    "owner": "person-northstar-principal",
+    "confidence": "Verified",
+    "last_verified": "2026-07-12",
+    "activation_path": "Reference the published forum theme without implying that the two people met.",
+    "risk": "Coattendance does not prove interaction.",
+    "evidence": [
+      {"url": "https://example.com/forum", "date": "2026-06-20"}
+    ]
+  }
+]

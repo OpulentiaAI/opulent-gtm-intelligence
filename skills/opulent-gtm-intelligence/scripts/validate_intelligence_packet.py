@@ -12,7 +12,7 @@ from typing import Any
 
 
 MODES = {"quick", "deep", "deeper"}
-DISCOVERY_MODES = {"single_person", "user_list", "calendar_derived"}
+DISCOVERY_MODES = {"single_person", "user_list", "calendar_derived", "network_history"}
 CONFIDENCE = {"Verified", "Estimated", "Unknown"}
 FINAL_RESULTS = {"verified", "drafted", "blocked", "skipped", "needs review"}
 APPLICATION_STATUS = {"proposed", "active", "paused", "blocked"}
@@ -79,7 +79,43 @@ RELATION_TYPES = {
     "education_overlap",
     "public_interaction",
     "introduced_by",
+    "email_thread",
+    "meeting",
+    "linkedin_connection",
+    "linkedin_message",
+    "crm_activity",
 }
+RELATIONSHIP_BANDS = {"strong", "familiar", "weak", "unknown"}
+EVIDENCE_TIERS = {"A", "B", "C", "D"}
+STRENGTH_COMPONENT_MAX = {
+    "evidence_quality": 30,
+    "recency": 20,
+    "relevance": 25,
+    "access": 15,
+    "reciprocity": 10,
+}
+ACTIVATION_MODES = {
+    "direct_history",
+    "warm_introduction",
+    "shared_context",
+    "value_first_cold",
+    "monitor",
+}
+WARM_PATH_STATUS = {"path_found", "no_verified_path"}
+INTRO_STATUS = {"proposed", "connector_approved", "sent", "completed", "declined"}
+NETWORK_SOURCE_STATUS = {"available", "missing", "unauthenticated", "not_required"}
+
+
+def band_for_strength(strength: Any) -> str | None:
+    if not isinstance(strength, (int, float)) or isinstance(strength, bool):
+        return None
+    if strength >= 80:
+        return "strong"
+    if strength >= 60:
+        return "familiar"
+    if strength >= 40:
+        return "weak"
+    return "unknown"
 SIGNAL_TYPES = {
     "leadership_hire",
     "leadership_departure",
@@ -219,11 +255,14 @@ def validate_target(
     if collection == "people" and confidence == "Unknown" and isinstance(score, (int, float)) and score > 40:
         warnings.append(f"{location} is Unknown but fit_score exceeds the 40-point evidence cap.")
 
+    rollup = item.get("interaction_rollup")
+    if rollup is not None:
+        validate_interaction_rollup(rollup, f"{location}.interaction_rollup", issues, warnings)
 
-def validate_relationship(
-    item: Any, index: int, issues: list[str], warnings: list[str]
+
+def validate_edge(
+    item: Any, location: str, issues: list[str], warnings: list[str]
 ) -> None:
-    location = f"relationships[{index}]"
     if not isinstance(item, dict):
         issues.append(f"{location} must be an object.")
         return
@@ -242,7 +281,8 @@ def validate_relationship(
     if not isinstance(strength, (int, float)) or isinstance(strength, bool) or not 0 <= strength <= 100:
         issues.append(f"{location}.strength must be a number from 0 to 100.")
 
-    if item.get("confidence") not in CONFIDENCE:
+    confidence = item.get("confidence")
+    if confidence not in CONFIDENCE:
         issues.append(f"{location}.confidence must be Verified, Estimated, or Unknown.")
 
     if not validate_iso_date(item.get("last_verified")):
@@ -250,8 +290,426 @@ def validate_relationship(
 
     validate_evidence(item.get("evidence"), location, issues, warnings)
 
-    if strength and strength >= 80 and item.get("confidence") != "Verified":
+    if isinstance(strength, (int, float)) and not isinstance(strength, bool):
+        if confidence == "Estimated" and strength > 79:
+            issues.append(f"{location}.strength cannot exceed 79 for Estimated confidence.")
+        if confidence == "Unknown" and strength > 39:
+            issues.append(f"{location}.strength cannot exceed 39 for Unknown confidence.")
+
+    band = item.get("band")
+    if band is not None:
+        if band not in RELATIONSHIP_BANDS:
+            issues.append(
+                f"{location}.band must be one of: " + ", ".join(sorted(RELATIONSHIP_BANDS))
+            )
+        else:
+            expected_band = band_for_strength(strength)
+            if expected_band and band != expected_band:
+                issues.append(
+                    f"{location}.band must be {expected_band} for strength {strength:g}."
+                )
+
+    tier = item.get("evidence_tier")
+    if tier is not None:
+        if tier not in EVIDENCE_TIERS:
+            issues.append(f"{location}.evidence_tier must be A, B, C, or D.")
+        elif tier == "D" and isinstance(strength, (int, float)) and strength >= 40:
+            issues.append(
+                f"{location} is Tier D (no demonstrated interaction) and cannot score as a usable relationship."
+            )
+
+    components = item.get("strength_components")
+    if components is not None:
+        if not isinstance(components, dict):
+            issues.append(f"{location}.strength_components must be an object.")
+        else:
+            total = 0.0
+            valid = True
+            for key, maximum in STRENGTH_COMPONENT_MAX.items():
+                value = components.get(key)
+                if (
+                    not isinstance(value, (int, float))
+                    or isinstance(value, bool)
+                    or not 0 <= value <= maximum
+                ):
+                    issues.append(
+                        f"{location}.strength_components.{key} must be a number from 0 to {maximum}."
+                    )
+                    valid = False
+                else:
+                    total += float(value)
+            if valid and isinstance(strength, (int, float)) and not isinstance(strength, bool):
+                if abs(float(strength) - total) > 0.001:
+                    issues.append(
+                        f"{location}.strength must equal its five strength components ({total:g})."
+                    )
+
+    if strength and strength >= 80 and confidence != "Verified":
         warnings.append(f"{location} is scored as a direct path without Verified confidence.")
+
+
+def validate_relationship(
+    item: Any, index: int, issues: list[str], warnings: list[str]
+) -> None:
+    validate_edge(item, f"relationships[{index}]", issues, warnings)
+
+
+def validate_interaction_rollup(
+    item: Any, location: str, issues: list[str], warnings: list[str]
+) -> None:
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+
+    counts: dict[str, int] = {}
+    for key in ("interactions_12mo", "two_way_threads", "meetings"):
+        value = item.get(key)
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            issues.append(f"{location}.{key} must be a non-negative integer.")
+        else:
+            counts[key] = value
+    if (
+        "interactions_12mo" in counts
+        and "two_way_threads" in counts
+        and counts["two_way_threads"] > counts["interactions_12mo"]
+    ):
+        issues.append(f"{location}.two_way_threads cannot exceed interactions_12mo.")
+
+    for key in ("first_interaction_at", "last_interaction_at"):
+        value = item.get(key)
+        if value is not None and not validate_iso_date(value):
+            issues.append(f"{location}.{key} must be null or an ISO 8601 date.")
+
+    for key in ("owners", "sources"):
+        if not isinstance(item.get(key), list):
+            issues.append(f"{location}.{key} must be a list, even when empty.")
+
+    reciprocity = item.get("reciprocity_score")
+    if (
+        not isinstance(reciprocity, (int, float))
+        or isinstance(reciprocity, bool)
+        or not 0 <= reciprocity <= 10
+    ):
+        issues.append(f"{location}.reciprocity_score must be a number from 0 to 10.")
+    if counts.get("interactions_12mo") == 0 and isinstance(reciprocity, (int, float)) and reciprocity > 0:
+        issues.append(
+            f"{location}.reciprocity_score must be 0 when no interactions are recorded."
+        )
+
+    forbidden = {"subject", "body", "notes", "message_content"}
+    present = forbidden.intersection(item.keys())
+    if present:
+        issues.append(
+            f"{location} must never carry interaction content fields: " + ", ".join(sorted(present))
+        )
+
+
+def validate_network_health(
+    item: Any, issues: list[str], warnings: list[str]
+) -> None:
+    location = "network_health"
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+
+    if item.get("metadata_only") is not True:
+        issues.append(
+            f"{location}.metadata_only must be true; message bodies and subjects are never ingested."
+        )
+
+    for key in ("window_start", "window_end"):
+        if not validate_iso_date(item.get(key)):
+            issues.append(f"{location}.{key} must be an ISO 8601 date or timestamp.")
+    window_start = parse_iso_date(item.get("window_start"))
+    window_end = parse_iso_date(item.get("window_end"))
+    if window_start and window_end and window_end < window_start:
+        issues.append(f"{location}.window_end cannot be before window_start.")
+
+    members = item.get("members")
+    if not isinstance(members, list) or not members:
+        issues.append(f"{location}.members must be a non-empty list of pooled members.")
+        members = []
+    for index, member in enumerate(members):
+        member_location = f"{location}.members[{index}]"
+        if not isinstance(member, dict):
+            issues.append(f"{member_location} must be an object.")
+            continue
+        if not member.get("name"):
+            issues.append(f"{member_location} is missing name.")
+        if member.get("consent") is not True:
+            issues.append(
+                f"{member_location}.consent must be true; a member cannot be pooled without consent."
+            )
+        if not isinstance(member.get("sources_connected"), list):
+            issues.append(f"{member_location}.sources_connected must be a list.")
+
+    sources = item.get("sources")
+    if not isinstance(sources, list) or not sources:
+        issues.append(
+            f"{location}.sources must list every candidate source with its discovery status."
+        )
+        sources = []
+    for index, source in enumerate(sources):
+        source_location = f"{location}.sources[{index}]"
+        if not isinstance(source, dict):
+            issues.append(f"{source_location} must be an object.")
+            continue
+        if not source.get("source"):
+            issues.append(f"{source_location} is missing source.")
+        status = source.get("status")
+        if status not in NETWORK_SOURCE_STATUS:
+            issues.append(
+                f"{source_location}.status must be one of: "
+                + ", ".join(sorted(NETWORK_SOURCE_STATUS))
+            )
+        ingested = source.get("ingested")
+        if not isinstance(ingested, bool):
+            issues.append(f"{source_location}.ingested must be true or false.")
+        elif ingested and status != "available":
+            issues.append(
+                f"{source_location} cannot be ingested while status is {status}; never claim a source that was not read."
+            )
+        if status in {"missing", "unauthenticated"} and not source.get("blocked_read"):
+            issues.append(
+                f"{source_location} requires blocked_read describing the exact blocked ingestion."
+            )
+        interactions = source.get("interactions_ingested")
+        if interactions is not None and (
+            not isinstance(interactions, int) or isinstance(interactions, bool) or interactions < 0
+        ):
+            issues.append(f"{source_location}.interactions_ingested must be a non-negative integer.")
+
+    for key in (
+        "people_resolved",
+        "companies_resolved",
+        "interactions_total",
+        "edges_total",
+    ):
+        value = item.get(key)
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            issues.append(f"{location}.{key} must be a non-negative integer.")
+
+    for key in ("identity_resolution_rate", "two_way_share"):
+        value = item.get(key)
+        if not isinstance(value, (int, float)) or isinstance(value, bool) or not 0 <= value <= 100:
+            issues.append(f"{location}.{key} must be a number from 0 to 100.")
+
+    edges_total = item.get("edges_total")
+    for key, allowed in (
+        ("edge_tier_coverage", EVIDENCE_TIERS),
+        ("band_distribution", RELATIONSHIP_BANDS),
+    ):
+        distribution = item.get(key)
+        if not isinstance(distribution, dict):
+            issues.append(f"{location}.{key} must be an object.")
+            continue
+        total = 0
+        valid = True
+        for bucket, value in distribution.items():
+            if bucket not in allowed:
+                issues.append(f"{location}.{key}.{bucket} is not a valid bucket.")
+                valid = False
+            elif not isinstance(value, int) or isinstance(value, bool) or value < 0:
+                issues.append(f"{location}.{key}.{bucket} must be a non-negative integer.")
+                valid = False
+            else:
+                total += value
+        if (
+            valid
+            and isinstance(edges_total, int)
+            and not isinstance(edges_total, bool)
+            and total != edges_total
+        ):
+            issues.append(f"{location}.{key} must sum to edges_total ({edges_total}).")
+
+    manifest = item.get("store_manifest")
+    if not isinstance(manifest, dict):
+        issues.append(f"{location}.store_manifest must be an object.")
+    else:
+        for key in ("schema_version", "path"):
+            if not manifest.get(key):
+                issues.append(f"{location}.store_manifest is missing {key}.")
+        if not validate_iso_date(manifest.get("last_run_at")):
+            issues.append(f"{location}.store_manifest.last_run_at must be an ISO 8601 timestamp.")
+
+
+def validate_warm_path(
+    item: Any, index: int, issues: list[str], warnings: list[str]
+) -> None:
+    location = f"warm_paths[{index}]"
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+
+    for key in ("target", "objective", "risk"):
+        if not item.get(key):
+            issues.append(f"{location} is missing {key}.")
+
+    status = item.get("status")
+    if status not in WARM_PATH_STATUS:
+        issues.append(
+            f"{location}.status must be one of: " + ", ".join(sorted(WARM_PATH_STATUS))
+        )
+
+    mode = item.get("activation_mode")
+    if mode not in ACTIVATION_MODES:
+        issues.append(
+            f"{location}.activation_mode must be one of: " + ", ".join(sorted(ACTIVATION_MODES))
+        )
+
+    next_action = item.get("next_action")
+    if not isinstance(next_action, dict):
+        issues.append(f"{location}.next_action must be an object.")
+    else:
+        for key in ("owner", "action", "when"):
+            if not next_action.get(key):
+                issues.append(f"{location}.next_action is missing {key}.")
+
+    if status == "no_verified_path":
+        if mode in {"direct_history", "warm_introduction"}:
+            issues.append(
+                f"{location} has no verified path and cannot use a relationship-based activation mode."
+            )
+        if item.get("edges"):
+            issues.append(f"{location} cannot carry edges while status is no_verified_path.")
+        return
+
+    for key in ("requester", "connector"):
+        if not item.get(key):
+            issues.append(f"{location} is missing {key}.")
+
+    hops = item.get("hops")
+    if hops not in (1, 2):
+        issues.append(f"{location}.hops must be 1 or 2; longer chains do not support honest introductions.")
+
+    edges = item.get("edges")
+    if not isinstance(edges, list) or not edges:
+        issues.append(f"{location}.edges must contain the evidenced path edges.")
+        edges = []
+    if hops in (1, 2) and edges and len(edges) != hops:
+        issues.append(f"{location}.edges must contain exactly {hops} edge(s).")
+
+    strengths: list[float] = []
+    tiers: list[str] = []
+    bands: list[str] = []
+    for edge_index, edge in enumerate(edges):
+        edge_location = f"{location}.edges[{edge_index}]"
+        validate_edge(edge, edge_location, issues, warnings)
+        if isinstance(edge, dict):
+            strength = edge.get("strength")
+            if isinstance(strength, (int, float)) and not isinstance(strength, bool):
+                strengths.append(float(strength))
+            if edge.get("evidence_tier") in EVIDENCE_TIERS:
+                tiers.append(edge["evidence_tier"])
+            if edge.get("band") in RELATIONSHIP_BANDS:
+                bands.append(edge["band"])
+
+    min_strength = item.get("min_edge_strength")
+    if strengths and len(strengths) == len(edges):
+        expected_min = min(strengths)
+        if (
+            not isinstance(min_strength, (int, float))
+            or isinstance(min_strength, bool)
+            or abs(float(min_strength) - expected_min) > 0.001
+        ):
+            issues.append(
+                f"{location}.min_edge_strength must equal the weakest edge strength ({expected_min:g})."
+            )
+        band = item.get("band")
+        expected_band = band_for_strength(expected_min)
+        if band is not None and expected_band and band != expected_band:
+            issues.append(f"{location}.band must be {expected_band} for its weakest edge.")
+
+    if mode == "warm_introduction":
+        if tiers and len(tiers) == len(edges):
+            if any(tier not in {"A", "B"} for tier in tiers):
+                issues.append(
+                    f"{location} warm_introduction requires Tier A or B evidence on every edge."
+                )
+        else:
+            issues.append(
+                f"{location} warm_introduction requires evidence_tier on every edge."
+            )
+        if bands and any(band in {"weak", "unknown"} for band in bands):
+            issues.append(
+                f"{location} warm_introduction cannot rest on a weak or unknown edge; validate the path first."
+            )
+
+
+def validate_intro_entry(
+    item: Any,
+    index: int,
+    warm_path_count: int,
+    issues: list[str],
+    warnings: list[str],
+) -> None:
+    location = f"intro_ledger[{index}]"
+    if not isinstance(item, dict):
+        issues.append(f"{location} must be an object.")
+        return
+
+    for key in ("target", "requester", "connector", "risk"):
+        if not item.get(key):
+            issues.append(f"{location} is missing {key}.")
+
+    status = item.get("status")
+    if status not in INTRO_STATUS:
+        issues.append(
+            f"{location}.status must be one of: " + ", ".join(sorted(INTRO_STATUS))
+        )
+
+    policy = item.get("policy")
+    if policy not in WRITE_POLICIES:
+        issues.append(
+            f"{location}.policy must be one of: " + ", ".join(sorted(WRITE_POLICIES))
+        )
+
+    ref = item.get("warm_path_ref")
+    if ref is not None and (
+        not isinstance(ref, int) or isinstance(ref, bool) or not 0 <= ref < warm_path_count
+    ):
+        issues.append(f"{location}.warm_path_ref must index an entry in warm_paths.")
+
+    consent = item.get("consent")
+    consented = isinstance(consent, dict) and consent.get("connector_consented") is True
+    if status in {"connector_approved", "sent", "completed"} and not consented:
+        issues.append(
+            f"{location} cannot reach {status} without consent.connector_consented true."
+        )
+    if isinstance(consent, dict) and consent.get("connector_consented") is True and not consent.get("date"):
+        issues.append(f"{location}.consent requires a date.")
+
+    receipts = item.get("receipts")
+    if not isinstance(receipts, list):
+        issues.append(f"{location}.receipts must be a list, even when empty.")
+        receipts = []
+    stages = {
+        receipt.get("stage")
+        for receipt in receipts
+        if isinstance(receipt, dict) and receipt.get("stage")
+    }
+    for receipt_index, receipt in enumerate(receipts):
+        receipt_location = f"{location}.receipts[{receipt_index}]"
+        if not isinstance(receipt, dict):
+            issues.append(f"{receipt_location} must be an object.")
+            continue
+        for key in ("stage", "date", "evidence"):
+            if not receipt.get(key):
+                issues.append(f"{receipt_location} is missing {key}.")
+
+    if status in {"connector_approved", "sent", "completed"} and "connector_approved" not in stages:
+        issues.append(f"{location}.{status} requires a connector_approved receipt.")
+    if status in {"sent", "completed"}:
+        if "sent" not in stages:
+            issues.append(f"{location}.{status} requires a sent receipt with evidence.")
+        if not item.get("message_id") and not item.get("draft_id"):
+            issues.append(f"{location}.{status} requires a message_id or draft_id identifier.")
+        if policy == "draft_only":
+            issues.append(
+                f"{location} cannot be {status} under draft_only policy; sending requires explicit authorization."
+            )
+    if status in {"proposed", "connector_approved"} and not item.get("draft_location"):
+        warnings.append(f"{location} has no draft_location for the pending introduction draft.")
 
 
 def validate_signal(
@@ -886,6 +1344,18 @@ def validate(packet: Any) -> tuple[list[str], list[str]]:
     if discovery_scope is not None:
         validate_discovery_scope(discovery_scope, issues, warnings)
 
+    network_health = packet.get("network_health")
+    if network_health is not None:
+        validate_network_health(network_health, issues, warnings)
+    if (
+        isinstance(discovery_scope, dict)
+        and discovery_scope.get("mode") == "network_history"
+        and network_health is None
+    ):
+        issues.append(
+            "network_history mode requires network_health with member consent and source discovery statuses."
+        )
+
     accounts = packet.get("accounts", [])
     people = packet.get("people", [])
     if not isinstance(accounts, list):
@@ -919,6 +1389,20 @@ def validate(packet: Any) -> tuple[list[str], list[str]]:
         if identity in seen_edges:
             warnings.append(f"relationships[{index}] duplicates an earlier edge.")
         seen_edges.add(identity)
+
+    warm_paths = packet.get("warm_paths", [])
+    if not isinstance(warm_paths, list):
+        issues.append("warm_paths must be a list.")
+        warm_paths = []
+    for index, item in enumerate(warm_paths):
+        validate_warm_path(item, index, issues, warnings)
+
+    intro_ledger = packet.get("intro_ledger", [])
+    if not isinstance(intro_ledger, list):
+        issues.append("intro_ledger must be a list.")
+        intro_ledger = []
+    for index, item in enumerate(intro_ledger):
+        validate_intro_entry(item, index, len(warm_paths), issues, warnings)
 
     signals = packet.get("signals", [])
     if not isinstance(signals, list):

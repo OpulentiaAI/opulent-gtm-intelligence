@@ -156,6 +156,12 @@ Strong starter applications:
 - candidate or expert discovery refresh; and
 - partner, referral, or event prospecting monitor.
 
+Network applications over the graph store (`network-graph-store.md`), with cursors in `graph/cursors.json` and idempotency keys derived from member, source, cursor, and application version:
+
+- **`network-refresh`** (weekly): re-run the connector discovery gate, pull interaction deltas from every `available` source since the per-source cursor, update ledger rollups, recompute reciprocity and recency, rescore edges, and persist the store. Stop when a previously available source becomes unauthenticated, the identity-resolution rate degrades, or the budget cap is reached. Rescored bands are review-only until a human accepts the refresh summary.
+- **`job-change-radar`** (daily watchlist scan, weekly deep pass): the play defined in `signal-intelligence.md`; watchlist derived from the store, provider calls gated by the planner ceilings.
+- **`dormant-reheat`** (monthly): `strong` or `familiar` edges with no ledger interaction in the configured window enter a review-gated reconnect queue with a shared-context hook and a drafted opener. Never auto-send.
+
 Use Browserbase Functions or Opulent's native scheduler only when remote browser execution is required. Keep broad discovery on search and fetch.
 
 ## 7. Autonomous CRM policy

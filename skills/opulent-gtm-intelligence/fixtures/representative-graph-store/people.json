@@ -1,0 +1,47 @@
+[
+  {
+    "id": "person-northstar-principal",
+    "name": "Northstar principal",
+    "role": "Principal",
+    "company_id": "company-northstar-advisory",
+    "emails": ["principal@northstar.example"],
+    "linkedin_url": null,
+    "dedup_keys": ["email:principal@northstar.example"],
+    "privacy": "team",
+    "identity_confidence": "Verified",
+    "suppressed": false,
+    "provenance": [{"source": "member", "date": "2026-07-10"}]
+  },
+  {
+    "id": "person-dana-whitfield",
+    "name": "Dana Whitfield",
+    "role": "Director of Operations",
+    "company_id": "company-acme-health",
+    "emails": ["dana.whitfield@example.com"],
+    "linkedin_url": "https://www.linkedin.com/in/example-dana-whitfield",
+    "dedup_keys": [
+      "email:dana.whitfield@example.com",
+      "linkedin:example-dana-whitfield"
+    ],
+    "privacy": "team",
+    "identity_confidence": "Verified",
+    "suppressed": false,
+    "provenance": [
+      {"source": "gmail", "date": "2026-06-28"},
+      {"source": "linkedin_export", "date": "2026-07-10"}
+    ]
+  },
+  {
+    "id": "person-jordan-lee",
+    "name": "Jordan Lee",
+    "role": "Chief Operating Officer",
+    "company_id": "company-acme-health",
+    "emails": [],
+    "linkedin_url": "https://www.linkedin.com/in/example-jordan-lee",
+    "dedup_keys": ["linkedin:example-jordan-lee", "name_company:jordan lee|acme health"],
+    "privacy": "team",
+    "identity_confidence": "Verified",
+    "suppressed": false,
+    "provenance": [{"source": "public_web", "date": "2026-07-10"}]
+  }
+]

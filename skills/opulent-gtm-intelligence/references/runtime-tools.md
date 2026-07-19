@@ -17,6 +17,7 @@ Use the cheapest tool that can produce reliable evidence. Context.dev is assumed
 | Run a browser-dependent application on a schedule or webhook | Opulent scheduler plus Browserbase function/session | Search or fetch can complete the work without a browser |
 | Read or operate a local app | `computer_action`, `computer_batch`, or lower-level `computer_*` tools | A connector exposes the same data more directly |
 | Read or write structured app data | The relevant connector/app tool | No connector is installed or authenticated |
+| Build or refresh the first-party network graph | Connector discovery first, then ingestion from every `available` email/calendar/CRM/storage source and user-supplied export files (`network-graph-build.md`) | A source is `missing` or `unauthenticated`: record the blocked read in `network_health` and continue with the rest |
 
 Do not require the external `browse` CLI. Opulent already owns search, fetch, browser, computer, and connector surfaces.
 
@@ -32,7 +33,7 @@ If the Context CLI is unavailable or unauthenticated, mark the operation `blocke
 
 Use Clodo or an equivalent connector for natural-language persona search, niche experts, former employees, champions who moved, decision makers, and candidates whose fit depends on messy multi-source criteria. Save the original query, result rationale, source set, freshness, and returned contact provenance. Treat rank as a hypothesis until the evidence that drives action is verified. Resolve known LinkedIn results through Context `/people/retrieve`, resolve their companies through `/brand/retrieve`, and fact-check action-driving fields before activation.
 
-Before routing, load `people-scope-routing.md` and choose `single_person`, `user_list`, or `calendar_derived`. A named person gets a precision path. A list is deduplicated and grouped by company. A calendar cohort comes from an explicit time window and excludes self, internal attendees, declined attendees, rooms, resources, distribution lists, and service accounts by default. Never send private calendar content to a public-web provider.
+Before routing, load `people-scope-routing.md` and choose `single_person`, `user_list`, `calendar_derived`, or `network_history`. A named person gets a precision path. A list is deduplicated and grouped by company. A calendar cohort comes from an explicit time window and excludes self, internal attendees, declined attendees, rooms, resources, distribution lists, and service accounts by default. Never send private calendar content to a public-web provider.
 
 ## Search and fetch
 

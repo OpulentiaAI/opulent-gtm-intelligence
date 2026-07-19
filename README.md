@@ -1,6 +1,8 @@
 # Opulent GTM Intelligence
 
-An Opulent-native skill for evidence-backed company research, multi-source account and candidate enrichment, relationship and signal intelligence, competitive intelligence, scheduled GTM applications, meeting briefs, and policy-controlled CRM updates.
+An Opulent-native skill for evidence-backed company research, multi-source account and candidate enrichment, relationship and signal intelligence, first-party network graphs with warm-path and introduction orchestration, competitive intelligence, scheduled GTM applications, meeting briefs, and policy-controlled CRM updates.
+
+The network layer is self-contained: ingestion runs the connector discovery gate and reads whatever email, calendar, CRM, and export-file sources are actually available (metadata only — never message bodies or subjects), and the graph persists in a skill-owned workspace store validated by `scripts/validate_graph_store.py`. No specific CRM or vendor adapter is required.
 
 The workflow uses Opulent's built-in `web_search` and `web_fetch` for broad research, Browserbase-backed `browser_*` tools for dynamic or authenticated sites, `computer_*` tools for local applications, and connected apps for CRM, email, calendar, and storage operations.
 
@@ -22,6 +24,9 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
 
 python3 skills/opulent-gtm-intelligence/scripts/validate_intelligence_packet.py \
   path/to/packet.json
+
+python3 skills/opulent-gtm-intelligence/scripts/validate_graph_store.py \
+  path/to/workspace/graph
 
 python3 skills/opulent-gtm-intelligence/scripts/render_intelligence_report.py \
   path/to/packet.json --output output/client-intelligence
