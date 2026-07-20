@@ -38,20 +38,26 @@ function sourceName(value: unknown): string {
   return sourceLabels[key] ?? plainLabel(key)
 }
 
-/** Plain-language availability sentence for one ingestion source. */
+/**
+ * Plain-language availability sentence for one ingestion source. The verbatim
+ * blocked_read can carry endpoints or hostnames, so it renders only in the
+ * audit layer's NetworkSourceDetail; here a blocked source gets a fixed
+ * pointer sentence instead.
+ */
+const BLOCKED_POINTER = " The exact blocked read is recorded under Audit & provenance."
+
 function availabilityLine(source: NetworkSource): string {
   const name = sourceName(source.source)
   const status = String(source.status || "unknown")
   const count = typeof source.interactions_ingested === "number" ? source.interactions_ingested.toLocaleString("en-US") : null
   const note = source.note != null && source.note !== "" ? ` ${String(source.note)}` : ""
-  const blocked = source.blocked_read != null && source.blocked_read !== "" ? ` ${String(source.blocked_read)}` : note
   if (status === "available" && source.ingested === true) {
     return `${name} — connected and ingested${count !== null ? ` (${count} interactions)` : ""}.${note}`
   }
-  if (status === "missing") return `${name} — not connected.${blocked}`
-  if (status === "unauthenticated") return `${name} — connected but not authorized; nothing was read.${blocked}`
+  if (status === "missing") return `${name} — not connected; nothing was read.${BLOCKED_POINTER}`
+  if (status === "unauthenticated") return `${name} — connected but not authorized; nothing was read.${BLOCKED_POINTER}`
   if (status === "not_required") return `${name} — not required for this packet.${note}`
-  return `${name} — ${status.replaceAll("_", " ")}; not ingested.${blocked}`
+  return `${name} — ${status.replaceAll("_", " ")}; not ingested.${BLOCKED_POINTER}`
 }
 
 /**

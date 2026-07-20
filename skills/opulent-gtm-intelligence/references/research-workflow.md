@@ -218,12 +218,14 @@ For executive-search and talent clients, connect both sides of the market:
 - shared sector, geography, institution, or transformation context; and
 - the specific introduction, search thesis, or content angle that creates value.
 
-## Completion packet
+## Completion
 
-Produce both:
+The default deliverable is the reader-first brief from the SKILL.md default run: prose decision, actions, connections, and the audit trail after. Research is complete when the decision is answered with cited evidence and the unknowns are explicit.
+
+Produce the client report artifact only when the user asked for a shareable deliverable (the SKILL.md client-report branch). In that case, produce both:
 
 1. a structured JSON packet that passes `validate_intelligence_packet.py`; and
-2. the complete static export produced by the mandatory Nim-derived Next.js report app, including `_next` assets and every account/person dossier.
+2. the complete static export produced by the Nim-derived Next.js report app, including `_next` assets and every account/person dossier.
 
 The overview must place two packet-derived timelines after analytics and before detailed ledgers: agent execution provenance and the enforced `resolve -> search/discover -> extract -> corroborate -> browser fallback -> analyze -> activate -> verify/deliver` workflow. Use only `complete`, `proposed`, `blocked`, or `not applicable`. Require receipts for executed Context and verified writes, leave browser fallback not applicable without explicit evidence, and never present these timelines as hidden chain-of-thought.
 

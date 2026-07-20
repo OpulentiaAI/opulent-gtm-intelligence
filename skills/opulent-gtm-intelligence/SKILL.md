@@ -41,6 +41,7 @@ Open a reference only when its trigger fires; each is self-contained for its bra
 | Scheduled applications, enrichment waterfalls, CRM policy | `references/gtm-engineering-system.md` |
 | CRM, email, calendar, storage, or intro mutations | `references/system-actions.md` |
 | Merraine Group or Jeremy Sanchez | `references/merraine-client-context.md` |
+| Merraine proof, demonstrations, or relationship seeds | `references/merraine-public-examples.md` |
 
 ## Client report artifact
 

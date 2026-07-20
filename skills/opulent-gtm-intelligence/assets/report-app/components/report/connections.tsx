@@ -74,10 +74,15 @@ export function ConnectionCard({ path, index }: { path: WarmPath; index: number 
   const target = String(path.target || "Unnamed target")
   const edges = records(path.edges) as RelationshipEdge[]
   const clauses = edges.map(edgeClause).join(", and ")
+  const mode = String(path.activation_mode || "")
   const headline = found
-    ? path.connector
-      ? `Ask ${String(path.connector)} to introduce ${String(path.requester || "the requester")} to ${target}${clauses ? ` — ${clauses}` : ""}.`
-      : `Reach ${target} through the verified path${clauses ? ` — ${clauses}` : ""}.`
+    ? mode === "direct_history"
+      ? `Reach ${target} directly${clauses ? ` — ${clauses}` : ""}.`
+      : mode === "shared_context"
+        ? `Open with the shared context, without implying a personal relationship — ${clauses || `a verified shared context connects ${String(path.requester || "the requester")} and ${target}`}.`
+        : path.connector
+          ? `Ask ${String(path.connector)} to introduce ${String(path.requester || "the requester")} to ${target}${clauses ? ` — ${clauses}` : ""}.`
+          : `Reach ${target} through the verified path${clauses ? ` — ${clauses}` : ""}.`
     : `No verified path to ${target} — ${activationModeWords(path.activation_mode)} using the dated trigger.`
   const action = nextActionSentence(path.next_action)
   const extras = Object.keys(path).filter((key) => !connectionKeys.includes(key))
