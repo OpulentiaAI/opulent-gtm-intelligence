@@ -1,0 +1,68 @@
+{
+  "api_operation": "gmail.users.messages.get",
+  "account": {
+    "emailAddress": "principal@northstar.example"
+  },
+  "messages": [
+    {
+      "id": "msg-4471-1",
+      "threadId": "thread-4471",
+      "internalDate": "1782396180000",
+      "payload": {
+        "headers": [
+          {"name": "From", "value": "Northstar Principal <principal@northstar.example>"},
+          {"name": "To", "value": "Dana Whitfield <dana.whitfield@example.com>"},
+          {"name": "Subject", "value": "Private sample subject that must not enter the graph"}
+        ],
+        "body": {
+          "data": "UHJpdmF0ZSBzYW1wbGUgYm9keSB0aGF0IG11c3Qgbm90IGVudGVyIHRoZSBncmFwaC4="
+        }
+      }
+    },
+    {
+      "id": "msg-4471-2",
+      "threadId": "thread-4471",
+      "internalDate": "1782466860000",
+      "payload": {
+        "headers": [
+          {"name": "From", "value": "Dana Whitfield <dana.whitfield@example.com>"},
+          {"name": "To", "value": "Northstar Principal <principal@northstar.example>"},
+          {"name": "Subject", "value": "Re: private sample subject"}
+        ],
+        "body": {
+          "data": "QW5vdGhlciBwcml2YXRlIHNhbXBsZSBib2R5Lg=="
+        }
+      }
+    },
+    {
+      "id": "msg-4471-3",
+      "threadId": "thread-4471",
+      "internalDate": "1782663120000",
+      "payload": {
+        "headers": [
+          {"name": "From", "value": "Northstar Principal <principal@northstar.example>"},
+          {"name": "To", "value": "Dana Whitfield <dana.whitfield@example.com>"},
+          {"name": "Subject", "value": "Re: private sample subject"}
+        ],
+        "body": {
+          "data": "QW5vdGhlciBwcml2YXRlIHNhbXBsZSBib2R5Lg=="
+        }
+      }
+    },
+    {
+      "id": "msg-4471-4",
+      "threadId": "thread-4471",
+      "internalDate": "1782896100000",
+      "payload": {
+        "headers": [
+          {"name": "From", "value": "Dana Whitfield <dana.whitfield@example.com>"},
+          {"name": "To", "value": "Northstar Principal <principal@northstar.example>"},
+          {"name": "Subject", "value": "Re: private sample subject"}
+        ],
+        "body": {
+          "data": "QW5vdGhlciBwcml2YXRlIHNhbXBsZSBib2R5Lg=="
+        }
+      }
+    }
+  ]
+}

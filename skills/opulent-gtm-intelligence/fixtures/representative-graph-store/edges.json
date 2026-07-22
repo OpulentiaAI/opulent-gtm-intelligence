@@ -24,6 +24,55 @@
     ]
   },
   {
+    "from": "person-northstar-principal",
+    "to": "person-dana-whitfield",
+    "type": "meeting",
+    "via": "2026 calendar history",
+    "strength": 80,
+    "strength_components": {
+      "evidence_quality": 30,
+      "recency": 17,
+      "relevance": 15,
+      "access": 10,
+      "reciprocity": 8
+    },
+    "band": "strong",
+    "evidence_tier": "A",
+    "owner": "person-northstar-principal",
+    "confidence": "Verified",
+    "last_verified": "2026-07-12",
+    "activation_path": "Direct history: reference the two completed meetings and ask Dana directly.",
+    "risk": "Calendar attendance supports direct history but does not reveal the private meeting context.",
+    "evidence": [
+      {"event_handle": "event-9310", "date": "2026-05-14"},
+      {"event_handle": "event-9482", "date": "2026-06-11"}
+    ]
+  },
+  {
+    "from": "person-northstar-principal",
+    "to": "person-dana-whitfield",
+    "type": "linkedin_connection",
+    "via": "Northstar principal's LinkedIn connections export",
+    "strength": 42,
+    "strength_components": {
+      "evidence_quality": 18,
+      "recency": 12,
+      "relevance": 5,
+      "access": 5,
+      "reciprocity": 2
+    },
+    "band": "weak",
+    "evidence_tier": "C",
+    "owner": "person-northstar-principal",
+    "confidence": "Verified",
+    "last_verified": "2026-07-10",
+    "activation_path": "Use the stronger direct email and meeting history rather than the LinkedIn connection alone.",
+    "risk": "A LinkedIn connection alone does not prove familiarity or willingness to introduce.",
+    "evidence": [
+      {"export": "connections-2026-07-10.csv", "date": "2026-07-10"}
+    ]
+  },
+  {
     "from": "person-dana-whitfield",
     "to": "person-jordan-lee",
     "type": "colleague_overlap",

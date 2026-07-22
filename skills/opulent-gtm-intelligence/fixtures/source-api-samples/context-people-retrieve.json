@@ -1,0 +1,14 @@
+{
+  "api_operation": "POST /v1/people/retrieve",
+  "request_id": "req_sample_people_001",
+  "key_metadata": {"credits": 1},
+  "person": {
+    "name": "Jordan Lee",
+    "linkedin_url": "https://www.linkedin.com/in/example-jordan-lee",
+    "job_title": "Chief Operating Officer",
+    "company": {
+      "name": "Acme Health",
+      "domain": "example.com"
+    }
+  }
+}
