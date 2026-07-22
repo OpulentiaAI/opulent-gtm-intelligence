@@ -1,0 +1,83 @@
+{
+  "api_operation": "calendar.events.list",
+  "calendar_id": "primary",
+  "timeZone": "America/Chicago",
+  "items": [
+    {
+      "id": "event-9310",
+      "status": "confirmed",
+      "summary": "Private sample title that must not enter the graph",
+      "description": "Private sample notes that must not enter the graph",
+      "start": {"dateTime": "2026-05-14T10:00:00-05:00"},
+      "end": {"dateTime": "2026-05-14T10:30:00-05:00"},
+      "organizer": {"email": "principal@northstar.example", "self": true},
+      "attendees": [
+        {
+          "email": "dana.whitfield@example.com",
+          "displayName": "Dana Whitfield",
+          "responseStatus": "accepted"
+        }
+      ],
+      "conferenceData": {"entryPoints": [{"uri": "https://meet.example/private-link"}]}
+    },
+    {
+      "id": "event-9482",
+      "status": "confirmed",
+      "summary": "Another private title",
+      "start": {"dateTime": "2026-06-11T10:00:00-05:00"},
+      "end": {"dateTime": "2026-06-11T10:30:00-05:00"},
+      "organizer": {"email": "principal@northstar.example", "self": true},
+      "attendees": [
+        {
+          "email": "dana.whitfield@example.com",
+          "displayName": "Dana Whitfield",
+          "responseStatus": "accepted"
+        }
+      ]
+    },
+    {
+      "id": "event-cancelled",
+      "status": "cancelled",
+      "summary": "Cancelled event",
+      "start": {"dateTime": "2026-06-12T10:00:00-05:00"},
+      "organizer": {"email": "principal@northstar.example", "self": true},
+      "attendees": [
+        {"email": "dana.whitfield@example.com", "responseStatus": "accepted"}
+      ]
+    },
+    {
+      "id": "event-internal",
+      "status": "confirmed",
+      "summary": "Internal event",
+      "start": {"dateTime": "2026-06-13T10:00:00-05:00"},
+      "organizer": {"email": "principal@northstar.example", "self": true},
+      "attendees": [
+        {"email": "teammate@northstar.example", "responseStatus": "accepted"}
+      ]
+    },
+    {
+      "id": "event-ineligible",
+      "status": "confirmed",
+      "summary": "Ineligible attendees",
+      "start": {"dateTime": "2026-06-14T10:00:00-05:00"},
+      "organizer": {"email": "principal@northstar.example", "self": true},
+      "attendees": [
+        {
+          "email": "dana.whitfield@example.com",
+          "responseStatus": "declined"
+        },
+        {
+          "email": "boardroom@northstar.example",
+          "displayName": "Boardroom",
+          "resource": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "recorder@service.example",
+          "displayName": "Meeting Recorder Bot",
+          "responseStatus": "accepted"
+        }
+      ]
+    }
+  ]
+}

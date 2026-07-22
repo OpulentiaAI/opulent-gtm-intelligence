@@ -1,0 +1,11 @@
+{
+  "api_operation": "POST /v1/brand/retrieve",
+  "request_id": "req_sample_brand_001",
+  "key_metadata": {"credits": 1},
+  "brand": {
+    "name": "Acme Health",
+    "domain": "example.com",
+    "linkedin_url": "https://www.linkedin.com/company/example-acme-health",
+    "description": "Sample public company profile."
+  }
+}

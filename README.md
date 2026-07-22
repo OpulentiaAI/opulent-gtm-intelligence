@@ -30,8 +30,12 @@ python3 skills/opulent-gtm-intelligence/scripts/validate_graph_store.py \
 
 python3 skills/opulent-gtm-intelligence/scripts/render_intelligence_report.py \
   path/to/packet.json --output output/client-intelligence
+
+python3 skills/opulent-gtm-intelligence/scripts/test_e2e_sample_sources.py
 ```
 
 The renderer produces a polished executive overview plus detailed account and person dossiers, data-health metrics, relationship paths, signal context, scheduled-application contracts, and an auditable CRM update ledger.
+
+The end-to-end test derives privacy-minimized interactions from API-shaped Gmail and Google Calendar responses, a user-supplied LinkedIn connections export, and Context person and brand responses. It checks source exclusions and identity resolution, validates the graph and packet, proves unsafe email/calendar payloads are rejected, and renders the final report.
 
 The optional Grata, Attio, and Gmail CLIs under `cli/` are fallback adapters. Prefer Opulent's native tools and connected apps when available.
